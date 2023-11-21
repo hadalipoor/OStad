@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>تنظیمات آسانسور</title>
+    <link rel="stylesheet" href="elevator_configs.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+
+<body>
+    <div class="container">
+        <h1>تنظیمات آسانسور</h1>
+        <form id="configForm">
+            <br/>
+            <h3>تنظیمات کلی</h3>
+            <label for="elevator_enable">وضعیت آسانسور</label>
+            <select id="elevator_enable">
+                <option value="true">فعال</option>
+                <option value="false">غیرفعال</option>
+            </select>
+            
+            <label for="elevator_mode">حالت آسانسور</label>
+            <select id="elevator_mode">
+                <option value="single_sensor">تک سنسور برای طبقات</option>
+                <option value="separate_sensors">سنسور جدا برای طبقات</option>
+            </select>
+            
+            <label for="emergency_button_enabled">دکمه اضطرار</label>
+            <select id="emergency_button_enabled">
+                <option value="true">فعال</option>
+                <option value="false">غیرفعال</option>
+            </select>
+
+            <br/>
+            <h3>طبقات</h3>
+            <label for="number_of_floors">تعداد طبقات</label>
+            <select id="number_of_floors">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            
+            <label for="relay_start_delay">توقف پیش از حرکت</label>
+            <input type="number" id="relay_start_delay">
+            
+            <label for="floor_sensor_interval">توقف پس از سنسور طبقات</label>
+            <input type="number" id="floor_sensor_interval">
+
+            
+
+            <br/>
+            <h3>کالیبراسیون</h3>
+            <label for="calibration_on_startup">کالیبر آسانسور در هنگام راه اندازی</label>
+            <select id="calibration_on_startup">
+                <option value="true">فعال</option>
+                <option value="false">غیرفعال</option>
+            </select>
+            
+            <label for="calibration_sensor_with_floor">سنسور کالیبر همسطح با سنسور طبقات</label>
+            <select id="calibration_sensor_with_floor">
+                <option value="true">بله</option>
+                <option value="false">بعد از سنسور طبقه</option>
+            </select>
+
+            <label for="calibration_sensor_position">محل سنسور کالیبراسیون</label>
+            <select id="calibration_sensor_position">
+                <option value="top">بالا</option>
+                <option value="down">پایین</option>
+            </select>
+
+            <label for="calibration_direction">جهت حرکت برای کالیبراسیون</label>
+            <select id="calibration_direction">
+                <option value="top">بالا</option>
+                <option value="down">پایین</option>
+            </select>
+
+            <label for="calibration_sensor_interval">توقف پس از رسیدن به سنسور کالیبر</label>
+            <input type="number" id="calibration_sensor_interval">
+            
+            <label for="floor_sensor_interval">توقف پس از رسیدن به سنسور طبقه</label>
+            <input type="number" id="floor_sensor_interval">
+
+            <label for="parking_floor">طبقه پارکینگ</label>
+            <input type="number" id="parking_floor">
+
+            <br/>
+            <h3>تنظیمات سیستمی</h3>
+            <label for="admin_phone_number">شماره تلفن ادمین</label>
+            <input type="text" id="admin_phone_number">
+
+            <label for="send_error_data">ارسال خطاها به ادمین</label>
+            <select id="send_error_data">
+                <option value="true">فعال</option>
+                <option value="false">غیرفعال</option>
+            </select>
+
+            <button type="button" id="submitBtn">ذخیره تغییرات</button>
+            <button type="button" id="resetBtn">بازگردانی به پیشفرض</button>
+        </form>
+    </div>
+
+    <div id="notification"></div>
+    <script src="elevator_configs.js"></script>
+</body>
+
+</html>

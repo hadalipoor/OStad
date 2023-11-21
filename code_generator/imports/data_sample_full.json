@@ -1,0 +1,230 @@
+{
+    "ProjectName" : "RoomLight2",
+    "ProjectPath" : "C:\\Users\\AIVWA 1\\Documents\\Arduino\\libraries\\OStad\\Examples",
+    "Entities" : [
+        {
+            "name" : "Relay",
+            "columns" : [
+                {
+                    "name" : "name",
+                    "type" : "String"
+                },
+                {
+                    "name" : "pin_number",
+                    "type" : "int"
+                },
+                {
+                    "name" : "normally_open",
+                    "type" : "bool"
+                }
+            ]
+        },
+        {
+            "name" : "RoomState",
+            "columns" : [
+                {
+                    "name" : "state_name",
+                    "type" : "String"
+                },
+                {
+                    "name" : "min_temperature",
+                    "type" : "int"
+                },
+                {
+                    "name" : "max_temperature",
+                    "type" : "int"
+                },
+                {
+                    "name" : "active",
+                    "type" : "bool"
+                }
+            ]
+        }
+    ],
+
+    "Apis" : [
+        {
+            "name" : "RoomLight",
+            "Url" : "/roomlight/",
+            "Apis": [
+                {
+                    "ApiName": "setLightMode",
+                    "EndPoint": "/roomlight/setLightMode",
+                    "Method": "POST",
+                    "Data": {
+                        "lightMode": "mode_example",
+                        "enable" : false
+                    }
+                },
+                {
+                    "ApiName": "changeSpeed",
+                    "EndPoint": "/roomlight/changeSpeed",
+                    "Method": "POST",
+                    "Data": {
+                        "speed": 50
+                    }
+                },
+                {
+                    "ApiName": "setPrimaryColor",
+                    "EndPoint": "/roomlight/setPrimaryColor",
+                    "Method": "POST",
+                    "Data": {
+                        "color": "255,255,255",
+                        "speed": 50
+                    }
+                },
+                {
+                    "ApiName": "setSecondaryColor",
+                    "EndPoint": "/roomlight/setSecondaryColor",
+                    "Method": "POST",
+                    "Data": {
+                        "color": "100,200,150",
+                        "type" : "new"
+                    }
+                },
+                {
+                    "ApiName": "getLightMode",
+                    "EndPoint": "/roomlight/getLightMode",
+                    "Method": "GET"
+                },
+                {
+                    "ApiName": "getSpeed",
+                    "EndPoint": "/roomlight/getSpeed",
+                    "Method": "GET"
+                },
+                {
+                    "ApiName": "getPrimaryColor",
+                    "EndPoint": "/roomlight/getPrimaryColor",
+                    "Method": "GET"
+                },
+                {
+                    "ApiName": "getSecondaryColor",
+                    "EndPoint": "/roomlight/getSecondaryColor",
+                    "Method": "GET"
+                }
+            ]
+        },
+        {
+            "name" : "RoomState",
+            "Url" : "/roomstate/",
+            "Apis": [
+                {
+                    "ApiName": "create",
+                    "EndPoint": "/roomstate/create",
+                    "Method": "POST",
+                    "Data": {
+                        "state_name": "new state",
+                        "min_temperature" : 20,
+                        "max_temperature" : 40,
+                        "active" : true
+                    }
+                },
+                {
+                    "ApiName": "update",
+                    "EndPoint": "/roomstate/update",
+                    "Method": "PUT",
+                    "Data": {
+                        "id": 1,
+                        "state_name": "my state",
+                        "min_temperature" : 20,
+                        "max_temperature" : 40,
+                        "active" : true
+                    }
+                },
+                {
+                    "ApiName": "delete",
+                    "EndPoint": "/roomstate/delete",
+                    "Method": "DELETE",
+                    "Data": {
+                        "id": 1
+                    }
+                },
+                {
+                    "ApiName": "getAll",
+                    "EndPoint": "/roomstate/getAll",
+                    "Method": "GET"
+                },
+                {
+                    "ApiName": "getById",
+                    "EndPoint": "/roomstate/getById",
+                    "Method": "GET",
+                    "Data": {
+                        "id": 1
+                    }
+                },
+                {
+                    "ApiName": "get",
+                    "EndPoint": "/roomstate/get",
+                    "Method": "GET",
+                    "Data": {
+                        "query": "state_name=my_state"
+                    }
+                }
+
+            ]
+        }
+        
+    ],
+
+    "Configs" : [
+        {
+            "Key" : "light_mode",
+            "DefaultValue" : "Static"
+        },
+        {
+            "Key" : "speed",
+            "DefaultValue" : "30"
+        },
+        {
+            "Key" : "primary_color",
+            "DefaultValue" : "219-166-31"
+        }
+    ],
+
+    "Modules": {
+        "Buttons": [
+            {
+                "PinNumber": "0",
+                "Name": "RESET_BUTTON_NAME",
+                "ActiveHigh": "false",
+                "PullUpActive": "false",
+                "ButtonType": "ButtonType::PIN"
+            }
+        ],
+        "LCD16X2s": [
+            {
+                "Name": "LCD_NAME",
+                "Address": "0x27",
+                "Width": "16",
+                "Height": "2"
+            }
+        ],
+        "OLEDLCDs": [
+            {
+                "Name": "OLED_NAME",
+                "Address": "0x3C",
+                "Columns": "128",
+                "Rows": "64"
+            }
+        ],
+        "Relays": [
+            {
+                "PinNumber": "0",
+                "Name": "BOARD_LED_NAME",
+                "NormallyOpen": "true"
+            }
+        ],
+        "SoilMoistureSensors": [
+            {
+                "Name": "SOIL_SENSOR_NAME",
+                "ConnectionType": "Wifi",
+                "NodeId": "1",
+                "SensorPin": "A0",
+                "DryThreshold": "300",
+                "WetThreshold": "700"
+            }
+        ]
+    }
+   
+
+}

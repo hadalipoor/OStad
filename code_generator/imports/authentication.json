@@ -1,0 +1,389 @@
+{
+    "ProjectName" : "Authentication",
+    "ProjectPath" : "C:\\Users\\AIVWA 1\\Documents\\Arduino\\libraries\\OStad\\Examples",
+    "Entities" : [
+        {
+            "name": "User",
+            "columns": [
+                {
+                    "name": "Username",
+                    "type": "String"
+                },
+                {
+                    "name": "Password",
+                    "type": "String"
+                },
+                {
+                    "name": "Email",
+                    "type": "String"
+                },
+                {
+                    "name": "PhoneNumber",
+                    "type": "String"
+                },
+                {
+                    "name": "RoleId",
+                    "type": "int"
+                },
+                {
+                    "name": "TwoFactorAuth",
+                    "type": "bool"
+                },
+                {
+                    "name": "ApiKey",
+                    "type": "String"
+                },
+                {
+                    "name": "Token",
+                    "type": "String"
+                },
+                {
+                    "name": "TokenExpiryTime",
+                    "type": "EBPDateTime"
+                }
+            ]
+        },
+        {
+            "name": "Role",
+            "columns": [
+                {
+                    "name": "RoleName",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "Permission",
+            "columns": [
+                {
+                    "name": "PermissionName",
+                    "type": "String"
+                },
+                {
+                    "name": "PermissionGroup",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "RolePermission",
+            "columns": [
+                {
+                    "name": "RoleId",
+                    "type": "int"
+                },
+                {
+                    "name": "PermissionId",
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "name": "UserResetPass",
+            "columns": [
+                {
+                    "name": "UserId",
+                    "type": "int"
+                },
+                {
+                    "name": "ResetToken",
+                    "type": "String"
+                },
+                {
+                    "name": "ExpiryTime",
+                    "type": "EBPDateTime"
+                }
+            ]
+        },
+        {
+            "name": "SecurityQuestion",
+            "columns": [
+                {
+                    "name": "UserId",
+                    "type": "int"
+                },
+                {
+                    "name": "SecurityQuestionTitleId",
+                    "type": "String"
+                },
+                {
+                    "name": "Answer",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "SecurityQuestionTitle",
+            "columns": [
+                {
+                    "name": "QuestionTitle",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "LoginAttempt",
+            "columns": [
+                {
+                    "name": "UserId",
+                    "type": "int"
+                },
+                {
+                    "name": "Timestamp",
+                    "type": "EBPDateTime"
+                }
+            ]
+        },
+        {
+            "name": "AccountLockout",
+            "columns": [
+                {
+                    "name": "UserId",
+                    "type": "int"
+                },
+                {
+                    "name": "LockoutStartTime",
+                    "type": "EBPDateTime"
+                },
+                {
+                    "name": "LockoutEndTime",
+                    "type": "EBPDateTime"
+                }
+            ]
+        },
+        {
+            "name": "TwoFactorAuth",
+            "columns": [
+                {
+                    "name": "UserId",
+                    "type": "int"
+                },
+                {
+                    "name": "OtpCode",
+                    "type": "String"
+                },
+                {
+                    "name": "ExpiryTime",
+                    "type": "EBPDateTime"
+                }
+            ]
+        },
+        {
+            "name": "AccountActivityLog",
+            "columns": [
+                {
+                    "name": "UserId",
+                    "type": "int"
+                },
+                {
+                    "name": "Activity",
+                    "type": "String"
+                },
+                {
+                    "name": "Timestamp",
+                    "type": "EBPDateTime"
+                }
+            ]
+        }
+    ],
+    "Apis": [
+        {
+            "name": "Authentication",
+            "Url": "/authentication",
+            "Apis": [
+                {
+                    "ApiName": "Login",
+                    "EndPoint": "/authentication/login",
+                    "Method": "POST",
+                    "Data": {
+                        "username": "admin",
+                        "password": "admin"
+                    }
+                },
+                {
+                    "ApiName": "PasswordReset",
+                    "EndPoint": "/authentication/password_reset",
+                    "Method": "POST",
+                    "Data": {
+                        "username": "admin"
+                    }
+                },
+                {
+                    "ApiName": "PasswordResetConfirm",
+                    "EndPoint": "/authentication/password_reset/confirm",
+                    "Method": "POST",
+                    "Data": {
+                        "username": "admin",
+                        "reset_token": "token",
+                        "new_password": "new_password"
+                    }
+                },
+                {
+                    "ApiName": "TwoFactorAuth",
+                    "EndPoint": "/authentication/two_factor_auth",
+                    "Method": "POST",
+                    "Data": {
+                        "username": "admin"
+                    }
+                },
+                {
+                    "ApiName": "TwoFactorAuthConfirm",
+                    "EndPoint": "/authentication/two_factor_auth/confirm",
+                    "Method": "POST",
+                    "Data": {
+                        "username": "admin",
+                        "otp_code": "otp_code"
+                    }
+                },
+                {
+                    "ApiName": "AccountLock",
+                    "EndPoint": "/account/lock",
+                    "Method": "POST",
+                    "Data": {
+                        "username": "admin"
+                    }
+                },
+                {
+                    "ApiName": "AccountUnlock",
+                    "EndPoint": "/account/unlock",
+                    "Method": "POST",
+                    "Data": {
+                        "username": "admin"
+                    }
+                },
+                {
+                    "ApiName": "SecurityQuestionAnswer",
+                    "EndPoint": "/account/security_question/answer",
+                    "Method": "POST",
+                    "Data": {
+                        "username": "admin",
+                        "question_id": "question_id",
+                        "answer": "answer"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "TestRequests",
+            "Url": "/testrequests",
+            "Apis": [
+                {
+                    "ApiName": "AddData",
+                    "EndPoint": "/testrequests/adddata",
+                    "Method": "POST",
+                    "Data": {
+                        "data": "data"
+                    }
+                },
+                {
+                    "ApiName": "GetData",
+                    "EndPoint": "/testrequests/getdata",
+                    "Method": "GET",
+                    "Data": {
+                    }
+                },
+                {
+                    "ApiName": "PublicRequest",
+                    "EndPoint": "/testrequests/publicrequest",
+                    "Method": "GET",
+                    "Data": {
+                    }
+                }
+            ]
+        }
+    ],
+    "Configs": [
+        {
+            "Key": "authentication_enable",
+            "DefaultValue": "true",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "two_factor_authentication_enable",
+            "DefaultValue": "false",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "two_factor_authentication_email_enable",
+            "DefaultValue": "false",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "two_factor_authentication_sms_enable",
+            "DefaultValue": "false",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "access_with_api_key",
+            "DefaultValue": "true",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "reset_password_with_sms",
+            "DefaultValue": "false",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "reset_password_with_email",
+            "DefaultValue": "false",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "reset_password_with_button",
+            "DefaultValue": "true",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "reset_password_with_security_question",
+            "DefaultValue": "true",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "reset_password_expire_hour",
+            "DefaultValue": "24",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "login_attempt_count",
+            "DefaultValue": "10",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "lock_user_login_attempt",
+            "DefaultValue": "false",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "lock_user_minute",
+            "DefaultValue": "30",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "two_factor_auth_expire_hour",
+            "DefaultValue": "24",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "log_account_activity",
+            "DefaultValue": "true",
+            "Comment": "Enables or disables the entire system."
+        }
+    ],
+    "Modules": {
+        "Buttons": [
+            {
+                "PinNumber": "0",
+                "Name": "SetButton",
+                "ActiveHigh": "false",
+                "PullUpActive": "false",
+                "ButtonType": "ButtonType::PIN"
+            }
+        ],
+        "OLEDLCDs": [
+        ],
+        "Relays": [
+        ],
+        "SoilMoistureSensors": [
+        ]
+    }
+}

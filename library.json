@@ -1,0 +1,38 @@
+{
+    "name": "OStad",
+    "description": "a boilerplate for ESP32 arduino board",
+    "keywords": "esp32, boilerplate, database, wifi, file",
+    "authors": [
+        {
+            "name": "Hadi Alipoor",
+            "url": "https://github.com/HadAlipoor",
+            "maintainer": true
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/HadAlipoor/OStad.git"
+    },
+    "version": "1.0.4",
+    "license": "MIT license",
+    "homepage": "OStad.Wiki",
+    "frameworks": "arduino",
+    "platforms": "espressif32",
+    "headers": "OStad.h",
+    "export": {
+        "exclude": [
+            "html_pages",
+            "postman_files",
+            "web_pages"
+        ]
+    },
+    "build": {
+        "srcFilter": [
+            "+<*.c>",
+            "+<*.cpp>",
+            "+<*.h>",
+            "+<platforms/esp/32/*.cpp>"
+        ],
+        "libArchive": false
+    }
+}

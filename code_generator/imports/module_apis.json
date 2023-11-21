@@ -1,0 +1,91 @@
+{
+    "ProjectName": "ModuleApis",
+    "ProjectPath": "C:\\Users\\AIVWA 1\\Documents\\Arduino\\libraries\\OStad\\Examples",
+    "Entities": [
+        {
+            "name": "Button",
+            "columns": [
+                {"name": "ModuleId", "type": "int"},
+                {"name": "ButtonType", "type": "String"},
+                {"name": "ActiveHigh", "type": "bool"},
+                {"name": "PullupActive", "type": "bool"},
+                {"name": "DebounceDelay", "type": "int"}
+            ]
+        },
+        {
+            "name": "Module",
+            "columns": [
+                {"name": "Name", "type": "String"},
+                {"name": "ModuleType", "type": "String"},
+                {"name": "ConnectionType", "type": "String"},
+                {"name": "NodeId", "type": "int"},
+                {"name": "PinNumber", "type": "int"}
+            ]
+        },
+        {
+            "name": "Relay",
+            "columns": [
+                {"name": "ModuleId", "type": "int"},
+                {"name": "NormallyOpen", "type": "bool"}
+            ]
+        },
+        {
+            "name": "LCD",
+            "columns": [
+                {"name": "ModuleId", "type": "int"},
+                {"name": "Address", "type": "int"},
+                {"name": "Rows", "type": "int"},
+                {"name": "Cols", "type": "int"},
+                {"name": "Type", "type": "String"}
+            ]
+        },
+        {
+            "name": "DHT",
+            "columns": [
+                {"name": "Type", "type": "String"},
+                {"name": "DryTreshold", "type": "int"},
+                {"name": "WetTreshold", "type": "int"},
+                {"name": "CoolTreshold", "type": "int"},
+                {"name": "HotTreshold", "type": "int"}
+            ]
+        },
+        {
+            "name": "Photoresistor",
+            "columns": [
+                {"name": "LowTreshold", "type": "int"},
+                {"name": "HighTreshold", "type": "int"}
+            ]
+        },
+        {
+            "name": "RGB",
+            "columns": [
+                {"name": "Type", "type": "String"},
+                {"name": "Rpin", "type": "int"},
+                {"name": "Gpin", "type": "int"},
+                {"name": "Bpin", "type": "int"}
+            ]
+        },
+        {
+            "name": "SoilMoisture",
+            "columns": [
+                {"name": "DryTreshold", "type": "int"},
+                {"name": "WetTreshold", "type": "int"},
+                {"name": "Type", "type": "String"}
+            ]
+        }
+    ],
+    "Apis": [
+    ],
+    "Configs": [
+    ],
+    "Modules": {
+        "Buttons": [
+        ],
+        "OLEDLCDs": [
+        ],
+        "Relays": [
+        ],
+        "SoilMoistureSensors": [
+        ]
+    }
+}

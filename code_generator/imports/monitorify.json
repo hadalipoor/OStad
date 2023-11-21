@@ -1,0 +1,447 @@
+{
+    "ProjectName" : "Monitroify",
+    "ProjectPath" : "C:\\Users\\AIVWA 1\\Documents\\Arduino\\libraries\\OStad\\Examples",
+    "Entities" : [
+        {
+            "name": "SensorType",
+            "columns": [
+                {
+                    "name"
+                    : "Title",
+                    "type": "String"
+                },
+                {
+                    "name": "UniqueId",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "ModuleType",
+            "columns": [
+                {
+                    "name": "Title",
+                    "type": "String"
+                },
+                {
+                    "name": "UniqueId",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "Sensor",
+            "columns": [
+                {
+                    "name": "SensorTypeId",
+                    "type": "int"
+                },
+                {
+                    "name": "Title",
+                    "type": "String"
+                },
+                {
+                    "name": "PinNumber",
+                    "type": "int"
+                },
+                {
+                    "name": "UniqueId",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "Module",
+            "columns": [
+                {
+                    "name": "ModuleTypeId",
+                    "type": "int"
+                },
+                {
+                    "name": "Title",
+                    "type": "String"
+                },
+                {
+                    "name": "PinNumber",
+                    "type": "int"
+                },
+                {
+                    "name": "UniqueId",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "ConditionType",
+            "columns": [
+                {
+                    "name": "Name",
+                    "type": "String"
+                },
+                {
+                    "name": "UniqueId",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "ConditionTitle",
+            "columns": [
+                {
+                    "name": "Name",
+                    "type": "String"
+                },
+                {
+                    "name": "SensorTypeId",
+                    "type": "int"
+                },
+                {
+                    "name": "ModuleTypeId",
+                    "type": "int"
+                },
+                {
+                    "name": "TriggerValue",
+                    "type": "float"
+                },
+                {
+                    "name": "OperationType",
+                    "type": "String"
+                },
+                {
+                    "name": "UniqueId",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "Condition",
+            "columns": [
+                {
+                    "name": "ConditionTitleId",
+                    "type": "int"
+                },
+                {
+                    "name": "CustomName",
+                    "type": "String"
+                },
+                {
+                    "name": "isEnable",
+                    "type": "int"
+                },
+                {
+                    "name": "UniqueId",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "Condition_Sensors",
+            "columns": [
+                {
+                    "name": "ConditionId",
+                    "type": "int"
+                },
+                {
+                    "name": "SensorId",
+                    "type": "int"
+                },
+                {
+                    "name": "UniqueId",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "Condition_Modules",
+            "columns": [
+                {
+                    "name": "ConditionId",
+                    "type": "int"
+                },
+                {
+                    "name": "ModuleId",
+                    "type": "int"
+                },
+                {
+                    "name": "UniqueId",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "Schedule",
+            "columns": [
+                {
+                    "name": "ModuleId",
+                    "type": "int"
+                },
+                {
+                    "name": "StartTime",
+                    "type": "DateTime"
+                },
+                {
+                    "name": "EndTime",
+                    "type": "DateTime"
+                },
+                {
+                    "name": "DayOfWeek",
+                    "type": "String"
+                },
+                {
+                    "name": "UniqueId",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "SensorLog",
+            "columns": [
+                {
+                    "name": "SensorId",
+                    "type": "int"
+                },
+                {
+                    "name": "value",
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "name": "ModuleLog",
+            "columns": [
+                {
+                    "name": "ModuleId",
+                    "type": "int"
+                },
+                {
+                    "name": "Status",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "ConditionLog",
+            "columns": [
+                {
+                    "name": "ConditionId",
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "name": "ScheduleLog",
+            "columns": [
+                {
+                    "name": "ScheduleId",
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+
+    "Apis": [
+        {
+            "name": "Greenhouses",
+            "Url": "/greenhouses",
+            "Apis": [
+                {
+                    "ApiName": "SwitchModule",
+                    "EndPoint": "/greenhouses/switch_module",
+                    "Method": "POST",
+                    "Data": {
+                        "module_id": "1",
+                        "status": "on/off"
+                    }
+                },
+                {
+                    "ApiName": "SetCondition",
+                    "EndPoint": "/greenhouses/set_condition",
+                    "Method": "POST",
+                    "Data": {
+                        "greenhouse_id": "1",
+                        "condition_id": "1"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Plants",
+            "Url": "/plants",
+            "Apis": [
+                {
+                    "ApiName": "SetPlantCondition",
+                    "EndPoint": "/plants/set_condition",
+                    "Method": "POST",
+                    "Data": {
+                        "plant_id": "1",
+                        "condition_id": "1"
+                    }
+                },
+                {
+                    "ApiName": "GetPlantLog",
+                    "EndPoint": "/plants/get_log",
+                    "Method": "GET",
+                    "Data": {
+                        "plant_id": "1"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Logs",
+            "Url": "/logs",
+            "Apis": [
+                {
+                    "ApiName": "GetLogsByDateRange",
+                    "EndPoint": "/logs/get_by_date_range",
+                    "Method": "GET",
+                    "Data": {
+                        "start_date": "2023-01-01",
+                        "end_date": "2023-01-31"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Conditions",
+            "Url": "/conditions",
+            "Apis": [
+                {
+                    "ApiName": "GetCurrentConditions",
+                    "EndPoint": "/conditions/get_current",
+                    "Method": "GET",
+                    "Data": {
+                        "greenhouse_id": "1"
+                    }
+                }
+            ]
+        }
+    ],
+
+    "Configs": [
+        {
+            "Key": "system_enable",
+            "DefaultValue": "true",
+            "Comment": "Enables or disables the entire system."
+        },
+        {
+            "Key": "polling_interval",
+            "DefaultValue": "5",
+            "Comment": "Defines the frequency (in seconds) at which sensor data is gathered."
+        },
+        {
+            "Key": "data_aggregation_interval",
+            "DefaultValue": "60",
+            "Comment": "Specifies the time interval (in minutes) for data aggregation."
+        },
+        {
+            "Key": "alert_threshold_temperature",
+            "DefaultValue": "30",
+            "Comment": "Sets the temperature alert threshold (in degrees Celsius)."
+        },
+        {
+            "Key": "alert_threshold_humidity",
+            "DefaultValue": "70",
+            "Comment": "Sets the humidity alert threshold (in percentage)."
+        },
+        {
+            "Key": "alert_threshold_light",
+            "DefaultValue": "800",
+            "Comment": "Sets the light intensity alert threshold (in lux)."
+        },
+        {
+            "Key": "alert_threshold_soil_moisture",
+            "DefaultValue": "40",
+            "Comment": "Sets the soil moisture alert threshold (in percentage)."
+        },
+        {
+            "Key": "SMS_alerts_enable",
+            "DefaultValue": "false",
+            "Comment": "Enables or disables SMS alerts."
+        },
+        {
+            "Key": "SMS_message_temperature",
+            "DefaultValue": "Warning! Temperature is outside of the defined threshold.",
+            "Comment": "Customizable SMS alert message for temperature condition."
+        },
+        {
+            "Key": "SMS_message_humidity",
+            "DefaultValue": "Warning! Humidity is outside of the defined threshold.",
+            "Comment": "Customizable SMS alert message for humidity condition."
+        },
+        {
+            "Key": "SMS_message_light",
+            "DefaultValue": "Warning! Light intensity is outside of the defined threshold.",
+            "Comment": "Customizable SMS alert message for light condition."
+        },
+        {
+            "Key": "SMS_message_soil_moisture",
+            "DefaultValue": "Warning! Soil moisture is outside of the defined threshold.",
+            "Comment": "Customizable SMS alert message for soil moisture condition."
+        },
+        {
+            "Key": "SMS_alerts_number",
+            "DefaultValue": "",
+            "Comment": "Defines the phone number to which SMS alerts are sent."
+        },
+        {
+            "Key": "database_size_limit",
+            "DefaultValue": "1000",
+            "Comment": "Defines the size limit (in MB) of the database."
+        },
+        {
+            "Key": "automatic_updates_enable",
+            "DefaultValue": "true",
+            "Comment": "Enables or disables automatic updates."
+        },
+        {
+            "Key": "automatic_updates_interval",
+            "DefaultValue": "168",
+            "Comment": "Sets the interval (in hours) between automatic updates."
+        },
+        {
+            "Key": "automatic_condition_adjustments_enable",
+            "DefaultValue": "true",
+            "Comment": "Enables or disables automatic adjustments of condition thresholds based on plant needs."
+        }
+    ],
+
+    "Modules": {
+        "Buttons": [
+            {
+                "PinNumber": "0",
+                "Name": "resetButton",
+                "ActiveHigh": "false",
+                "PullUpActive": "false",
+                "ButtonType": "ButtonType::PIN"
+            }
+        ],
+        "OLEDLCDs": [
+            {
+                "Name": "mainLCD",
+                "Address": "0x3C",
+                "Columns": "128",
+                "Rows": "64"
+            }
+        ],
+        "Relays": [
+            {
+                "PinNumber": "0",
+                "Name": "pumpRelay",
+                "NormallyOpen": "true"
+            }
+        ],
+        "SoilMoistureSensors": [
+            {
+                "Name": "soilMoisture",
+                "ConnectionType": "PIN",
+                "NodeId": "1",
+                "SensorPin": "A0",
+                "DryThreshold": "300",
+                "WetThreshold": "700"
+            }
+        ]
+    }
+   
+
+}

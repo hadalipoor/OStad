@@ -1,0 +1,273 @@
+{
+    "ProjectName" : "ElevatorControl",
+    "ProjectPath" : "C:\\Users\\AIVWA 1\\Documents\\Arduino\\libraries\\OStad\\Examples",
+    "Entities" : [
+        {
+            "name": "Floor",
+            "columns": [
+                {
+                    "name": "Name",
+                    "type": "String"
+                },
+                {
+                    "name": "AccessRestrictions",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "Elevator",
+            "columns": [
+                {
+                    "name": "CurrentFloor",
+                    "type": "int"
+                },
+                {
+                    "name": "Status",
+                    "type": "String"
+                },
+                {
+                    "name": "Direction",
+                    "type": "String"
+                },
+                {
+                    "name": "LastMaintenanceDate",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "RequestLog",
+            "columns": [
+                {
+                    "name": "RequestFloor",
+                    "type": "int"
+                },
+                {
+                    "name": "Direction",
+                    "type": "String"
+                },
+                {
+                    "name": "RequestTime",
+                    "type": "String"
+                }
+            ]
+        },
+        {
+            "name": "ElevatorLog",
+            "columns": [
+                {
+                    "name": "Action",
+                    "type": "String"
+                },
+                {
+                    "name": "ActionTime",
+                    "type": "String"
+                }
+            ]
+        }
+    ],
+    "Apis": [
+        {
+            "name": "ElevatorControl",
+            "Url": "/elevatorcontrol",
+            "Apis": [
+                {
+                    "ApiName": "MoveUpManual",
+                    "EndPoint": "/elevatorcontrol/moveupmanual",
+                    "Method": "POST",
+                    "Data": {}
+                },
+                {
+                    "ApiName": "MoveDownManual",
+                    "EndPoint": "/elevatorcontrol/movedownmanual",
+                    "Method": "POST",
+                    "Data": {}
+                },
+                {
+                    "ApiName": "StopManual",
+                    "EndPoint": "/elevatorcontrol/stopmanual",
+                    "Method": "POST",
+                    "Data": {}
+                },
+                {
+                    "ApiName": "FloorRequested",
+                    "EndPoint": "/elevatorcontrol/floorrequested",
+                    "Method": "GET",
+                    "Data": {
+                        "floor": "value"
+                    }
+                },
+                {
+                    "ApiName": "CalibrationRequested",
+                    "EndPoint": "/elevatorcontrol/calibrationrequested",
+                    "Method": "GET",
+                    "Data": {}
+                },
+                {
+                    "ApiName": "EMSStopRequested",
+                    "EndPoint": "/elevatorcontrol/emsstoprequested",
+                    "Method": "GET",
+                    "Data": {}
+                },
+                {
+                    "ApiName": "SetMovementMethod",
+                    "EndPoint": "/elevatorcontrol/setmovementmethod",
+                    "Method": "POST",
+                    "Data": {
+                        "method": "value"
+                    }
+                },
+                {
+                    "ApiName": "GetMovementMethod",
+                    "EndPoint": "/elevatorcontrol/getmovementmethod",
+                    "Method": "GET",
+                    "Data": {}
+                },
+                {
+                    "ApiName": "GetState",
+                    "EndPoint": "/elevatorcontrol/getstate",
+                    "Method": "GET",
+                    "Data": {}
+                }
+            ]
+        }
+    ],
+    "Modules": {
+        "Buttons": [
+            {
+                "PinNumber": "0",
+                "Name": "resetButton",
+                "ActiveHigh": "false",
+                "PullUpActive": "false",
+                "ButtonType": "ButtonType::PIN"
+            },
+            {
+                "PinNumber": "1",
+                "Name": "EMSButton",
+                "ActiveHigh": "true",
+                "PullUpActive": "false",
+                "ButtonType": "ButtonType::PIN"
+            },
+            {
+                "PinNumber": "2",
+                "Name": "floorSensor1",
+                "ActiveHigh": "true",
+                "PullUpActive": "true",
+                "ButtonType": "ButtonType::PIN"
+            },
+            {
+                "PinNumber": "2",
+                "Name": "floorSensor2",
+                "ActiveHigh": "true",
+                "PullUpActive": "true",
+                "ButtonType": "ButtonType::PIN"
+            },
+            {
+                "PinNumber": "2",
+                "Name": "floorSensor3",
+                "ActiveHigh": "true",
+                "PullUpActive": "true",
+                "ButtonType": "ButtonType::PIN"
+            },
+            {
+                "PinNumber": "2",
+                "Name": "floorSensor4",
+                "ActiveHigh": "true",
+                "PullUpActive": "true",
+                "ButtonType": "ButtonType::PIN"
+            }
+        ],
+        "OLEDLCDs": [
+            {
+                "Name": "mainLCD",
+                "Address": "0x3C",
+                "Columns": "128",
+                "Rows": "64"
+            }
+        ],
+        "Relays": [
+            {
+                "PinNumber": "4",
+                "Name": "upRelay",
+                "NormallyOpen": "true"
+            },
+            {
+                "PinNumber": "5",
+                "Name": "downRelay",
+                "NormallyOpen": "true"
+            }
+        ]
+    },
+    "Configs": [
+        {
+            "Key": "elevator_max_capacity",
+            "DefaultValue": "10",
+            "Comment": "Defines the maximum capacity of the elevator."
+        },
+        {
+            "Key": "emergency_button_enabled",
+            "DefaultValue": "true",
+            "Comment": "Enables or disables the emergency stop button."
+        },
+        {
+            "Key": "floor_sensor_interval",
+            "DefaultValue": "5",
+            "Comment": "Defines the frequency (in seconds) at which floor sensor data is gathered."
+        },
+        {
+            "Key": "calibration_sensor_interval",
+            "DefaultValue": "60",
+            "Comment": "Specifies the time interval (in minutes) for calibration sensor check."
+        },
+        {
+            "Key": "parking_floor",
+            "DefaultValue": "1",
+            "Comment": "Defines the floor where the elevator parks when not in use."
+        },
+        {
+            "Key": "wait_time",
+            "DefaultValue": "500",
+            "Comment": "Specifies the time (in milliseconds) the elevator waits at each floor."
+        },
+        {
+            "Key": "relay_start_delay",
+            "DefaultValue": "500",
+            "Comment": "Defines the start delay (in milliseconds) for the relays."
+        },
+        {
+            "Key": "number_of_floors",
+            "DefaultValue": "5",
+            "Comment": "Specifies the total number of floors in the building."
+        },
+        {
+            "Key": "calibration_sensor_position",
+            "DefaultValue": "top",
+            "Comment": "Specifies the position of the calibration sensor (top or bottom)."
+        },
+        {
+            "Key": "admin_phone_number",
+            "DefaultValue": "",
+            "Comment": ""
+        },
+        {
+            "Key": "send_error_data",
+            "DefaultValue": "true",
+            "Comment": ""
+        },
+        {
+            "Key": "calibration_on_startup",
+            "DefaultValue": "false",
+            "Comment": ""
+        },
+        {
+            "Key": "calibration_sensor_with_floor",
+            "DefaultValue": "false",
+            "Comment": ""
+        }
+    ]
+}
+
+
+
+    

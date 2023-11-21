@@ -1,0 +1,117 @@
+body {
+  font-family: 'Tajawal', sans-serif;
+  margin: 0;
+  padding: 0;
+  padding-right: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f0f0f0;
+}
+
+header {
+  width: 100%;
+  height: 60px;
+  background-color: #003366;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+header h1 {
+  font-size: 24px;
+}
+
+header button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+}
+
+main {
+  width: 100%;
+  max-width: 400px; /* adjusting for mobile screen */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+pre {
+  margin-right: 20px;
+  font-size: 1rem;
+}
+
+.settings-button {
+  font-size: 24px; /* adjust size as needed */
+  background: none;
+  border: none;
+  color: white;
+}
+
+#lcdSection {
+  width: 100%;
+  height: 100px; /* size adjusted for actual 16x2 LCD display */
+  background-color: black;
+  color: lime;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background: url(/lcd_bg.jpg) no-repeat center center; 
+  background-size: cover; 
+}
+
+#floorControlSection {
+  width: 75%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.floorButton {
+  border: none;
+    color: black;
+    padding: 15px 0px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    line-height: 70px;
+    background: url(/button.jpg) no-repeat center center;
+    background-size: cover;
+}
+
+#extraControlSection {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+#extraControlSection button {
+  width: 48%; /* accommodate two buttons in a row */
+  height: 60px;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  font-size: 18px;
+}
+
+#calibrationButton {
+  background-color: #00CC00;
+}
+
+#emergencyStopButton {
+  background-color: #FF0000;
+}

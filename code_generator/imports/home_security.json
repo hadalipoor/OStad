@@ -1,0 +1,68 @@
+{
+    "ProjectName" : "HomeSecurity",
+    "ProjectPath" : "C:\\Projects\\Arduino",
+    "Entities" : [
+        {
+            "name": "DoorOpenLog",
+            "columns": [
+                {
+                    "name": "key",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "type": "String"
+                }
+            ]
+        }
+    ],
+    "Apis": [
+        {
+            "name": "DoorControl",
+            "Url": "/doorcontrol",
+            "Apis": [
+                {
+                    "ApiName": "open",
+                    "EndPoint": "/doorcontrol/open",
+                    "Method": "POST",
+                    "Data": {
+                    }
+                }
+            ]
+        }
+    ],
+    "Modules": {
+        "Buttons": [
+            {
+                "PinNumber": "0",
+                "Name": "openDoorButton",
+                "ActiveHigh": "false",
+                "PullUpActive": "false",
+                "ButtonType": "ButtonType::PIN"
+            }
+        ],
+        "Relays": [
+            {
+                "PinNumber": "14",
+                "Name": "DoorRelay",
+                "NormallyOpen": "true"
+            }
+        ]
+    },
+    "Configs": [
+        {
+            "Key": "password",
+            "DefaultValue": "aivwa1402",
+            "Comment": "Defines the maximum capacity of the elevator."
+        },
+        {
+            "Key": "door_active",
+            "DefaultValue": "true",
+            "Comment": "Enables or disables the emergency stop button."
+        }
+    ]
+}
+
+
+
+    

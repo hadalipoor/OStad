@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>کنترل آسانسور</title>
+    <link rel="stylesheet" href="elevator_control.css">
+</head>
+
+<body>
+    <header>
+        <h1>کنترل آسانسور</h1>
+        <button id="settingsButton" class="settings-button">
+          <a href="/elevator_configs.html">⚙️</a>
+        </button>
+        <!-- <img src="logo.jpg" style="height: 10px; width: 10px;"></img> -->
+        
+    </header>
+
+    <main>
+        <div id="lcdSection">
+            <pre id="lcdDisplay"></pre>
+        </div>
+
+        <div id="floorControlSection"></div>
+
+        <div id="extraControlSection">
+            <button id="calibrationButton" onclick="calibrationRequested()">کالیبراسیون</button>
+            <button id="emergencyStopButton" onclick="emsStopRequested()">توقف اضطراری</button>
+        </div>
+    </main>
+</body>
+
+<script src="elevator_control.js"></script>
+</html>

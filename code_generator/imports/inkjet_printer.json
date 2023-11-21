@@ -1,0 +1,267 @@
+{
+    "ProjectName": "InkjetPrinter",
+    "ProjectPath": "C:\\Users\\AIVWA 1\\Documents\\Arduino\\libraries\\OStad\\Examples",
+    "Entities": [
+        {
+            "name": "RecentActivities",
+            "columns": [
+                {
+                    "name": "Title",
+                    "type": "String"
+                }
+            ]
+        }
+    ],
+    "Apis": [
+        {
+            "name": "Printer",
+            "Url": "/printer",
+            "Apis": [
+                {
+                    "ApiName": "getPrinterStatus",
+                    "EndPoint": "/printer/getPrinterStatus",
+                    "Method": "GET",
+                    "Data":{}
+                },            
+                {
+                    "ApiName": "getactiveWiFi",
+                    "EndPoint": "/printer/getactiveWiFi",
+                    "Method": "GET",
+                    "Data":{}
+                },
+                {
+                    "ApiName": "getFrimwareInfo",
+                    "EndPoint": "/printer/getFrimwareInfo",
+                    "Method": "GET",
+                    "Data":{}
+                },
+                {
+                    "ApiName": "getRecentActivity",
+                    "EndPoint": "/printer/getRecentActivity",
+                    "Method": "GET",
+                    "Data": {
+                        "count": "10"
+                    }
+                },
+                {
+                    "ApiName": "getPrinterSettings",
+                    "EndPoint": "/printer/getPrinterSettings",
+                    "Method": "GET",
+                    "Data":{}
+                },
+                {
+                    "ApiName": "setPrinterSettings",
+                    "EndPoint": "/printer/setPrinterSettings",
+                    "Method": "POST",
+                    "Data": {
+                        "setting": "printer_status",
+                        "value": "on"
+                    }
+                },
+                {
+                    "ApiName": "getPrinterInfo",
+                    "EndPoint": "/printer/getPrinterInfo",
+                    "Method": "GET",
+                    "Data":{}
+                }
+            ]},{
+                "name": "Templates",
+                "Url": "/templates",
+                "Apis": [
+                {
+                    "ApiName": "getActiveTemplate",
+                    "EndPoint": "/templates/getActiveTemplate",
+                    "Method": "GET",
+                    "Data":{}
+                },
+                {
+                    "ApiName": "getAllTemplates",
+                    "EndPoint": "/templates/getAllTemplates",
+                    "Method": "GET",
+                    "Data":{}
+                },
+                {
+                    "ApiName": "getTemplateSettings",
+                    "EndPoint": "/templates/getTemplateSettings",
+                    "Method": "GET",
+                    "Data": {
+                        "id": "1"
+                    }
+                },
+                {
+                    "ApiName": "setTemplateSettings",
+                    "EndPoint": "/templates/setTemplateSettings",
+                    "Method": "POST",
+                    "Data": {
+                        "delay_before_print": "2",
+                        "quantity": "1",
+                        "quantity_delay": "5",
+                        "name": "template1",
+                        "repeat_template": "3"
+                    }
+                },
+                {
+                    "ApiName": "exportTemplate",
+                    "EndPoint": "/templates/exportTemplate",
+                    "Method": "GET",
+                    "Data": {
+                        "id": "1"
+                    }
+                },
+                {
+                    "ApiName": "importTemplate",
+                    "EndPoint": "/templates/importTemplate",
+                    "Method": "POST",
+                    "Data":{}
+                },
+                {
+                    "ApiName": "setActiveTemplate",
+                    "EndPoint": "/templates/setActiveTemplate",
+                    "Method": "POST",
+                    "Data": {
+                        "id": "1"
+                    }
+                },
+                {
+                    "ApiName": "saveTemplate",
+                    "EndPoint": "/templates/saveTemplate",
+                    "Method": "POST",
+                    "Data": {
+                        "id": "1",
+                        "data": "{json data}"
+                    }
+                },
+                {
+                    "ApiName": "previewTemplate",
+                    "EndPoint": "/templates/previewTemplate",
+                    "Method": "GET",
+                    "Data": {
+                        "id": "1"
+                    }
+                },
+                {
+                    "ApiName": "loadTemplate",
+                    "EndPoint": "/templates/loadTemplate",
+                    "Method": "GET",
+                    "Data": {
+                        "id": "1"
+                    }
+                }
+            ]
+        }
+    ],
+    "Configs": [
+        {
+            "Key": "active_template",
+            "DefaultValue": "",
+            "Comment": "The status of the printer (on/off)"
+        },
+        {
+            "Key": "printer_status",
+            "DefaultValue": "on",
+            "Comment": "The status of the printer (on/off)"
+        },
+        {
+            "Key": "printer_auto_on",
+            "DefaultValue": "off"
+        },
+        {
+            "Key": "encoder_mode",
+            "DefaultValue": "internal"
+        },
+        {
+            "Key": "printspeed",
+            "DefaultValue": "300",
+            "Comment": "Print speed"
+        },
+        {
+            "Key": "encoder_steps",
+            "DefaultValue": "40"
+        },
+        {
+            "Key": "print_mirror",
+            "DefaultValue": "off"
+        },
+        {
+            "Key": "ink_opacity",
+            "DefaultValue": "3"
+        },
+        {
+            "Key": "login_required",
+            "DefaultValue": "false"
+        },
+        {
+            "Key": "login_username",
+            "DefaultValue": "admin"
+        },
+        {
+            "Key": "login_password",
+            "DefaultValue": "admin"
+        },
+        {
+            "Key": "total_print_count",
+            "DefaultValue": "0"
+        },
+        {
+            "Key": "frimware_version",
+            "DefaultValue": "1.0.0"
+        },
+        {
+            "Key": "frimware_update_date",
+            "DefaultValue": "2023-08-10 12:57:10"
+        },
+        {
+            "Key": "printer_name",
+            "DefaultValue": "AIVWA Industrial Inkjet Printer - Serie H"
+        },
+        {
+            "Key": "printer_serial",
+            "DefaultValue": "0"
+        },
+        {
+            "Key": "repeat_line_print",
+            "DefaultValue": "5"
+        },
+        {
+            "Key": "delay_afte_printhead_enable",
+            "DefaultValue": "1000"
+        },
+        {
+            "Key": "delay_between_lines",
+            "DefaultValue": "1000"
+        },
+        {
+            "Key": "delay_between_left_right",
+            "DefaultValue": "100"
+        },
+        {
+            "Key": "delay_between_documents",
+            "DefaultValue": "500000"
+        }
+    ],
+    "Modules": {
+        "Buttons": [
+            {
+                "PinNumber": "0",
+                "Name": "resetButton",
+                "ActiveHigh": "false",
+                "PullUpActive": "false",
+                "ButtonType": "ButtonType::PIN"
+            }
+        ],
+        "OLEDLCDs": [
+            {
+                "Name": "mainLCD",
+                "Address": "0x3C",
+                "Columns": "128",
+                "Rows": "64"
+            }
+        ],
+        "Relays": [
+            
+        ],
+        "SoilMoistureSensors": [
+            
+        ]
+    }
+}
