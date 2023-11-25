@@ -1,4 +1,4 @@
-OStad Boilerplate for ESP32 Arduino
+#OStad Boilerplate for ESP32 Arduino
 
 **OStad Boilerplate** is a comprehensive Arduino library specifically designed for the ESP32 platform, aimed at simplifying and enhancing the development of IoT applications and web server capabilities. This library is a robust solution for developers, ranging from beginners to advanced, looking to leverage the ESP32's potential in IoT projects. Below are the key aspects based on your concerns and the code capabilities:
 
