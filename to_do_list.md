@@ -16,6 +16,9 @@
 - create logo for OStad
 - add OStad Name and Logo to /files
 - documention
+- wifi html
+- main page html
+- rename all EBP in class names
 - public publishment on GitHub 
 
      *************************************************************************

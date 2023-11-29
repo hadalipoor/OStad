@@ -2,19 +2,21 @@
 #define OSTAD_H
 
 #include <Arduino.h>
-#include <PCF8574.h>
 #include "Context.h"
 #include "Config/Configs.h"
 #include "Logging/Log.h"
 #include "ErrorHandler/ErrorHandler.h"
 #include "Validation/Validation.h"
-#ifdef OSTAD_NETWORK_ENABLE
+#ifndef OSTAD_NETWORK_DISABLE
 #include "NetworkManager/Network.h"
 #include "Security/Security.h"
 #endif
 #include "Clock/Clock.h"
 #include "FileManager/EBPFile.h"
+#ifndef OSTAD_MODULES_DISABLE
+#include <PCF8574.h>
 #include "ModuleManager/Modules.h"
+#endif
 #include "SystemMonitor/SystemMonitor.h"
 #include "DatabaseSeeder.h"
 
@@ -29,9 +31,11 @@ private:
     Clock* _clock;
     EBPFile* ebpLittleFS;
     EBPFile* ebpSD;
+#ifndef OSTAD_MODULES_DISABLE
     Modules* modules;
+#endif
     SystemMonitor* systemMonitor;
-#ifdef OSTAD_NETWORK_ENABLE
+#ifndef OSTAD_NETWORK_DISABLE
     Network* network;
     Security* security;
     CertificateData _certificateData;
@@ -41,7 +45,7 @@ private:
 
 public:
     OStad(StorageType storageType);
-#ifdef OSTAD_NETWORK_ENABLE
+#ifndef OSTAD_NETWORK_DISABLE
     OStad(StorageType storageType, CertificateData certificateDate);
 #endif
     ~OStad();
@@ -52,7 +56,7 @@ public:
     DatabaseSeeder* dbSeeder;
 };
 
-#ifdef OSTAD_NETWORK_ENABLE
+#ifndef OSTAD_NETWORK_DISABLE
 OStad::OStad(StorageType _storageType ,CertificateData certificateData) :  _certificateData(certificateData)
 {
     _https_enabled = true;
@@ -85,7 +89,7 @@ void OStad::initialize() {
     _clock = new Clock(context);
     ebpLittleFS = new EBPFile(context, StorageType::SPIFFS_TYPE);
     ebpSD = new EBPFile(context, StorageType::SD_TYPE);
-#ifdef OSTAD_NETWORK_ENABLE
+#ifndef OSTAD_NETWORK_DISABLE
     if (_https_enabled)
     {
         network = new Network(context, _certificateData);
@@ -96,7 +100,9 @@ void OStad::initialize() {
     }
     security = new Security(context);
 #endif
+#ifndef OSTAD_MODULES_DISABLE
     modules = new Modules(context);
+#endif
     systemMonitor = new SystemMonitor();
     
 
@@ -107,11 +113,13 @@ void OStad::initialize() {
     context->setClock(_clock);
     context->setLittleFS(ebpLittleFS);
     context->setSD(ebpSD);
-#ifdef OSTAD_NETWORK_ENABLE
+#ifndef OSTAD_NETWORK_DISABLE
     context->setNetwork(network);
     context->setSecurity(security);
 #endif
+#ifndef OSTAD_MODULES_DISABLE
     context->setModules(modules);
+#endif
     context->setSystemMonitor(systemMonitor);
     
     ebpLittleFS->createDirectory("/db/");
@@ -119,9 +127,11 @@ void OStad::initialize() {
     configs->initialize();
     _clock->initialize();
     logger->initialize();
+#ifndef OSTAD_MODULES_DISABLE
     modules->initialize();
+#endif
     
-#ifdef OSTAD_NETWORK_ENABLE
+#ifndef OSTAD_NETWORK_DISABLE
     network->initialize();
     _clock->syncTimeWithServer();
     security->initialize();
@@ -138,13 +148,13 @@ void OStad::initialize() {
 
 void OStad::begin()
 {
-#ifdef OSTAD_NETWORK_ENABLE
+#ifndef OSTAD_NETWORK_DISABLE
     network->begin();
 #endif
 }
 
 void OStad::update() {
-#ifdef OSTAD_NETWORK_ENABLE
+#ifndef OSTAD_NETWORK_DISABLE
     network->update();
 #endif
 }

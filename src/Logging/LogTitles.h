@@ -37,6 +37,7 @@ public:
     static const String SIM800_MESSAGE_RECIEVED;
 //MODULE_NOT_FOUND_IN_DB 
 
+    static const String USER_LOGS;
 
 };
 
@@ -58,6 +59,7 @@ const String LogTitles::SYSTEM_BOOT = "system_boot";
 const String LogTitles::SYSTEM_REBOOT = "system_reboot";
 const String LogTitles::_INFO_CHANGE = "_info_save";
 const String LogTitles::SYSTEM_CLOCK = "system_clock";
+const String LogTitles::USER_LOGS = "user_logs";
 
 const String LogTitles::BUTTON_LONG_PRESS = "button_long_press";
 const String LogTitles::BUTTON_CLICK = "button_click";
