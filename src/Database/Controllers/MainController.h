@@ -12,20 +12,36 @@
 template<typename T>
 class MainController : public IController<T> {
 private:
-public:
     Context* context;
+public:
+    StorageType _storageType;
     String path;
     String _tableName;
-    StorageType _storageType;
 
-    MainController(Context* context, String tableName, StorageType _storageType) : context(context), _storageType(_storageType){
-        _tableName = tableName;
-        path = String(StaticConfigs::DATABASE_PATH + _tableName + ".db");
-    }
+    MainController(Context* context, String tableName, StorageType _storageType);
+    void RemoveTable();
+    void removeColumn(const String column_name);
+    int Add(T& entity);
+    bool Update(T& entity);
+    bool Delete(int id);
+    T GetById(int id);
+    std::vector<T> GetAll();
+    String GetAllJson();
+    String GetJson(String query);
+    std::vector<T> Get(const char* format, ...);
+    std::vector<T> Get(const String query);
 
 
+};
 
-void RemoveTable()
+template<typename T>
+MainController<T>::MainController(Context* context, String tableName, StorageType _storageType) : context(context), _storageType(_storageType){
+  _tableName = tableName;
+  path = String(StaticConfigs::DATABASE_PATH + _tableName + ".db");
+}
+
+template<typename T>
+void MainController<T>::RemoveTable()
 {
   if (!(_storageType == StorageType::SPIFFS_TYPE ? context->getLittleFS() : context->getSD())->exists(path)) {
         context->getErrorHandler()->handleError(ErrorType::TableDoesNotExist);
@@ -36,7 +52,8 @@ void RemoveTable()
 }
 
 
-void removeColumn(const String column_name) {
+template<typename T>
+void MainController<T>::removeColumn(const String column_name) {
     if (!context->getValidation()->isColumnNameValid(column_name)) {
         context->getErrorHandler()->handleError(ErrorType::InvalidColumnName);
         return;
@@ -56,7 +73,8 @@ void removeColumn(const String column_name) {
 }
 
 
-int Add(T& entity) {
+template<typename T>
+int MainController<T>::Add(T& entity) {
 
   int entity_id = -1;
     T e{};
@@ -92,7 +110,8 @@ int Add(T& entity) {
 }
 
 
-bool Update(T& entity) {
+template<typename T>
+bool MainController<T>::Update(T& entity) {
     // T e = entity.toEntity();
     std::vector<T> entities = GetAll();
     bool entity_found = false;
@@ -120,7 +139,8 @@ bool Update(T& entity) {
 }
 
 
-bool Delete(int id) {
+template<typename T>
+bool MainController<T>::Delete(int id) {
     std::vector<T> entities = GetAll();
     bool entity_found = false;
     for (size_t i = 0; i < entities.size(); i++) {
@@ -146,7 +166,8 @@ bool Delete(int id) {
 }
 
 
-T GetById(int id) {
+template<typename T>
+T MainController<T>::GetById(int id) {
     IEBPFile* file = (_storageType == StorageType::SPIFFS_TYPE ? context->getLittleFS() : context->getSD())->open(path, "r");
     if (!file) {
         context->getErrorHandler()->handleError(ErrorType::FileOpenError);
@@ -167,7 +188,8 @@ T GetById(int id) {
     return T::fromEntity(T::Invalid());
 }
 
-std::vector<T> GetAll() {
+template<typename T>
+std::vector<T> MainController<T>::GetAll() {
     std::vector<T> entities;
   if(_storageType == StorageType::SPIFFS_TYPE)
   {
@@ -199,7 +221,8 @@ std::vector<T> GetAll() {
 }
 
 
-String GetAllJson() {
+template<typename T>
+String MainController<T>::GetAllJson() {
     std::vector<T> entities = GetAll();
     String result = "[";
     for (size_t i = 0; i < entities.size(); i++) {
@@ -213,7 +236,8 @@ String GetAllJson() {
 }
 
 
-String GetJson(String query) {
+template<typename T>
+String MainController<T>::GetJson(String query) {
     std::vector<T> entities = Get(query);
     String result = "[";
     for (size_t i = 0; i < entities.size(); i++) {
@@ -226,7 +250,8 @@ String GetJson(String query) {
     return result;
 }
 
-std::vector<T> Get(const char* format, ...) {
+template<typename T>
+std::vector<T> MainController<T>::Get(const char* format, ...) {
     std::vector<T> entities;
 
     // Buffer to store the formatted string
@@ -242,7 +267,8 @@ std::vector<T> Get(const char* format, ...) {
     return Get(String(query));
 }
 
-std::vector<T> Get(const String query) {
+template<typename T>
+std::vector<T> MainController<T>::Get(const String query) {
 
   std::vector<T> entities;
   if (_storageType == StorageType::SPIFFS_TYPE)
@@ -265,6 +291,7 @@ std::vector<T> Get(const String query) {
     context->getErrorHandler()->handleError(ErrorType::FileOpenError);
     return entities;
   }
+
   while (file->available()) {
     String str = file->readStringUntil('\n');
     T entity{};
@@ -327,5 +354,5 @@ std::vector<T> Get(const String query) {
   file->close();
   return entities;
 }
-};
+
 #endif
