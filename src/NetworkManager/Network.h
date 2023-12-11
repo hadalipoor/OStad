@@ -45,6 +45,10 @@ private:
     CertificateData _certificateData;
     static void serverTask(ServerTaskParams* params);
     static void serverTaskWrapper(void *params);
+    bool isFormatValid(String input);
+    bool isNumberOrAsterisk(String segment);
+    String inputString = "";     // a string to hold incoming data
+    bool stringComplete = false; // whether the string is complete
 
 public:
     Network(Context* context);
@@ -142,7 +146,7 @@ void Network::addApis(std::vector<ApiInterface*> apis)
   for (size_t i = 0; i < apis.size(); i++)
   {
     ApiInterface* api = apis.at(i);
-    receive.registerClass(String(api->getClassPath().c_str()), api);
+    receive.registerClass(String(api->getClassPath().c_str()).substring(1), api);
   } 
 }
 
@@ -197,6 +201,8 @@ void Network::serverTask(ServerTaskParams* params) {
 }
 
 void Network::initialize() {
+  inputString.reserve(200); // reserve 200 bytes for the inputString:
+
   context->getLogger()->log(LogLevel::DEBUG_LEVEL, LogTitles::SYSTEM_BOOT, "Initializing Network ...");
 
   // meshManager = new MeshNetworkManager(*context);
@@ -247,6 +253,29 @@ void Network::initialize() {
 }
 
 void Network::update() {
+  // Read new bytes (if any) from the serial port:
+  while (Serial.available()) {
+    char inChar = (char)Serial.read(); // Get the new byte
+
+    // If the incoming character is a newline, set a flag
+    // so the main loop can do something about it:
+    if (inChar == '\n') {
+      stringComplete = true;
+    }else{
+      inputString += inChar;             // Add it to the inputString
+    }
+  }
+  if (stringComplete) {
+    if (isFormatValid(String(inputString)))
+    {
+      Serial.println(getReceive()->receiveMessage(String(inputString).substring(5)));
+    }
+    
+    // clear the string:
+    inputString = "";
+    stringComplete = false;
+  }
+
   // meshManager->loop();  
     // syncDatabaseLoop();
 }
@@ -261,4 +290,45 @@ IWiFiManager* Network::getWiFiManager()
   return wiFiManager;
 }
 
+bool Network::isFormatValid(String input) {
+    // Check if the string starts with "call "
+    if (!input.startsWith("call ")) {
+      Serial.print("1");Serial.print(input);
+        return false;
+    }
+
+    // Remove "call " from the string
+    String data = input.substring(5);
+
+    // Split the string by '/'
+    int firstSlash = data.indexOf('/');
+    int secondSlash = data.lastIndexOf('/');
+
+    // Check if both slashes are found and are not at the start or end of the string
+    if (firstSlash == -1 || secondSlash == -1 || firstSlash == 0 || secondSlash == data.length() - 1 || firstSlash == secondSlash) {
+      Serial.print("2");
+        return false;
+    }
+
+    // Extract the segments
+    String segment1 = data.substring(0, firstSlash);
+    String segment2 = data.substring(firstSlash + 1, secondSlash);
+    String segment3 = data.substring(secondSlash + 1);
+
+    // Check if each segment is either a number or a '*'
+    return (isNumberOrAsterisk(segment1));
+}
+
+bool Network::isNumberOrAsterisk(String segment) {
+    if (segment == "*") {
+        return true;
+    }
+    for (char c : segment) {
+        if (!isDigit(c)) {
+      Serial.print("3");
+            return false;
+        }
+    }
+    return true;
+}
 #endif

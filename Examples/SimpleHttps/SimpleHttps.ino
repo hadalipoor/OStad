@@ -13,7 +13,7 @@ void setup()
 {
     Serial.begin(115200);
     LittleFS.begin(true);
-    
+
     // CertificateData certificateData;
     // certificateData.certificate = const_cast<unsigned char*>(certificate);
     // certificateData.privatekey = const_cast<unsigned char*>(private_key);
@@ -33,9 +33,13 @@ void setup()
     ostad->getContext()->getNetwork()->addApi(new ResourceNode("/testapi", LambdaResourceNode::REQUEST_METHOD_POST, [&](HTTPRequest * req, HTTPResponse * res) {
         response(res, "Hello World");
     }));
+
+    String result = ostad->getContext()->getNetwork()->getReceive()->receiveMessage("0/systemConfig/getAll");
+    Serial.println(result);
 }
 
 void loop()
 {
     ostad->update();
+    // print the string when a newline arrives:
 }

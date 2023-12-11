@@ -11,6 +11,7 @@ private:
 
 public:
     void registerClass(String className, ApiInterface* classInstance) {
+        Serial.println(className);
         classes[className] = classInstance;
     }
 

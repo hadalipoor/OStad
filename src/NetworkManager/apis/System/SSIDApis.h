@@ -127,20 +127,20 @@ String SSIDApis::getClassPath()
 
 
 String SSIDApis::callFunction(String functionName, std::map<String, String> parameters) {
-  if (functionName == "handleCreate") {
+  if (functionName == "create") {
       handleCreate(parameters["ssid"], parameters["password"]);
       return "OK";
-  } else if (functionName == "handleUpdate") {
+  } else if (functionName == "update") {
       handleUpdate(parameters["id"].toInt(), parameters["ssid"], parameters["password"]);
       return "OK";
-  } else if (functionName == "handleDelete") {
+  } else if (functionName == "delete") {
       handleDelete(parameters["id"].toInt());
       return "OK";
-  } else if (functionName == "handleGet") {
+  } else if (functionName == "get") {
       return handleGet(parameters["query"]);
-  } else if (functionName == "handleGetById") {
+  } else if (functionName == "getById") {
       return handleGetById(parameters["id"].toInt());
-  } else if (functionName == "handleGetAll") {
+  } else if (functionName == "getAll") {
       return handleGetAll();
   } else {
       return "Error: The function doesn't exist";

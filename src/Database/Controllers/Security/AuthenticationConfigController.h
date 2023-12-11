@@ -3,12 +3,12 @@
 #define AUTHENTICATIONCONFIGCONTROLLER_H
 
 #include "../../Entities/KeyValueEntity.h"
-#include "../../../Context.h"
+#include "../MainController.h"
 
 class AuthenticationConfigController : public MainController<KeyValueEntity>{
 protected:
-public:
     Context* context;
+public:
     AuthenticationConfigController(Context* context, StorageType _storageType) : MainController<KeyValueEntity>(context ,"authentication_config", _storageType), context(context) {}
 
 };

@@ -148,22 +148,22 @@ String SoilMoistureApis::handleget(String query) {
 
 String SoilMoistureApis::callFunction(String functionName, std::map<String, String> parameters) {
     
-    if (functionName == "handlecreate") {
+    if (functionName == "create") {
         return handlecreate(parameters["DryTreshold"].toInt(), parameters["WetTreshold"].toInt(), parameters["Type"]);
     }
-    if (functionName == "handleupdate") {
+    if (functionName == "update") {
         return handleupdate(parameters["id"].toInt(), parameters["DryTreshold"].toInt(), parameters["WetTreshold"].toInt(), parameters["Type"]);
     }
-    if (functionName == "handledelete") {
+    if (functionName == "delete") {
         return handledelete(parameters["id"].toInt());
     }
-    if (functionName == "handlegetAll") {
+    if (functionName == "getAll") {
         return handlegetAll();
     }
-    if (functionName == "handlegetById") {
+    if (functionName == "getById") {
         return handlegetById(parameters["id"].toInt());
     }
-    if (functionName == "handleget") {
+    if (functionName == "get") {
         return handleget(parameters["query"]);
     }
     return String(NO_FUNCTION_MESSAGE + functionName);

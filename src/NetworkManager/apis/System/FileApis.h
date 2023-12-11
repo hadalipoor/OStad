@@ -312,23 +312,23 @@ String FileApis::getClassPath()
 String FileApis::callFunction(String functionName, std::map<String, String> parameters) {
     StorageType _storageType = EBPFile::getStorageType(parameters["storage_type"]);
 
-    if (functionName == "handleBrowseFolder") {
+    if (functionName == "browse_folder") {
         return handleBrowseFolder(parameters["path"], parameters["offset"].toInt(), parameters["count"].toInt(), _storageType);
-    } else if (functionName == "handleOpen") {
+    } else if (functionName == "open") {
         return handleOpen(parameters["path"], parameters["mod"], _storageType);
-    } else if (functionName == "handleDelete") {
+    } else if (functionName == "delete") {
         return handleDelete(parameters["path"], _storageType);
-    } else if (functionName == "handleWrite") {
+    } else if (functionName == "write") {
         return handleWrite(parameters["path"], parameters["content"], _storageType);
-    } else if (functionName == "handleFormat") {
+    } else if (functionName == "format") {
         return handleFormat(_storageType);
-    } else if (functionName == "handleRename") {
+    } else if (functionName == "rename") {
         return handleRename(parameters["path"], parameters["new_name"], _storageType);
-    } else if (functionName == "handleMove") {
+    } else if (functionName == "move") {
         return handleMove(parameters["source_path"], parameters["destination_path"], _storageType);
-    } else if (functionName == "handleCopy") {
+    } else if (functionName == "copy") {
         return handleCopy(parameters["source_path"], parameters["destination_path"], _storageType);
-    } else if (functionName == "handleDuplicate") {
+    } else if (functionName == "duplicate") {
         return handleDuplicate(parameters["path"], _storageType);
     } else {
         return "Error: The function doesn't exist";

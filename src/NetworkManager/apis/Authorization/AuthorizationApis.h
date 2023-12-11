@@ -14,6 +14,7 @@
 #include "TwoFactorAuthApis.h"
 #include "AccountActivityLogApis.h"
 #include "AuthenticationApis.h"
+#include "AuthorizationConfigApis.h"
 
 
 void createAuthorizationApis(Context* context)
@@ -49,6 +50,10 @@ void createAuthorizationApis(Context* context)
     
     AuthenticationApis* authenticationApis = new AuthenticationApis(context, true);
     apis.push_back(authenticationApis);
+
+    AuthenticatioConfigApis* authenticatioConfigApis = new AuthenticatioConfigApis(context, true);
+    apis.push_back(authenticatioConfigApis);
+
     
     // TwoFactorAuthApis* twofactorauthApis = new TwoFactorAuthApis(context, true);
     // apis.push_back(twofactorauthApis);
