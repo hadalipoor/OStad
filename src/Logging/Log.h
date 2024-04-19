@@ -200,6 +200,7 @@ void Log::initialize(){
     infoCallback = nullptr;
     warningCallback = nullptr;
     errorCallback = nullptr;
+    Serial.println("GetLogger Starting");
 }
 
 /**

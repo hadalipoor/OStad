@@ -12,26 +12,30 @@
 - certificate generator - Done
 - generator check json format - Done
 - clean directory and rename to OStad - Done
-- add authorization apis to postman generated import file 
-- create logo for OStad
+- capability to access apis via serial monitor - Done
+- add authorization apis to postman generated import file - Done
+- clock module test - Done
+- Device Manager
+- add config for serial apis enable or disable
+- check entity names with existings, befor genrate entity
+- create logo for OStad 
 - add OStad Name and Logo to /files
+- change date data type in db to Hex String for less storage
 - documention
 - wifi html
 - main page html
 - rename all EBP in class names
 - public publishment on GitHub 
+- faster ssl certificate proccess
 
      *************************************************************************
-- clock module test
 - timezone for clock
-- buy OStad.Wiki domain
+- buy OStad.Wiki domain 
 - system monitor apis
+- Debugger
 - add tester to library
 - add logo to first page
-- capability to access apis via serial monitor
-- add config for serial apis enable or disable
 - complete authorization
-- faster ssl certificate proccess
 - remove HTTPS DEBUG messages from Serial Monitor
 - network settings(static IP, DNS, ...)
 - file.html upload many files

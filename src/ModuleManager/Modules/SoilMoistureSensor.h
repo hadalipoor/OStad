@@ -1,11 +1,11 @@
 #ifndef SOILMOISTURE_H
 #define SOILMOISTURE_H
 
-#include "ISoilMoistureSensor.h"
 #include <string>
 #include "ModuleTypes.h"
+#include "../../Database/Entities/Modules/SoilMoistureFullEntity.h"
 
-class SoilMoistureSensor : public ISoilMoistureSensor {
+class SoilMoistureSensor {
 private:
   String name;
   String connectionType;
@@ -18,50 +18,50 @@ public:
   SoilMoistureSensor(String name, String connectionType, int nodeId, int sensorPin, int dryThreshold, int wetThreshold)
     : name(name), connectionType(connectionType), nodeId(nodeId), sensorPin(sensorPin), dryThreshold(dryThreshold), wetThreshold(wetThreshold) {}
 
-  void initialize() override {
+  void initialize() {
     pinMode(sensorPin, INPUT);
   }
 
-  int readMoisture() override {
+  int readMoisture() {
     int moisture = analogRead(sensorPin);
     return moisture;
   }
 
-  bool isDry() override {
+  bool isDry() {
     int moisture = readMoisture();
     return moisture <= dryThreshold;
   }
 
-  bool isWet() override {
+  bool isWet() {
     int moisture = readMoisture();
     return moisture >= wetThreshold;
   }
 
-  String getName() override {
+  String getName() {
     return name;
   }
 
-  String getConnectionType() override {
+  String getConnectionType() {
     return connectionType;
   }
 
-  int getNodeId() override {
+  int getNodeId() {
     return nodeId;
   }
 
-  int getSensorPin() override {
+  int getSensorPin() {
     return sensorPin;
   }
 
-  int getDryThreshold() override {
+  int getDryThreshold() {
     return dryThreshold;
   }
 
-  int getWetThreshold() override {
+  int getWetThreshold() {
     return wetThreshold;
   }
 
-  SoilMoistureFullEntity* getEntity() override
+  SoilMoistureFullEntity* getEntity()
   {
     SoilMoistureFullEntity *soilMoistureEntity = new SoilMoistureFullEntity(0, 0, name, ModuleTypes::SOILMOISTURE, connectionType, nodeId, sensorPin,  dryThreshold, wetThreshold, "Analog");
     return soilMoistureEntity;

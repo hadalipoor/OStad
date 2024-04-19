@@ -10,6 +10,10 @@
 #include "../../Entities/Modules/RelayEntity.h"
 #include "RelayController.h"
 
+#include "../../Entities/Modules/RFIDFullEntity.h"
+#include "../../Entities/Modules/RFIDEntity.h"
+#include "RFIDController.h"
+
 #include "../../Entities/Modules/LCDFullEntity.h"
 #include "../../Entities/Modules/LCDEntity.h"
 #include "LCDController.h"
@@ -43,6 +47,8 @@ class ModulesController : public MainController<ModuleEntity> {
         int AddButton(ButtonFullEntity button);
         std::vector<RelayFullEntity> getAllRelays();
         int AddRelay(RelayFullEntity relay);
+        std::vector<RFIDFullEntity> getAllRFIDs();
+        int AddRFID(RFIDFullEntity relay);
         std::vector<LCDFullEntity> getAllLCDs();
         int AddLCD(LCDFullEntity lcd);
         std::vector<DHTFullEntity> getAllDHTs();
@@ -138,6 +144,28 @@ std::vector<RelayFullEntity> ModulesController::getAllRelays()
     }
     return relays;
 }
+std::vector<RFIDFullEntity> ModulesController::getAllRFIDs()
+{
+    RFIDController rfidController = RFIDController(context, _storageType);
+    std::vector<RFIDFullEntity> rfids;
+    std::vector<ModuleEntity> modules = GetAll();
+    for (size_t i = 0; i < modules.size(); i++)
+    {
+        ModuleEntity _module;
+        _module.fromString(modules.at(i).toString());
+        if (_module.GetValue(ModuleEntity::COLUMN_MODULE_TYPE) == ModuleTypes::RFIDPN532 || _module.GetValue(ModuleEntity::COLUMN_MODULE_TYPE) == ModuleTypes::RFID125KH)
+        {
+            RFIDEntity _rfid;
+            _rfid.fromString(rfidController.Get(String(RFIDEntity::COLUMN_MODULE_ID + "=" + _module.id)).at(0).toString());
+
+            RFIDFullEntity fullRFID = RFIDFullEntity(_rfid.id, _module.id, _module.GetValue(ModuleEntity::COLUMN_NAME), 
+                _module.GetValue(ModuleEntity::COLUMN_MODULE_TYPE), _module.GetValue(ModuleEntity::COLUMN_CONNECTION_TYPE), 
+                _module.GetValue(ModuleEntity::COLUMN_NODE_ID).toInt(), _module.GetValue(ModuleEntity::COLUMN_PIN_NUMBER).toInt());
+            rfids.push_back(fullRFID);
+        }        
+    }
+    return rfids;
+}
 std::vector<LCDFullEntity> ModulesController::getAllLCDs()
 {
     LCDController lcdController = LCDController(context, _storageType);
@@ -231,6 +259,16 @@ int ModulesController::AddRelay(RelayFullEntity relay)
     RelayController *relayController = new RelayController(context, _storageType);
 
     return relayController->Add(*_relay);
+}
+
+int ModulesController::AddRFID(RFIDFullEntity rfid)
+{
+    ModuleEntity *_module = new ModuleEntity(rfid.ModuleId, rfid.Name, rfid.ModuleType, rfid.ConnectionType, rfid.NodeId, rfid.PinNumber0);
+    int _moduleId = Add(*_module);
+    RFIDEntity *_rfid = new RFIDEntity(_moduleId, rfid.PinNumber1);
+    RFIDController *rfidController = new RFIDController(context, _storageType);
+
+    return rfidController->Add(*_rfid);
 }
 
 int ModulesController::AddLCD(LCDFullEntity lcd)

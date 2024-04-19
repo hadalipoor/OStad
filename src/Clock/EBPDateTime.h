@@ -8,7 +8,7 @@ class EBPDateTime : public DateTime {
 public:
     EBPDateTime();
     EBPDateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour = 0, uint8_t min = 0, uint8_t sec = 0);
-    EBPDateTime(const DateTime& dt);
+    EBPDateTime(DateTime dt);
     EBPDateTime(String datestring);
 
     bool isNull(); 
@@ -32,7 +32,10 @@ EBPDateTime::EBPDateTime() : DateTime(2000, 1, 1, 0, 0, 0) {}
 EBPDateTime::EBPDateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec)
     : DateTime(year, month, day, hour, min, sec) {}
 
-EBPDateTime::EBPDateTime(const DateTime& dt) : DateTime(dt) {}
+EBPDateTime::EBPDateTime(DateTime dt) : DateTime(dt.year(), dt.month(), dt.day(), dt.hour(), dt.minute(), dt.second()) 
+{
+    
+}
 
 EBPDateTime::EBPDateTime(String datestring) 
 {
@@ -78,9 +81,9 @@ void EBPDateTime::fromString(String strDateTime) {
     int day = strDateTime.substring(8, 10).toInt();
 
     // Extract and convert hour, minute, and second from the string
-    int hour = strDateTime.substring(13, 15).toInt();
-    int minute = strDateTime.substring(16, 18).toInt();
-    int second = strDateTime.substring(19, 20).toInt();
+    int hour = strDateTime.substring(11, 13).toInt();
+    int minute = strDateTime.substring(14, 16).toInt();
+    int second = strDateTime.substring(17, 19).toInt();
 
     // Assign the newly created DateTime object to this
     *this = EBPDateTime(year, month, day, hour, minute, second);
@@ -93,7 +96,7 @@ String EBPDateTime::toDateTimeString() {
         (hour() < 10 ? "0" : "") + String(hour()) + ":" +
         (minute() < 10 ? "0" : "") + String(minute()) + ":" +
         (second() < 10 ? "0" : "") + String(second());
-  return strDateAndTime;
+    return strDateAndTime;
 }
 
 String EBPDateTime::toDateString() {

@@ -358,6 +358,7 @@ void FileApis::handleRoot(HTTPResponse* res)
     if (fileExists)
     {
         DownloadFile(res, _path, "text/html", storageType);
+        return;
     }
     
     _path = "/files.html";

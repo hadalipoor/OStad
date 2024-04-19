@@ -39,15 +39,15 @@ public:
 
 Runtime::Runtime()
 {
-    // CertificateData certificateData;
-    // certificateData.certificate = const_cast<unsigned char*>(certificate);
-    // certificateData.privatekey = const_cast<unsigned char*>(private_key);
-    // certificateData.certificate_length = sizeof(certificate);
-    // certificateData.privateky_length = sizeof(private_key);
+    CertificateData certificateData;
+    certificateData.certificate = const_cast<unsigned char*>(certificate);
+    certificateData.privatekey = const_cast<unsigned char*>(private_key);
+    certificateData.certificate_length = sizeof(certificate);
+    certificateData.privateky_length = sizeof(private_key);
 
-    // ostad = new OStad(StorageType::SPIFFS_TYPE, certificateData);
+    ostad = new OStad(StorageType::SPIFFS_TYPE, certificateData);
     // If you want to use HTTPS on ESP32 server, add certificate and private_key and uncomment above code and comment below line
-    ostad = new OStad(StorageType::SPIFFS_TYPE);
+    // ostad = new OStad(StorageType::SPIFFS_TYPE);
 
     
     systemContext = ostad->getContext();

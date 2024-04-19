@@ -13,7 +13,7 @@
         "type": "git",
         "url": "https://github.com/HadAlipoor/OStad.git"
     },
-    "version": "1.0.4",
+    "version": "1.0.9",
     "license": "MIT license",
     "homepage": "OStad.Wiki",
     "frameworks": "arduino",

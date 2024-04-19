@@ -1,0 +1,32 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Menu Example</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="menu-container">
+        <button id="menu-toggle" class="menu-toggle">☰</button>
+        <ul id="menu" class="menu">
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="guests.html">Guests</a></li>
+            <li><a href="doorlog.html">Door Log</a></li>
+        </ul>
+    </div>
+    
+    <div class="action-buttons">    
+        <button id="openDoorBtn" onclick="openDoor()" class="light-toggle">Open Door</button>
+        <p></p>
+
+        <button id="gardenLightToggle" onclick="toggleGardenLight()" class="light-toggle">Garden Light</button>
+        <button id="yardLightToggle" onclick="toggleYardLight()" class="light-toggle">Yard Light</button>
+    </div>
+
+
+    <script src="main.js"></script>
+</body>
+</html>

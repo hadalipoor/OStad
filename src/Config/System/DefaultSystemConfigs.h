@@ -30,6 +30,8 @@ const String DefaultSystemConfigs::jsonString = R"(
 {
     "db_change_info_save" : "false",
     "system_boot_info_save" : "true",
+    "clock_type" : "Internal",
+    "sync_clock" : "false",
     "relay_state_changed_info_save" : "true",
     "wifi_mode_mesh" : "false",
     "wifi_mode_ap" : "true",
@@ -40,13 +42,17 @@ const String DefaultSystemConfigs::jsonString = R"(
     "ssid_hidden" : "false",
     "max_connection" : "6",
     "mesh_root" : "false",
-    "clock_type" : "DS3231",
     "storage_type" : "SPIFFS_TYPE",
     "sd_pin" : "26",
     "https_enable" : "true",
     "default_username" : "admin",
     "default_password" : "admin",
-    "serial_print_enable" : "true"
+    "serial_print_enable" : "true",
+    "default_ip": "",
+    "default_gateway": "",
+    "default_subnet": "",
+    "default_primaryDNS": "",
+    "default_secondaryDNS": ""
 }
 )";
 

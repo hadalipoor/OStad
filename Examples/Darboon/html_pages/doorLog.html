@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Door Log</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sidebar" id="sidebarMenu">
+        <a href="index.html">Dashboard</a>
+        <a href="guests.html">Guest List</a>
+        <a href="doorLog.html" class="active">Door Log</a>
+        <a href="settings.html">Settings</a>
+    </div>
+
+    <div class="main-content">
+        <h1>Door Log</h1>
+        <div class="door-log">
+            <!-- Example Log Entry -->
+            <div class="log-item">
+                <div class="log-info">
+                    <strong>Guest Name:</strong> Leo<br>
+                    <strong>UID:</strong> 14321953<br>
+                    <strong>Door Opened:</strong> Yes
+                </div>
+                <div class="log-details">
+                    <strong>Tag Read Time:</strong> 2000/01/01 - 00:00:00
+                </div>
+            </div>
+            <!-- Repeat for each log entry -->
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <!-- Note: main.js should handle the sidebar interactions -->
+</body>
+</html>

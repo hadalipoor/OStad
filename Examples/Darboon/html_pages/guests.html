@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest List</title>
+    <link rel="stylesheet" href="guests.css">
+</head>
+<body>
+    <div class="menu-container">
+        <button id="menu-toggle" class="menu-toggle">☰</button>
+        <ul id="menu" class="menu">
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="guests.html">Guests</a></li>
+            <li><a href="doorlog.html">Door Log</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>Guest List</h1>
+        <div class="guest-list">
+            <!-- Example Guest -->
+            <div class="guest-item">
+                <div class="guest-info">
+                    <strong>Name:</strong> Adel<br>
+                    <strong>Description:</strong> Resident<br>
+                    <strong>UID:</strong> 14321953
+                </div>
+                <div class="guest-details">
+                    <span class="guest-active-status">Active</span><br>
+                    <strong>Start:</strong> 2000/00/00 - 00:00:00<br>
+                    <strong>End:</strong> 2000/00/00 - 00:00:00
+                </div>
+                <div class="guest-actions">
+                    <button aria-label="Edit guest details">Edit</button>
+                    <button aria-label="Delete guest">Delete</button>
+                </div>
+            </div>
+            <!-- Repeat for each guest -->
+        </div>
+        <button id="addGuestBtn" aria-label="Add new guest">Add Guest</button>
+    </div>
+    <!-- Add/Edit Guest Modal -->
+    <div id="addGuestModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalFormTitle">Add Guest</h2>
+            <form id="addGuestForm">
+                <label for="guestName">Name:</label>
+                <input type="text" id="guestName" name="name"><br>
+                <label for="guestDescription">Description:</label>
+                <input type="text" id="guestDescription" name="description"><br>
+                <label for="startActiveTime">Start Active Time:</label>
+                <input type="text" id="startActiveTime" name="start_active_time"><br>
+                <label for="endActiveTime">End Active Time:</label>
+                <input type="text" id="endActiveTime" name="end_active_time"><br>
+                <!-- ID added here -->
+                <button type="submit" id="modalSubmitButton">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <input type="hidden" id="data-guest-id" name="id">
+
+    <script src="guests.js"></script>
+    <!-- Note: main.js should handle the sidebar interactions and potentially the add/edit/delete actions -->
+</body>
+</html>

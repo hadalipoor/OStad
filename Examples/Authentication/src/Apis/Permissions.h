@@ -1,0 +1,184 @@
+#ifndef PERMISSIONS_H
+#define PERMISSIONS_H
+
+class Permissions
+{
+public:
+    static const String USER_CREATE;
+    static const String USER_UPDATE;
+    static const String USER_DELETE;
+    static const String USER_GET;
+    static const String ROLE_CREATE;
+    static const String ROLE_UPDATE;
+    static const String ROLE_DELETE;
+    static const String ROLE_GET;
+    static const String PERMISSION_CREATE;
+    static const String PERMISSION_UPDATE;
+    static const String PERMISSION_DELETE;
+    static const String PERMISSION_GET;
+    static const String ROLEPERMISSION_CREATE;
+    static const String ROLEPERMISSION_UPDATE;
+    static const String ROLEPERMISSION_DELETE;
+    static const String ROLEPERMISSION_GET;
+    static const String USERRESETPASS_CREATE;
+    static const String USERRESETPASS_UPDATE;
+    static const String USERRESETPASS_DELETE;
+    static const String USERRESETPASS_GET;
+    static const String SECURITYQUESTION_CREATE;
+    static const String SECURITYQUESTION_UPDATE;
+    static const String SECURITYQUESTION_DELETE;
+    static const String SECURITYQUESTION_GET;
+    static const String SECURITYQUESTIONTITLE_CREATE;
+    static const String SECURITYQUESTIONTITLE_UPDATE;
+    static const String SECURITYQUESTIONTITLE_DELETE;
+    static const String SECURITYQUESTIONTITLE_GET;
+    static const String LOGINATTEMPT_CREATE;
+    static const String LOGINATTEMPT_UPDATE;
+    static const String LOGINATTEMPT_DELETE;
+    static const String LOGINATTEMPT_GET;
+    static const String ACCOUNTLOCKOUT_CREATE;
+    static const String ACCOUNTLOCKOUT_UPDATE;
+    static const String ACCOUNTLOCKOUT_DELETE;
+    static const String ACCOUNTLOCKOUT_GET;
+    static const String TWOFACTORAUTH_CREATE;
+    static const String TWOFACTORAUTH_UPDATE;
+    static const String TWOFACTORAUTH_DELETE;
+    static const String TWOFACTORAUTH_GET;
+    static const String ACCOUNTACTIVITYLOG_CREATE;
+    static const String ACCOUNTACTIVITYLOG_UPDATE;
+    static const String ACCOUNTACTIVITYLOG_DELETE;
+    static const String ACCOUNTACTIVITYLOG_GET;
+    static const String AUTHENTICATION_LOGIN;
+    static const String AUTHENTICATION_PASSWORDRESET;
+    static const String AUTHENTICATION_PASSWORDRESETCONFIRM;
+    static const String AUTHENTICATION_TWOFACTORAUTH;
+    static const String AUTHENTICATION_TWOFACTORAUTHCONFIRM;
+    static const String AUTHENTICATION_ACCOUNTLOCK;
+    static const String AUTHENTICATION_ACCOUNTUNLOCK;
+    static const String AUTHENTICATION_SECURITYQUESTIONANSWER;
+    static const String TESTREQUESTS_ADDDATA;
+    static const String TESTREQUESTS_GETDATA;
+    static const String TESTREQUESTS_PUBLICREQUEST;
+
+
+    static void addPermissions(Context* context);
+};
+
+void Permissions::addPermissions(Context* context)
+{
+    context->getSecurity()->addPermissionForAdmin(USER_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(USER_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(USER_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(USER_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ROLE_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ROLE_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ROLE_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ROLE_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(PERMISSION_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(PERMISSION_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(PERMISSION_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(PERMISSION_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ROLEPERMISSION_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ROLEPERMISSION_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ROLEPERMISSION_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ROLEPERMISSION_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(USERRESETPASS_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(USERRESETPASS_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(USERRESETPASS_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(USERRESETPASS_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(SECURITYQUESTION_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(SECURITYQUESTION_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(SECURITYQUESTION_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(SECURITYQUESTION_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(SECURITYQUESTIONTITLE_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(SECURITYQUESTIONTITLE_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(SECURITYQUESTIONTITLE_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(SECURITYQUESTIONTITLE_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(LOGINATTEMPT_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(LOGINATTEMPT_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(LOGINATTEMPT_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(LOGINATTEMPT_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ACCOUNTLOCKOUT_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ACCOUNTLOCKOUT_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ACCOUNTLOCKOUT_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ACCOUNTLOCKOUT_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(TWOFACTORAUTH_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(TWOFACTORAUTH_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(TWOFACTORAUTH_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(TWOFACTORAUTH_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ACCOUNTACTIVITYLOG_CREATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ACCOUNTACTIVITYLOG_UPDATE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ACCOUNTACTIVITYLOG_DELETE, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(ACCOUNTACTIVITYLOG_GET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(AUTHENTICATION_LOGIN, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(AUTHENTICATION_PASSWORDRESET, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(AUTHENTICATION_PASSWORDRESETCONFIRM, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(AUTHENTICATION_TWOFACTORAUTH, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(AUTHENTICATION_TWOFACTORAUTHCONFIRM, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(AUTHENTICATION_ACCOUNTLOCK, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(AUTHENTICATION_ACCOUNTUNLOCK, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(AUTHENTICATION_SECURITYQUESTIONANSWER, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(TESTREQUESTS_ADDDATA, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(TESTREQUESTS_GETDATA, "Authentication Permissions");
+    context->getSecurity()->addPermissionForAdmin(TESTREQUESTS_PUBLICREQUEST, "Authentication Permissions");
+
+}
+
+const String Permissions::USER_CREATE = "user_create";
+const String Permissions::USER_UPDATE = "user_update";
+const String Permissions::USER_DELETE = "user_delete";
+const String Permissions::USER_GET = "user_get";
+const String Permissions::ROLE_CREATE = "role_create";
+const String Permissions::ROLE_UPDATE = "role_update";
+const String Permissions::ROLE_DELETE = "role_delete";
+const String Permissions::ROLE_GET = "role_get";
+const String Permissions::PERMISSION_CREATE = "permission_create";
+const String Permissions::PERMISSION_UPDATE = "permission_update";
+const String Permissions::PERMISSION_DELETE = "permission_delete";
+const String Permissions::PERMISSION_GET = "permission_get";
+const String Permissions::ROLEPERMISSION_CREATE = "rolepermission_create";
+const String Permissions::ROLEPERMISSION_UPDATE = "rolepermission_update";
+const String Permissions::ROLEPERMISSION_DELETE = "rolepermission_delete";
+const String Permissions::ROLEPERMISSION_GET = "rolepermission_get";
+const String Permissions::USERRESETPASS_CREATE = "userresetpass_create";
+const String Permissions::USERRESETPASS_UPDATE = "userresetpass_update";
+const String Permissions::USERRESETPASS_DELETE = "userresetpass_delete";
+const String Permissions::USERRESETPASS_GET = "userresetpass_get";
+const String Permissions::SECURITYQUESTION_CREATE = "securityquestion_create";
+const String Permissions::SECURITYQUESTION_UPDATE = "securityquestion_update";
+const String Permissions::SECURITYQUESTION_DELETE = "securityquestion_delete";
+const String Permissions::SECURITYQUESTION_GET = "securityquestion_get";
+const String Permissions::SECURITYQUESTIONTITLE_CREATE = "securityquestiontitle_create";
+const String Permissions::SECURITYQUESTIONTITLE_UPDATE = "securityquestiontitle_update";
+const String Permissions::SECURITYQUESTIONTITLE_DELETE = "securityquestiontitle_delete";
+const String Permissions::SECURITYQUESTIONTITLE_GET = "securityquestiontitle_get";
+const String Permissions::LOGINATTEMPT_CREATE = "loginattempt_create";
+const String Permissions::LOGINATTEMPT_UPDATE = "loginattempt_update";
+const String Permissions::LOGINATTEMPT_DELETE = "loginattempt_delete";
+const String Permissions::LOGINATTEMPT_GET = "loginattempt_get";
+const String Permissions::ACCOUNTLOCKOUT_CREATE = "accountlockout_create";
+const String Permissions::ACCOUNTLOCKOUT_UPDATE = "accountlockout_update";
+const String Permissions::ACCOUNTLOCKOUT_DELETE = "accountlockout_delete";
+const String Permissions::ACCOUNTLOCKOUT_GET = "accountlockout_get";
+const String Permissions::TWOFACTORAUTH_CREATE = "twofactorauth_create";
+const String Permissions::TWOFACTORAUTH_UPDATE = "twofactorauth_update";
+const String Permissions::TWOFACTORAUTH_DELETE = "twofactorauth_delete";
+const String Permissions::TWOFACTORAUTH_GET = "twofactorauth_get";
+const String Permissions::ACCOUNTACTIVITYLOG_CREATE = "accountactivitylog_create";
+const String Permissions::ACCOUNTACTIVITYLOG_UPDATE = "accountactivitylog_update";
+const String Permissions::ACCOUNTACTIVITYLOG_DELETE = "accountactivitylog_delete";
+const String Permissions::ACCOUNTACTIVITYLOG_GET = "accountactivitylog_get";
+const String Permissions::AUTHENTICATION_LOGIN = "authentication_login";
+const String Permissions::AUTHENTICATION_PASSWORDRESET = "authentication_passwordreset";
+const String Permissions::AUTHENTICATION_PASSWORDRESETCONFIRM = "authentication_passwordresetconfirm";
+const String Permissions::AUTHENTICATION_TWOFACTORAUTH = "authentication_twofactorauth";
+const String Permissions::AUTHENTICATION_TWOFACTORAUTHCONFIRM = "authentication_twofactorauthconfirm";
+const String Permissions::AUTHENTICATION_ACCOUNTLOCK = "authentication_accountlock";
+const String Permissions::AUTHENTICATION_ACCOUNTUNLOCK = "authentication_accountunlock";
+const String Permissions::AUTHENTICATION_SECURITYQUESTIONANSWER = "authentication_securityquestionanswer";
+const String Permissions::TESTREQUESTS_ADDDATA = "testrequests_adddata";
+const String Permissions::TESTREQUESTS_GETDATA = "testrequests_getdata";
+const String Permissions::TESTREQUESTS_PUBLICREQUEST = "testrequests_publicrequest";
+
+
+#endif // PERMISSIONS_H

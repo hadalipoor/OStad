@@ -53,7 +53,8 @@ ClockApis::ClockApis(Context* cntxt, bool add_apis) : context(cntxt) {
         }
         
         // Extract dateTime from the request
-        EBPDateTime dateTime = EBPDateTime(getQueryParameterint(req, "date")); // Assume this object can be constructed from the request
+        String strDate = getQueryParameterString(req, "date");
+        EBPDateTime dateTime = EBPDateTime(strDate); // Assume this object can be constructed from the request
 
         this->adjust(dateTime);
 

@@ -8,6 +8,7 @@
 #include "IClock.h"
 #include "InternalClock.h"
 #include "../Config/System/SystemConfigKeys.h"
+#include "../Logging/LogTitles.h"
 #include "../Context.h"
 
 enum class ClockType { DS3231, DS1307, Internal };
@@ -29,11 +30,15 @@ public:
 
     void initialize() override {
         String clockTypeStr = "Internal"; // Replace with dynamic config if needed
+        clockTypeStr = context->getConfig()->getSystemConfig()->get(SystemConfigKey::CLOCK_TYPE);
         // Initialize the correct clock based on the type
         if (clockTypeStr == "DS3231") {
             if (!ds3231.begin()) {
+                Serial.println("DS3231 Clock not Started.");
                 return;
             }
+            
+            Serial.println("DS3231 Clock Started Succesfully.");
             clockType = ClockType::DS3231;
         }
         else if(clockTypeStr == "DS1307"){
@@ -96,6 +101,11 @@ public:
     }
 
     void syncTimeWithServer() override {
+        if (context->getConfig()->getSystemConfig()->get(SystemConfigKey::SYNC_CLOCK) == "false")
+        {
+            return;
+        }
+        
         context->getLogger()->log(LogLevel::DEBUG_LEVEL, LogTitles::SYSTEM_CLOCK, "Clock is Syncing with NTP ...");
         if(clockType == ClockType::Internal){
             if(internalClock.synchronize_ntp()) _isSynced = true;

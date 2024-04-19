@@ -1,0 +1,161 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-container {
+    position: relative;
+}
+
+.menu-toggle {
+    font-size: 24px;
+    background-color: transparent;
+    border: 2px solid #007BFF; /* A beautiful blue */
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none; /* Menu is hidden by default */
+    position: absolute;
+    left: 0;
+    top: 85px;
+    background-color: white;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+}
+
+.menu.open {
+    display: block; /* Display the menu when the 'open' class is added */
+}
+
+.menu li a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    border-bottom: 1px solid #007BFF; /* A beautiful blue */
+}
+
+.menu li:last-child a {
+    border-bottom: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Base Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Typography */
+h1 {
+    font-size: 1.75rem;
+    color: #333;
+    margin-top: 0;
+    padding: 20px;
+    background-color: #ffffff; /* White background for the header */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    position: fixed; /* Fixed at the top */
+    width: 100%; /* Full width */
+    top: 0; /* Stick to the top */
+    left: 0; /* Stick to the left */
+    z-index: 1; /* Above other content */
+}
+
+/* Sidebar Menu */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Hide by default */
+    width: 250px;
+    height: 100%;
+    /* rest of the styles */
+}
+
+/* When 'active' class is added to the sidebar */
+.sidebar.active {
+    left: 0; /* Show the sidebar */
+}
+
+
+/* Sidebar Toggle */
+#sidebarToggle {
+    font-size: 2rem;
+    position: absolute;
+    top: 30px; /* Vertically center it in the header */
+    left: 15px;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Main Content Styles */
+.main-content {
+    padding: 100px 15px 15px 15px; /* Add padding on top for the fixed header */
+}
+
+/* Buttons Styles - Open Door, Toggle Light */
+.light-toggle {
+    background-color: #3498db; /* Blue */
+    color: #ffffff;
+    border: none;
+    outline: none;
+    padding: 15px 25px;
+    margin: 15px auto; /* Center the button */
+    display: block; /* Separate line */
+    font-size: 1rem;
+    border-radius: 20px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    transition: all 0.3s;
+    cursor: pointer;
+    width: 80%; /* Maximum width */
+    max-width: 300px; /* Limit maximum width */
+}
+
+button:first-of-type {
+    margin-top: 40px; /* Additional space for the first button only */
+}
+
+button:hover {
+    background-color: #2980b9; /* Darken on hover */
+    transform: translateY(-2px); /* Lift effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Larger shadow for effect */
+}
+
+/* Label for Light Toggles */
+.label-toggle {
+    margin: 20px auto 10px; /* Margin above the label */
+    font-size: 1.2rem;
+    color: #7f8c8d;
+}
+
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 100%; /* Full width for smaller screens */
+    }
+}
+
+
+

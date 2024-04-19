@@ -1,0 +1,174 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #FFFFFF;
+    color: #000000;
+    margin: 0;
+    padding: 20px;
+}
+
+
+.guest-list {
+    margin-top: 20px;
+}
+
+.guest-item {
+    border: 1px solid #00AEEF;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.guest-info, .guest-details {
+    margin-bottom: 10px;
+}
+
+.guest-active-status {
+    color: #00AEEF;
+    font-weight: bold;
+}
+
+.guest-actions button {
+    background-color: #00AEEF;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.guest-actions button:hover {
+    background-color: #007B9C;
+}
+
+#addGuestBtn {
+    background-color: #00AEEF;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#addGuestBtn:hover {
+    background-color: #007B9C;
+}
+
+.menu-container {
+    position: relative;
+}
+
+.menu-toggle {
+    font-size: 24px;
+    background-color: transparent;
+    border: 2px solid #007BFF; /* A beautiful blue */
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none; /* Menu is hidden by default */
+    position: absolute;
+    left: 0;
+    top: 85px;
+    background-color: white;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+}
+
+.menu.open {
+    display: block; /* Display the menu when the 'open' class is added */
+}
+
+.menu li a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    border-bottom: 1px solid #007BFF; /* A beautiful blue */
+}
+
+.menu li:last-child a {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .guest-actions button, #addGuestBtn {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 5px; /* Optional: rounded corners */
+}
+
+/* The Close Button */
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Styling form elements */
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content form label {
+    margin-top: 10px;
+}
+
+.modal-content form input[type="text"] {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal-content form button[type="submit"] {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #00AEEF; /* Adjust to fit your color scheme */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content form button[type="submit"]:hover {
+    background-color: #007B9C; /* Darker shade for hover effect */
+}

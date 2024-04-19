@@ -15,7 +15,7 @@ private:
     String DEFAULT_AP = "OStad";
     String DEFAULT_PASSWORD = "12345678";
     void blinkLED(int times, int delayMs);
-
+    IPAddress stringToIPAddress(String ipString);
 public:
     WiFiManager(Context*context);
     void WiFiConnect() override;
@@ -116,12 +116,51 @@ void WiFiManager::connectToAvailableNetwork(std::vector<WiFiEntity>& wifiEntitie
   } 
 }
 
+IPAddress WiFiManager::stringToIPAddress(String ipString) {
+  // Temporary array to hold the split IP octets.
+  byte octets[4] = {0, 0, 0, 0};
+
+  // Start and end positions for substring extraction.
+  int start = 0;
+  int dotPosition = ipString.indexOf('.');
+
+  // Index for the octets array.
+  int octetIndex = 0;
+
+  // Loop over the string to extract the octets.
+  while (dotPosition != -1 && octetIndex < 4) {
+    // Extract the current octet as a substring.
+    String octetString = ipString.substring(start, dotPosition);
+
+    // Convert the octet to a number and store it in the array.
+    octets[octetIndex] = octetString.toInt();
+
+    // Update the start position and find the next dot.
+    start = dotPosition + 1;
+    dotPosition = ipString.indexOf('.', start);
+
+    // Increment the octet index.
+    octetIndex++;
+  }
+
+  // Process the last octet (after the last dot).
+  if (octetIndex < 4 && start < ipString.length()) {
+    octets[octetIndex] = ipString.substring(start).toInt();
+  }
+
+  // Create an IPAddress object from the octets.
+  IPAddress ip(octets[0], octets[1], octets[2], octets[3]);
+
+  return ip;
+}
+
 void WiFiManager::connectToNetwork(WiFiEntity& wifiEntity)
 {
   SSIDInfo ssidInfo;
   ssidInfo.SSID = wifiEntity.getSSID();
   ssidInfo.WiFiPassword = wifiEntity.getPassword();
   ssidInfo.WebServerPortHttp = default_WebServerPortHttp;
+
 
   context->getLogger()->log(LogLevel::DEBUG_LEVEL, LogTitles::SYSTEM_BOOT, String("\nConnecting to Wifi " + ssidInfo.SSID));
   
@@ -130,6 +169,25 @@ void WiFiManager::connectToNetwork(WiFiEntity& wifiEntity)
   waitForConnection();
   
   WiFi.setSleep(false);
+  
+    String ipStr = context->getConfig()->getSystemConfig()->get(SystemConfigKey::DEFAULT_IP);
+  if (ipStr != "")
+  {
+
+    // Set your Static IP address
+    IPAddress local_IP = stringToIPAddress(ipStr);
+    // Set your Gateway IP address
+    IPAddress gateway = stringToIPAddress(context->getConfig()->getSystemConfig()->get(SystemConfigKey::DEFAULT_GATEWAY));
+
+    IPAddress subnet = stringToIPAddress(context->getConfig()->getSystemConfig()->get(SystemConfigKey::DEFAULT_SUBNET));
+    IPAddress primaryDNS = stringToIPAddress(context->getConfig()->getSystemConfig()->get(SystemConfigKey::DEFAULT_PRIMARYDNS));
+    IPAddress secondaryDNS = stringToIPAddress(context->getConfig()->getSystemConfig()->get(SystemConfigKey::DEFAULT_SECONDARYDNS));
+
+    // Configures static IP address
+    if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
+      Serial.println("STA Failed to configure");
+    }    
+  }
   
   char buffer[256]; // Ensure this buffer is large enough for your message
 

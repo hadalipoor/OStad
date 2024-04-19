@@ -1,0 +1,33 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+.tanker-container {
+    margin-bottom: 20px;
+    width: 80%;
+    height: 100px;
+    background-color: #ddd;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tanker {
+    width: 90%;
+    height: 80%;
+    background-color: #fff;
+    border-radius: 45px;
+}
+
+.capacity {
+    font-size: 2em;
+    color: #333;
+}

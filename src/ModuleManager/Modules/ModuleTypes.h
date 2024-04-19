@@ -7,6 +7,8 @@ class ModuleTypes {
 public:
     static const String BUTTON;
     static const String RELAY;
+    static const String RFIDPN532;
+    static const String RFID125KH;
     static const String SOILMOISTURE;
     static const String LCD;
     static const String DHT;
@@ -16,6 +18,8 @@ public:
 
 const String ModuleTypes::BUTTON = "Button";
 const String ModuleTypes::RELAY = "Relay";
+const String ModuleTypes::RFIDPN532 = "RFIDPN532";
+const String ModuleTypes::RFID125KH = "RFID125KH";
 const String ModuleTypes::SOILMOISTURE = "SoilMoisture";
 const String ModuleTypes::LCD = "LCD";
 const String ModuleTypes::DHT = "DHT";

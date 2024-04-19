@@ -12,6 +12,8 @@
 #include "../Database/Entities/Modules/PhotoresistorFullEntity.h"
 #include "../Database/Entities/Modules/RGBFullEntity.h"
 #include "../Database/Entities/Modules/SoilMoistureFullEntity.h"
+#include "../Database/Entities/Modules/RFIDEntity.h"
+#include "../Database/Entities/Modules/RFIDFullEntity.h"
 
 #include "../Database/Controllers/Modules/ModulesController.h"
 
@@ -26,9 +28,11 @@ private:
     ModulesController *modulesController;
 
     std::vector<RelayFullEntity> relays;
+    std::vector<RFIDFullEntity> rfids;
     std::vector<LCDFullEntity> lcd16x2s;
     std::vector<LCDFullEntity> oledlcds;
     std::vector<SoilMoistureFullEntity> sensors;
+    std::vector<DHTFullEntity> dhtSensors;
 
     ButtonFullEntity buttonFull;
     Button* _button;
@@ -43,8 +47,14 @@ public:
     Button* getButton(String name) override;
     Button* getButton(String name, PCF8574* pcf8574) override;
     int addButton(Button* button) override;
+    int addDHTSensor(DHTSensor* dhtSensor) override;
+    Button* getDHTSensor(String name) override;
     Relay* getRelay(String name) override;
     int addRelay(Relay* relay) override;
+    RFIDPN532* getRFIDPN532(String name) override;
+    int addRFIDPN532(RFIDPN532* rfid) override;
+    RFID125Kh* getRFID125Kh(String name) override;
+    int addRFID125Kh(RFID125Kh* rfid) override;
     LCD16X2* getLCD16X2(String name) override;
     int addLCD16X2(LCD16X2* lcd16x2) override;
     OLEDLCD* getOLEDLCD(String name) override;
@@ -106,6 +116,16 @@ int Modules::addButton(Button* button)
     return button_id;
 }
 
+int Modules::addDHTSensor(DHTSensor* dhtSensor)
+{
+    return 0;
+}
+
+Button* Modules::getDHTSensor(String name)
+{
+    return new Button(0,"",false,false);
+}
+
 Relay* Modules::getRelay(String name)
 {
     relays = modulesController->getAllRelays();
@@ -139,8 +159,72 @@ int32_t Modules::addRelay(Relay* relay)
     }
     return _id;
 }
+RFIDPN532* Modules::getRFIDPN532(String name)
+{
+    rfids = modulesController->getAllRFIDs();
+    for (size_t i = 0; i < rfids.size(); i++)
+    {
+        RFIDFullEntity rfid = rfids.at(i);
+        if (rfid.Name == name&& rfid.ModuleType == ModuleTypes::RFIDPN532)
+        {
+            return new RFIDPN532(rfid.PinNumber0, name); 
+        }        
+    }
+    context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_FOUND_IN_DB, "RFID name : " + name);
+    return new RFIDPN532(-1, NOT_FOUNDED); // Empty RFID
+}
 
-// Continuing from previous code ...
+int32_t Modules::addRFIDPN532(RFIDPN532* rfid)
+{
+    RFIDFullEntity *rfidEntity = rfid->getEntity();
+    if (!isNameUnique(rfidEntity->Name))
+    {
+        return -1;
+    }
+
+    int _id = modulesController->AddRFID(*rfidEntity);
+    if(_id == -1)
+    {
+        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "RFID name : " + rfidEntity->Name);
+    }
+    else{
+        context->getLogger()->log(LogLevel::INFO_LEVEL,LogTitles::MODULE_NOT_ADDED_TO_DB, "RFID name : " + rfidEntity->Name);
+    }
+    return _id;
+}
+RFID125Kh* Modules::getRFID125Kh(String name)
+{
+    rfids = modulesController->getAllRFIDs();
+    for (size_t i = 0; i < rfids.size(); i++)
+    {
+        RFIDFullEntity rfid = rfids.at(i);
+        if (rfid.Name == name && rfid.ModuleType == ModuleTypes::RFID125KH)
+        {
+            return new RFID125Kh(name, rfid.PinNumber0, rfid.PinNumber1); 
+        }        
+    }
+    context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_FOUND_IN_DB, "RFID name : " + name);
+    return new RFID125Kh(NOT_FOUNDED, -1, 0); // Empty RFID
+}
+
+int32_t Modules::addRFID125Kh(RFID125Kh* rfid)
+{
+    RFIDFullEntity *rfidEntity = rfid->getEntity();
+    if (!isNameUnique(rfidEntity->Name))
+    {
+        return -1;
+    }
+
+    int _id = modulesController->AddRFID(*rfidEntity);
+    if(_id == -1)
+    {
+        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "RFID name : " + rfidEntity->Name);
+    }
+    else{
+        context->getLogger()->log(LogLevel::INFO_LEVEL,LogTitles::MODULE_NOT_ADDED_TO_DB, "RFID name : " + rfidEntity->Name);
+    }
+    return _id;
+}
 
 LCD16X2* Modules::getLCD16X2(String name)
 {

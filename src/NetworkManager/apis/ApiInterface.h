@@ -8,6 +8,7 @@
 #include <Arduino.h>
 #include <HTTPS_Server_Generic.h>
 #include "../../FileManager/IEBPFile.h"
+#include "../../Clock/EBPDateTime.h"
 
 using namespace httpsserver;
 
@@ -73,6 +74,7 @@ void response(HTTPResponse * res, String response_text)
 String getQueryParameterString(HTTPRequest * req, String parameter)
 {
     std::string output;
+    
     req->getParams()->getQueryParameter(parameter.c_str(), output);
     return String(output.c_str());
 }
@@ -91,6 +93,12 @@ int getQueryParameterint(HTTPRequest * req, String parameter)
         // Conversion failed, return -9999
         return -9999;
     }
+}
+
+EBPDateTime getQueryParameterEBPDateTime(HTTPRequest * req, String parameter)
+{
+    String strDateTime = getQueryParameterString(req, parameter);
+    return EBPDateTime(strDateTime);
 }
 
 void DownloadFile(HTTPResponse *res, String filename, String contentType, StorageType storageType) {
