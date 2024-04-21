@@ -12,10 +12,12 @@
 - certificate generator - Done
 - generator check json format - Done
 - clean directory and rename to OStad - Done
+- public publishment on GitHub - Done
 - capability to access apis via serial monitor - Done
 - add authorization apis to postman generated import file - Done
 - clock module test - Done
 - Device Manager
+- api input Validation
 - add config for serial apis enable or disable
 - check entity names with existings, befor genrate entity
 - create logo for OStad 
@@ -25,7 +27,6 @@
 - wifi html
 - main page html
 - rename all EBP in class names
-- public publishment on GitHub 
 - faster ssl certificate proccess
 
      *************************************************************************
