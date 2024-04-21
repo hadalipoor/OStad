@@ -1,6 +1,6 @@
 site_name: OStad framework Wiki
 theme:
-  name: OStad
+  name: readthedocs
   highlightjs: true
 plugins:
   - search
