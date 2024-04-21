@@ -54,10 +54,11 @@ void MainController<T>::RemoveTable()
 
 template<typename T>
 void MainController<T>::removeColumn(const String column_name) {
-    if (!context->getValidation()->isColumnNameValid(column_name)) {
-        context->getErrorHandler()->handleError(ErrorType::InvalidColumnName);
-        return;
-    }
+    // if (!context->getValidation()->isColumnNameValid(column_name)) {
+    //     context->getErrorHandler()->handleError(ErrorType::InvalidColumnName);
+    //     return;
+    // }
+    //TODO::
 
     std::vector<T> entities = GetAll();
     for (size_t i = 0; i < entities.size(); i++) {
@@ -320,12 +321,12 @@ std::vector<T> MainController<T>::Get(const String query) {
       }
 
       String column_name = condition.substring(0, operator_pos);
-      if (!context->getValidation()->isColumnNameValid(column_name)) {
-        context->getErrorHandler()->handleError(ErrorType::InvalidQuery);
-        matches = false;
-        break;
-      }
-
+      // if (!context->getValidation()->isColumnNameValid(column_name)) {
+      //   context->getErrorHandler()->handleError(ErrorType::InvalidQuery);
+      //   matches = false;
+      //   break;
+      // }
+      //TODO::
       String value = condition.substring(operator_pos + 1);
       String entity_value = entity.GetValue(column_name);
       if (condition[operator_pos] == '=') {

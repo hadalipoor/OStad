@@ -20,6 +20,8 @@ public:
     TimeSpan getTimeSpan(EBPDateTime _dateTime); 
     bool isInSameDate(EBPDateTime _dateTime);
     bool isInSameDateTime(EBPDateTime _dateTime);
+    bool isBetweenTwoDate(EBPDateTime _startTime, EBPDateTime _endTime);
+    bool isBetweenTwoDateTime(EBPDateTime _startTime, EBPDateTime _endTime);
     JalaliDateTime getJalaliDateTime();
     void fromJalaliDateTime(JalaliDateTime jalaliDateTime);
     void fromJalaliDateTime(int year, int month, int day, int hour = 0, int minute = 0, int second = 0);
@@ -121,6 +123,26 @@ bool EBPDateTime::isInSameDate(EBPDateTime _dateTime) {
 
 bool EBPDateTime::isInSameDateTime(EBPDateTime _dateTime) {
     return (year() == _dateTime.year() && month() == _dateTime.month() && day() == _dateTime.day() && hour() == _dateTime.hour() && minute() == _dateTime.minute() && second() == _dateTime.second());
+}
+
+bool EBPDateTime::isBetweenTwoDate(EBPDateTime _startTime, EBPDateTime _endTime) {
+    // Convert start, end, and current times to a format that only includes the date for comparison
+    DateTime startDate(_startTime.year(), _startTime.month(), _startTime.day());
+    DateTime endDate(_endTime.year(), _endTime.month(), _endTime.day());
+    DateTime currentDate(year(), month(), day());
+
+    // Check if current date is between start and end dates
+    return (currentDate >= startDate && currentDate <= endDate);
+}
+
+bool EBPDateTime::isBetweenTwoDateTime(EBPDateTime _startTime, EBPDateTime _endTime) {
+    // Use the unixtime method to get the time in seconds since Unix epoch
+    time_t startUnix = _startTime.unixtime();
+    time_t endUnix = _endTime.unixtime();
+    time_t currentUnix = this->unixtime();
+
+    // Check if current datetime is between start and end datetime
+    return (currentUnix >= startUnix && currentUnix <= endUnix);
 }
 
 JalaliDateTime EBPDateTime::getJalaliDateTime() {

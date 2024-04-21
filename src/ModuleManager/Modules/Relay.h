@@ -7,18 +7,19 @@
 class Relay
 {
 private:
-    String name;
-    int pin_number;
-    String connectionType;
-    int nodeId;
     bool state;
-    bool normallyOpen;
     unsigned long delay_millis;
     unsigned long start_time;
     enum { IDLE, TURN_ON_AFTER_DELAY, TURN_OFF_AFTER_DELAY, TURN_ON_FOR_DELAY, TURN_OFF_FOR_DELAY } mode;
 
 public:
     Relay(int pin_number, String name, bool normallyOpen = true);
+
+    String name;
+    int pin_number;
+    String connectionType;
+    int nodeId;
+    bool normallyOpen;
 
     void turnOn();
     void turnOff();

@@ -104,7 +104,7 @@ void OStad::initialize() {
     modules = new Modules(context);
 #endif
     systemMonitor = new SystemMonitor();
-    
+    validation = new Validation(context);
 
     context->setConfig(configs);
     context->setLogger(logger);
