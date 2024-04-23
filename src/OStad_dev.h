@@ -1,5 +1,5 @@
-#ifndef OSTAD_H
-#define OSTAD_H
+#ifndef OSTADDEV_H
+#define OSTADDEV_H
 
 #include <Arduino.h>
 #include "Context.h"
@@ -20,7 +20,7 @@
 #include "SystemMonitor/SystemMonitor.h"
 #include "DatabaseSeeder.h"
 
-class OStad
+class OStad_dev
 {
 private:
     Context* context;
@@ -44,11 +44,11 @@ private:
 
 
 public:
-    OStad(StorageType storageType);
+    OStad_dev(StorageType storageType);
 #ifndef OSTAD_NETWORK_DISABLE
-    OStad(StorageType storageType, CertificateData certificateDate);
+    OStad_dev(StorageType storageType, CertificateData certificateDate);
 #endif
-    ~OStad();
+    ~OStad_dev();
 
     void update();
     void begin();
@@ -57,7 +57,7 @@ public:
 };
 
 #ifndef OSTAD_NETWORK_DISABLE
-OStad::OStad(StorageType _storageType ,CertificateData certificateData) :  _certificateData(certificateData)
+OStad_dev::OStad_dev(StorageType _storageType ,CertificateData certificateData) :  _certificateData(certificateData)
 {
     _https_enabled = true;
     storageType = _storageType;
@@ -65,22 +65,22 @@ OStad::OStad(StorageType _storageType ,CertificateData certificateData) :  _cert
 }
 #endif
 
-OStad::OStad(StorageType _storageType)
+OStad_dev::OStad_dev(StorageType _storageType)
 {
     storageType = _storageType;
     initialize();
 }
 
-OStad::~OStad()
+OStad_dev::~OStad_dev()
 {
 }
 
-Context* OStad::getContext()
+Context* OStad_dev::getContext()
 {
     return context;
 }
 
-void OStad::initialize() {
+void OStad_dev::initialize() {
     context = new Context();
     errorHandler = new ErrorHandler();
     validation = new Validation();
@@ -146,14 +146,14 @@ void OStad::initialize() {
 
 }    
 
-void OStad::begin()
+void OStad_dev::begin()
 {
 #ifndef OSTAD_NETWORK_DISABLE
     network->begin();
 #endif
 }
 
-void OStad::update() {
+void OStad_dev::update() {
 #ifndef OSTAD_NETWORK_DISABLE
     network->update();
 #endif

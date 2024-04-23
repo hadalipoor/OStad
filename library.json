@@ -1,5 +1,5 @@
 {
-    "name": "OStad",
+    "name": "Ostad_dev",
     "description": "a boilerplate for ESP32 arduino board",
     "keywords": "esp32, boilerplate, database, wifi, file",
     "authors": [
@@ -18,7 +18,7 @@
     "homepage": "OStad.Wiki",
     "frameworks": "arduino",
     "platforms": "espressif32",
-    "headers": "OStad.h",
+    "headers": "Ostad_dev.h",
     "export": {
         "exclude": [
             "html_pages",
