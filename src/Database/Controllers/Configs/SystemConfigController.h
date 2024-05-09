@@ -1,8 +1,8 @@
 #ifndef SYSTEMCONFIGCONTROLLER_H
 #define SYSTEMCONFIGCONTROLLER_H
 
-#include "../Entities/KeyValueEntity.h"
-#include "MainController.h"
+#include "../../Entities/KeyValueEntity.h"
+#include "../MainController.h"
 
 class SystemConfigController : public MainController<KeyValueEntity>{
 protected:

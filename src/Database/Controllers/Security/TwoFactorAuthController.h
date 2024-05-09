@@ -1,7 +1,6 @@
 #ifndef TWOFACTORAUTHCONTROLLER_H
 #define TWOFACTORAUTHCONTROLLER_H
 
-#include <OStad.h>
 #include "../../Entities/Security/TwoFactorAuthEntity.h"
 #include "../../../Context.h"
 

@@ -6,36 +6,41 @@
 class SecurityQuestionTitleEntity : public Entity {
 public:
     static const String COLUMN_QUESTIONTITLE;
-    
 
-    String QuestionTitle;
-    
+private:
+    String questionTitle;
 
-    SecurityQuestionTitleEntity()  : Entity(){}
+public:
+    SecurityQuestionTitleEntity() : Entity(), questionTitle("") {}
 
     SecurityQuestionTitleEntity(int id, String _QuestionTitle) : Entity() {
         this->id = id;
-        QuestionTitle = _QuestionTitle;
-        
-
-        addColumn(COLUMN_QUESTIONTITLE, String(QuestionTitle), "String");
-        
+        this->questionTitle = _QuestionTitle;
+        SetValue(COLUMN_QUESTIONTITLE, this->questionTitle);
     }
 
     SecurityQuestionTitleEntity(String _QuestionTitle) : 
-        SecurityQuestionTitleEntity(0, _QuestionTitle)  {}
+        SecurityQuestionTitleEntity(0, _QuestionTitle) {}
 
-    static SecurityQuestionTitleEntity fromEntity(Entity entity)
-    {
+    static SecurityQuestionTitleEntity fromEntity(Entity entity) {
         SecurityQuestionTitleEntity securityquestiontitleentity = SecurityQuestionTitleEntity();
         securityquestiontitleentity.fromString(entity.toString());
         return securityquestiontitleentity;
     }
 
-    // Setters and Getters for each field
+    // Getters
+    String getQuestionTitle() {
+        questionTitle = GetValue(COLUMN_QUESTIONTITLE);
+        return questionTitle;
+    }
+
+    // Setters
+    void setQuestionTitle(String value) {
+        questionTitle = value;
+        SetValue(COLUMN_QUESTIONTITLE, questionTitle);
+    }
 };
 
 const String SecurityQuestionTitleEntity::COLUMN_QUESTIONTITLE = "QuestionTitle";
-
 
 #endif // SECURITYQUESTIONTITLEENTITY_H

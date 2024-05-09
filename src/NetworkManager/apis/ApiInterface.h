@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <HTTPS_Server_Generic.h>
 #include "../../FileManager/IEBPFile.h"
 #include "../../Clock/EBPDateTime.h"
@@ -18,6 +19,7 @@ public:
     virtual String getClassPath() = 0;
 
     static const String MISSING_INPUT_PARAMS_MESSAGE;
+    static const String WRONG_INPUT_PARAMS_FORMAT_MESSAGE;
     static const String CREATE_SUCCESFULL_MESSAGE;
     static const String CREATE_FAILED_MESSAGE;
     static const String DELETE_FAILED_MESSAGE;
@@ -29,6 +31,7 @@ public:
 };
 
 const String ApiInterface::MISSING_INPUT_PARAMS_MESSAGE = "missing some input params in your request";
+const String ApiInterface::WRONG_INPUT_PARAMS_FORMAT_MESSAGE = "some input params format in your request is not correct";
 const String ApiInterface::CREATE_FAILED_MESSAGE = "Create Operation Failed!";
 const String ApiInterface::CREATE_SUCCESFULL_MESSAGE = "Create Succesfull";
 const String ApiInterface::DELETE_FAILED_MESSAGE = "Delete Operation Failed!";
@@ -71,6 +74,65 @@ void response(HTTPResponse * res, String response_text)
     res->println(response_text);
 }
 
+String jsonResponse(bool success, String description)
+{
+    return "{\"success\":\"" + String(success ? "true" : "false") + "\", \"description\":\""+ description +"\"}";
+}
+
+String getBodyString(HTTPRequest *req)
+{
+    byte buffer[1024];
+    String body = "";  // Initialize an empty String to accumulate the data
+    // Continue reading until the request is complete
+    while (!(req->requestComplete()))
+    {
+        // Read bytes into the buffer
+        size_t s = req->readBytes(buffer, 1024);
+        // Append the read bytes to the String. This assumes the bytes are ASCII characters
+        if (s > 0) {
+            body += String((char*)buffer);  // Convert bytes to String and concatenate
+        }
+    }
+    return body;  // Return the complete String containing the request body
+}
+
+String getItemInBody(String body, String item)
+{
+    DynamicJsonDocument doc(1024);  // Create a JSON document with a suitable size
+    DeserializationError error = deserializeJson(doc, body);  // Parse the JSON body
+
+    if (error) {  // Check if there was an error in parsing
+        return "";  // Return empty string if there is an error
+    }
+
+    // Use containsKey to check if the item exists and return its value if it does
+    if (doc.containsKey(item)) {
+        JsonVariant var = doc[item];
+        if (var.is<String>()) {  // Check if the item is a string and return it
+            return var.as<String>();
+        } else {  // For non-string types, serialize them back to a String
+            String result;
+            serializeJson(var, result);  // Convert JSON variant to string if it is not a simple string
+            return result;
+        }
+    }
+
+    return "";  // Return empty string if item is not found
+}
+
+bool isItemInBody(String body, String item)
+{
+    DynamicJsonDocument doc(1024);  // Create a JSON document with enough size
+    DeserializationError error = deserializeJson(doc, body);  // Parse the JSON body
+
+    if (error) {  // Check if there was an error in parsing
+        Serial.println("error in isItemInBody");
+        return false;
+    }
+    // Check if the item exists in the JSON document
+    return doc.containsKey(item);
+}
+
 String getQueryParameterString(HTTPRequest * req, String parameter)
 {
     std::string output;
@@ -83,6 +145,7 @@ int getQueryParameterint(HTTPRequest * req, String parameter)
 {
     std::string output;
     req->getParams()->getQueryParameter(parameter.c_str(), output);
+    
     int number;
     std::stringstream ss(output);
 

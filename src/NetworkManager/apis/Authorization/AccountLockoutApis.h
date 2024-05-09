@@ -3,7 +3,7 @@
 
 #include "../../../Context.h"
 #include "../../../Database/Controllers/Security/AccountLockoutController.h"
-#include "../../../Security/AuthorizationPermissions.h"
+#include "AuthorizationPermissions.h"
 
 class AccountLockoutApis : public ApiInterface
 {

@@ -3,7 +3,7 @@
 
 #include "../../../Context.h"
 #include "../../../Database/Controllers/Security/SecurityQuestionController.h"
-#include "../../../Security/AuthorizationPermissions.h"
+#include "AuthorizationPermissions.h"
 
 class SecurityQuestionApis : public ApiInterface
 {

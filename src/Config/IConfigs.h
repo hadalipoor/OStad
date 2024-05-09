@@ -9,6 +9,7 @@ public:
     virtual void initialize() = 0;
     virtual IConfig* getSystemConfig() = 0;
     virtual IConfig* getSecurityConfig() = 0;
+    virtual IConfig* getDeviceConfig() = 0;
 };
 
 

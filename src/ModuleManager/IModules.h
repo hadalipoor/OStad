@@ -3,9 +3,9 @@
 
 #include <string>
 #include <PCF8574.h>
-#include "Modules/Button.h"
+#include "Modules/IButton.h"
 #include "Modules/DHTSensor.h"
-#include "Modules/Relay.h"
+#include "Modules/IRelay.h"
 #include "Modules/RFIDPN.h"
 #include "Modules/RFID125Kh.h"
 #include "Modules/OLEDLCD.h"
@@ -19,15 +19,15 @@ class IModules
 public:
     virtual ~IModules() = default;
 
-    virtual Button* getButton(String name) = 0;
-    virtual Button* getButton(String name, PCF8574* pcf8574) = 0;
-    virtual int addButton(Button* button) = 0;
+    virtual IButton* getButton(String name) = 0;
+    virtual IButton* getButton(String name, PCF8574* pcf8574) = 0;
+    virtual int addButton(IButton* button) = 0;
     
     virtual int addDHTSensor(DHTSensor* dhtSensor) = 0;
-    virtual Button* getDHTSensor(String name) = 0;
+    virtual DHTSensor* getDHTSensor(String name) = 0;
 
-    virtual Relay* getRelay(String name) = 0;
-    virtual int addRelay(Relay* relay) = 0;
+    virtual IRelay* getRelay(int server_id) = 0;
+    virtual int addRelay(IRelay* relay) = 0;
 
     virtual RFIDPN532* getRFIDPN532(String name) = 0;
     virtual int addRFIDPN532(RFIDPN532* rfid) = 0;
@@ -47,6 +47,7 @@ public:
     virtual SimCardManager* getSimCardManager(int tx_pin, int rx_pin) = 0;
 
     virtual void initialize() = 0;
+    virtual void update() = 0;
 };
 
 #endif // IMODULES_H

@@ -3,7 +3,7 @@
 
 #include "../../../Context.h"
 #include "../../../Database/Controllers/Security/PermissionController.h"
-#include "../../../Security/AuthorizationPermissions.h"
+#include "AuthorizationPermissions.h"
 
 class PermissionApis : public ApiInterface
 {

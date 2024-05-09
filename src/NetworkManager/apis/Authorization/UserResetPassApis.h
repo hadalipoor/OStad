@@ -3,7 +3,7 @@
 
 #include "../../../Context.h"
 #include "../../../Database/Controllers/Security/UserResetPassController.h"
-#include "../../../Security/AuthorizationPermissions.h"
+#include "AuthorizationPermissions.h"
 
 class UserResetPassApis : public ApiInterface
 {

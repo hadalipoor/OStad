@@ -1,7 +1,6 @@
 #ifndef USERRESETPASSCONTROLLER_H
 #define USERRESETPASSCONTROLLER_H
 
-#include <OStad.h>
 #include "../../Entities/Security/UserResetPassEntity.h"
 #include "../../../Context.h"
 

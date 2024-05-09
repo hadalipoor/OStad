@@ -6,6 +6,7 @@
 #include "ButtonApis.h"
 #include "ModuleApis.h"
 #include "RelayApis.h"
+#include "RelayControllerApis.h"
 #include "LCDApis.h"
 #include "DHTApis.h"
 #include "PhotoresistorApis.h"
@@ -27,6 +28,9 @@ void createModulesApis(Context* context)
     RelayApis* relayApis = new RelayApis(context, true);
     apis.push_back(relayApis);
     
+    RelayControllerApis* relayControllerApis = new RelayControllerApis(context, true);
+    apis.push_back(relayControllerApis);
+
     LCDApis* lcdApis = new LCDApis(context, true);
     apis.push_back(lcdApis);
     

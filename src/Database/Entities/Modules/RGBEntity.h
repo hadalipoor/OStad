@@ -10,36 +10,78 @@ public:
     static const String COLUMN_GPIN;
     static const String COLUMN_BPIN;
 
-    String Type;
-    int Rpin;
-    int Gpin;
-    int Bpin;
+private:
+    String type;
+    int rPin;
+    int gPin;
+    int bPin;
 
-    RGBEntity() : Entity() {}
+public:
+    RGBEntity() : Entity(), type(""), rPin(0), gPin(0), bPin(0) {}
 
-    RGBEntity(int id, const String &_Type, int rpin, int gpin, int bpin) : Entity() {
+    RGBEntity(int id, const String &_Type, int rPin, int gPin, int bPin) : Entity() {
         this->id = id;
-        Type = _Type;
-        Rpin = rpin;
-        Gpin = gpin;
-        Bpin = bpin;
-        addColumn(COLUMN_TYPE, Type, "string");
-        addColumn(COLUMN_RPIN, String(Rpin), "int");
-        addColumn(COLUMN_GPIN, String(Gpin), "int");
-        addColumn(COLUMN_BPIN, String(Bpin), "int");
+        this->type = _Type;
+        this->rPin = rPin;
+        this->gPin = gPin;
+        this->bPin = bPin;
+        SetValue(COLUMN_TYPE, this->type);
+        SetValue(COLUMN_RPIN, String(this->rPin));
+        SetValue(COLUMN_GPIN, String(this->gPin));
+        SetValue(COLUMN_BPIN, String(this->bPin));
     }
 
-    RGBEntity(const String &_Type, int rpin, int gpin, int bpin) : 
-        RGBEntity(0, _Type, rpin, gpin, bpin) {}
+    RGBEntity(const String &_Type, int rPin, int gPin, int bPin) : 
+        RGBEntity(0, _Type, rPin, gPin, bPin) {}
 
-    static RGBEntity fromEntity(Entity entity)
-    {
+    static RGBEntity fromEntity(Entity entity) {
         RGBEntity rgbEntity = RGBEntity();
         rgbEntity.fromString(entity.toString());
         return rgbEntity;
     }
 
-    // Setters and Getters for each field
+    // Getters
+    String getType() {
+        type = GetValue(COLUMN_TYPE);
+        return type;
+    }
+
+    int getRPin() {
+        rPin = GetValue(COLUMN_RPIN).toInt();
+        return rPin;
+    }
+
+    int getGPin() {
+        gPin = GetValue(COLUMN_GPIN).toInt();
+        return gPin;
+    }
+
+    int getBPin() {
+        bPin = GetValue(COLUMN_BPIN).toInt();
+        return bPin;
+    }
+
+    // Setters
+    void setType(const String &value) {
+        type = value;
+        SetValue(COLUMN_TYPE, type);
+    }
+
+    void setRPin(int value) {
+        rPin = value;
+        SetValue(COLUMN_RPIN, String(rPin));
+    }
+
+    void setGPin(int value) {
+        gPin = value;
+        SetValue(COLUMN_GPIN, String(gPin));
+    }
+
+    void setBPin(int value) {
+        bPin = value;
+        SetValue(COLUMN_BPIN, String(bPin));
+    }
+
 };
 
 const String RGBEntity::COLUMN_TYPE = "Type";

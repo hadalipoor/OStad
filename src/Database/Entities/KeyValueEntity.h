@@ -7,10 +7,10 @@ class KeyValueEntity : public Entity {
 public:
     static const String COLUMN_KEY;
     static const String COLUMN_VALUE;
-
+private:
     String key;
     String value;
-
+public:
     KeyValueEntity() : Entity() {}
 
     KeyValueEntity(int id, const String &_key, const String &_value) : Entity() {
@@ -19,6 +19,9 @@ public:
         value = _value;
         addColumn(COLUMN_KEY, key, "string");
         addColumn(COLUMN_VALUE, value, "string");
+
+        SetValue(COLUMN_KEY, key);
+        SetValue(COLUMN_VALUE, value);
     }
 
     KeyValueEntity(const String &_key, const String &_value) : KeyValueEntity(0, _key, _value) {}

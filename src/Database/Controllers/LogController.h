@@ -19,10 +19,7 @@ public:
 };
 
 void LogController::AddLog(LogLevel logLevel, String logTitle, String logMessage) {
-    LogEntity logEntity = LogEntity();
-    logEntity.logLevel = logLevel;
-    logEntity.logTitle = logTitle;
-    logEntity.message = logMessage;
+    LogEntity logEntity = LogEntity(logLevel, logTitle, logMessage);
     Add(logEntity);
 }
 

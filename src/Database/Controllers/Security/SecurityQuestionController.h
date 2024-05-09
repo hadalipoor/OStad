@@ -1,7 +1,6 @@
 #ifndef SECURITYQUESTIONCONTROLLER_H
 #define SECURITYQUESTIONCONTROLLER_H
 
-#include <OStad.h>
 #include "../../Entities/Security/SecurityQuestionEntity.h"
 #include "../../../Context.h"
 

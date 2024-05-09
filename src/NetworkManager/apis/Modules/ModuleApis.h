@@ -18,8 +18,8 @@ public:
 
     String callFunction(String functionName, std::map<String, String> parameters) override;
     
-    String handlecreate(String Name, String ModuleType, String ConnectionType, int NodeId, int PinNumber);
-    String handleupdate(int id, String Name, String ModuleType, String ConnectionType, int NodeId, int PinNumber);
+    String handlecreate(String Name, String ModuleType, int DeviceId, int ServerId);
+    String handleupdate(int id, String Name, String ModuleType, int DeviceId, int ServerId);
     String handledelete(int id);
     String handlegetAll();
     String handlegetById(int id);
@@ -33,23 +33,35 @@ ModuleApis::ModuleApis(Context* cntxt, bool add_apis): context(cntxt) {
 
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/create"), LambdaResourceNode::REQUEST_METHOD_POST, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::MODULE_CREATE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("Name") || !req->getParams()->isQueryParameterSet("ModuleType") || !req->getParams()->isQueryParameterSet("ConnectionType") || !req->getParams()->isQueryParameterSet("NodeId") || !req->getParams()->isQueryParameterSet("PinNumber"))
+        String body = getBodyString(req);
+        if (!isItemInBody(body,"Name") || !isItemInBody(body,"ModuleType") || !isItemInBody(body,"DeviceId") || !isItemInBody(body,"ServerId"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
         }
         
+        
         String Name = getQueryParameterString(req, "Name");
-    String ModuleType = getQueryParameterString(req, "ModuleType");
-    String ConnectionType = getQueryParameterString(req, "ConnectionType");
-    int NodeId = getQueryParameterint(req, "NodeId");
-    int PinNumber = getQueryParameterint(req, "PinNumber");
+        String ModuleType = getQueryParameterString(req, "ModuleType");
+        if (!context->getValidation()->variableValidator()->isNumber(getItemInBody(body, "DeviceId")))
+        {
+            response(res, jsonResponse(false, WRONG_INPUT_PARAMS_FORMAT_MESSAGE));
+            return;
+        }
+        int DeviceId = getItemInBody(body, "DeviceId").toInt();
+        if (!context->getValidation()->variableValidator()->isNumber(getItemInBody(body, "ServerId")))
+        {
+            response(res, jsonResponse(false, WRONG_INPUT_PARAMS_FORMAT_MESSAGE));
+            return;
+        }
+        int ServerId = getItemInBody(body, "ServerId").toInt();
 
-        response(res, handlecreate(Name, ModuleType, ConnectionType, NodeId, PinNumber));
+        response(res, handlecreate(Name, ModuleType, DeviceId, ServerId));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/update"), LambdaResourceNode::REQUEST_METHOD_PUT, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::MODULE_UPDATE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("id") || !req->getParams()->isQueryParameterSet("Name") || !req->getParams()->isQueryParameterSet("ModuleType") || !req->getParams()->isQueryParameterSet("ConnectionType") || !req->getParams()->isQueryParameterSet("NodeId") || !req->getParams()->isQueryParameterSet("PinNumber"))
+        String body = getBodyString(req);
+        if (!isItemInBody(body,"id") || !isItemInBody(body,"Name") || !isItemInBody(body,"ModuleType") || !isItemInBody(body,"DeviceId") || !isItemInBody(body,"ServerId"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
@@ -57,16 +69,16 @@ ModuleApis::ModuleApis(Context* cntxt, bool add_apis): context(cntxt) {
 
         int id = getQueryParameterint(req, "id");
         String Name = getQueryParameterString(req, "Name");
-    String ModuleType = getQueryParameterString(req, "ModuleType");
-    String ConnectionType = getQueryParameterString(req, "ConnectionType");
-    int NodeId = getQueryParameterint(req, "NodeId");
-    int PinNumber = getQueryParameterint(req, "PinNumber");
+        String ModuleType = getQueryParameterString(req, "ModuleType");
+        int DeviceId = getQueryParameterint(req, "DeviceId");
+        int ServerId = getQueryParameterint(req, "ServerId");
         
-        response(res, handleupdate(id, Name, ModuleType, ConnectionType, NodeId, PinNumber));
+        response(res, handleupdate(id, Name, ModuleType, DeviceId, ServerId));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/delete"), LambdaResourceNode::REQUEST_METHOD_DELETE, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::MODULE_DELETE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("id"))
+        String body = getBodyString(req);
+        if (!isItemInBody(body,"id"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
@@ -82,7 +94,8 @@ ModuleApis::ModuleApis(Context* cntxt, bool add_apis): context(cntxt) {
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/getById"), LambdaResourceNode::REQUEST_METHOD_GET, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::MODULE_GET) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("id"))
+        String body = getBodyString(req);
+        if (!isItemInBody(body,"id"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
@@ -94,7 +107,8 @@ ModuleApis::ModuleApis(Context* cntxt, bool add_apis): context(cntxt) {
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/get"), LambdaResourceNode::REQUEST_METHOD_GET, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::MODULE_GET) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("query"))
+        String body = getBodyString(req);
+        if (!isItemInBody(body,"query"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
@@ -111,8 +125,8 @@ String ModuleApis::getClassPath()
     return String(class_path.c_str());
 }
 
-String ModuleApis::handlecreate(String Name, String ModuleType, String ConnectionType, int NodeId, int PinNumber) {
-    ModuleEntity* moduleEntity = new ModuleEntity(Name, ModuleType, ConnectionType, NodeId, PinNumber);
+String ModuleApis::handlecreate(String Name, String ModuleType, int DeviceId, int ServerId) {
+    ModuleEntity* moduleEntity = new ModuleEntity(Name, ModuleType, DeviceId, ServerId);
     int id = moduleController->Add(*moduleEntity);
     if (id != -1)
     {
@@ -121,8 +135,8 @@ String ModuleApis::handlecreate(String Name, String ModuleType, String Connectio
     
     return CREATE_FAILED_MESSAGE;
 }
-String ModuleApis::handleupdate(int id, String Name, String ModuleType, String ConnectionType, int NodeId, int PinNumber) {
-    ModuleEntity* moduleEntity = new ModuleEntity(id, Name, ModuleType, ConnectionType, NodeId, PinNumber);
+String ModuleApis::handleupdate(int id, String Name, String ModuleType, int DeviceId, int ServerId) {
+    ModuleEntity* moduleEntity = new ModuleEntity(id, Name, ModuleType, DeviceId, ServerId);
     
     if (moduleController->Update(*moduleEntity))
     {
@@ -153,10 +167,10 @@ String ModuleApis::handleget(String query) {
 String ModuleApis::callFunction(String functionName, std::map<String, String> parameters) {
     
     if (functionName == "create") {
-        return handlecreate(parameters["Name"], parameters["ModuleType"], parameters["ConnectionType"], parameters["NodeId"].toInt(), parameters["PinNumber"].toInt());
+        return handlecreate(parameters["Name"], parameters["ModuleType"], parameters["DeviceId"].toInt(), parameters["ServerId"].toInt());
     }
     if (functionName == "update") {
-        return handleupdate(parameters["id"].toInt(), parameters["Name"], parameters["ModuleType"], parameters["ConnectionType"], parameters["NodeId"].toInt(), parameters["PinNumber"].toInt());
+        return handleupdate(parameters["id"].toInt(), parameters["Name"], parameters["ModuleType"], parameters["DeviceId"].toInt(), parameters["ServerId"].toInt());
     }
     if (functionName == "delete") {
         return handledelete(parameters["id"].toInt());

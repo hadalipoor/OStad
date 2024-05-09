@@ -4,7 +4,7 @@
 
 
 #include <ArduinoJson.h>
-#include "../../../Database/Controllers/SystemConfigController.h"
+#include "../../../Database/Controllers/Configs/SystemConfigController.h"
 #include "../../../Context.h"
 #include "../ApiInterface.h"
 #include "../../../Config/System/DefaultSystemConfigs.h"

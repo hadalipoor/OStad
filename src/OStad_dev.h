@@ -17,6 +17,9 @@
 #include <PCF8574.h>
 #include "ModuleManager/Modules.h"
 #endif
+#ifndef OSTAD_DEVICE_MANAGER_DISABLE
+#include "DeviceManager/DeviceManager.h"
+#endif
 #include "SystemMonitor/SystemMonitor.h"
 #include "DatabaseSeeder.h"
 
@@ -39,6 +42,9 @@ private:
     Network* network;
     Security* security;
     CertificateData _certificateData;
+#endif
+#ifndef OSTAD_DEVICE_MANAGER_DISABLE
+    DeviceManager* _deviceManager;
 #endif
     void initialize();
 
@@ -89,6 +95,9 @@ void OStad_dev::initialize() {
     _clock = new Clock(context);
     ebpLittleFS = new EBPFile(context, StorageType::SPIFFS_TYPE);
     ebpSD = new EBPFile(context, StorageType::SD_TYPE);
+#ifndef OSTAD_DEVICE_MANAGER_DISABLE
+    _deviceManager = new DeviceManager(context);
+#endif
 #ifndef OSTAD_NETWORK_DISABLE
     if (_https_enabled)
     {
@@ -121,7 +130,9 @@ void OStad_dev::initialize() {
     context->setModules(modules);
 #endif
     context->setSystemMonitor(systemMonitor);
-    
+#ifndef OSTAD_DEVICE_MANAGER_DISABLE
+    context->setDeviceManager(_deviceManager);
+#endif
     ebpLittleFS->createDirectory("/db/");
     
     configs->initialize();
@@ -136,7 +147,9 @@ void OStad_dev::initialize() {
     _clock->syncTimeWithServer();
     security->initialize();
 #endif
-    
+#ifndef OSTAD_DEVICE_MANAGER_DISABLE
+    _deviceManager->initialize();
+#endif
     // logger->log(LogLevel::DEBUG_LEVEL, LogTitles::SYSTEM_BOOT, "Seeding Database ...");
     // dbSeeder = new DatabaseSeeder(context);
     // dbSeeder->seed();
@@ -154,8 +167,14 @@ void OStad_dev::begin()
 }
 
 void OStad_dev::update() {
+#ifndef OSTAD_MODULES_DISABLE
+    modules->update();
+#endif
 #ifndef OSTAD_NETWORK_DISABLE
     network->update();
+#endif
+#ifndef OSTAD_DEVICE_MANAGER_DISABLE
+    _deviceManager->update();
 #endif
 }
 

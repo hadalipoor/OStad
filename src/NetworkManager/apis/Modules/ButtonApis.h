@@ -18,8 +18,8 @@ public:
 
     String callFunction(String functionName, std::map<String, String> parameters) override;
     
-    String handlecreate(int ModuleId, String ButtonType, bool ActiveHigh, bool PullupActive, int DebounceDelay);
-    String handleupdate(int id, int ModuleId, String ButtonType, bool ActiveHigh, bool PullupActive, int DebounceDelay);
+    String handlecreate(int ModuleId, int pinNumber, String ButtonType, bool ActiveHigh, bool PullupActive, int DebounceDelay);
+    String handleupdate(int id, int pinNumber, int ModuleId, String ButtonType, bool ActiveHigh, bool PullupActive, int DebounceDelay);
     String handledelete(int id);
     String handlegetAll();
     String handlegetById(int id);
@@ -40,16 +40,17 @@ ButtonApis::ButtonApis(Context* cntxt, bool add_apis): context(cntxt) {
         }
         
         int ModuleId = getQueryParameterint(req, "ModuleId");
+         int pinNumber = getQueryParameterint(req, "PinNumber");
     String ButtonType = getQueryParameterString(req, "ButtonType");
     bool ActiveHigh = boolean(getQueryParameterString(req, "ActiveHigh"));
     bool PullupActive = boolean(getQueryParameterString(req, "PullupActive"));
     int DebounceDelay = getQueryParameterint(req, "DebounceDelay");
 
-        response(res, handlecreate(ModuleId, ButtonType, ActiveHigh, PullupActive, DebounceDelay));
+        response(res, handlecreate(ModuleId,pinNumber, ButtonType, ActiveHigh, PullupActive, DebounceDelay));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/update"), LambdaResourceNode::REQUEST_METHOD_PUT, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::BUTTON_UPDATE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("id") || !req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("ButtonType") || !req->getParams()->isQueryParameterSet("ActiveHigh") || !req->getParams()->isQueryParameterSet("PullupActive") || !req->getParams()->isQueryParameterSet("DebounceDelay"))
+        if (!req->getParams()->isQueryParameterSet("id") || !req->getParams()->isQueryParameterSet("PinNumber") || !req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("ButtonType") || !req->getParams()->isQueryParameterSet("ActiveHigh") || !req->getParams()->isQueryParameterSet("PullupActive") || !req->getParams()->isQueryParameterSet("DebounceDelay"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
@@ -57,12 +58,13 @@ ButtonApis::ButtonApis(Context* cntxt, bool add_apis): context(cntxt) {
 
         int id = getQueryParameterint(req, "id");
         int ModuleId = getQueryParameterint(req, "ModuleId");
+         int pinNumber = getQueryParameterint(req, "PinNumber");
     String ButtonType = getQueryParameterString(req, "ButtonType");
     bool ActiveHigh = boolean(getQueryParameterString(req, "ActiveHigh"));
     bool PullupActive = boolean(getQueryParameterString(req, "PullupActive"));
     int DebounceDelay = getQueryParameterint(req, "DebounceDelay");
         
-        response(res, handleupdate(id, ModuleId, ButtonType, ActiveHigh, PullupActive, DebounceDelay));
+        response(res, handleupdate(id, pinNumber, ModuleId, ButtonType, ActiveHigh, PullupActive, DebounceDelay));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/delete"), LambdaResourceNode::REQUEST_METHOD_DELETE, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::BUTTON_DELETE) == AuthorizationResults::SUCCESFULL){return;}
@@ -111,8 +113,8 @@ String ButtonApis::getClassPath()
     return String(class_path.c_str());
 }
 
-String ButtonApis::handlecreate(int ModuleId, String ButtonType, bool ActiveHigh, bool PullupActive, int DebounceDelay) {
-    ButtonEntity* buttonEntity = new ButtonEntity(ModuleId, ButtonType, ActiveHigh, PullupActive, DebounceDelay);
+String ButtonApis::handlecreate(int ModuleId, int pinNumber, String ButtonType, bool ActiveHigh, bool PullupActive, int DebounceDelay) {
+    ButtonEntity* buttonEntity = new ButtonEntity(ModuleId, pinNumber, ButtonType, ActiveHigh, PullupActive, DebounceDelay);
     int id = buttonController->Add(*buttonEntity);
     if (id != -1)
     {
@@ -121,8 +123,8 @@ String ButtonApis::handlecreate(int ModuleId, String ButtonType, bool ActiveHigh
     
     return CREATE_FAILED_MESSAGE;
 }
-String ButtonApis::handleupdate(int id, int ModuleId, String ButtonType, bool ActiveHigh, bool PullupActive, int DebounceDelay) {
-    ButtonEntity* buttonEntity = new ButtonEntity(id, ModuleId, ButtonType, ActiveHigh, PullupActive, DebounceDelay);
+String ButtonApis::handleupdate(int id, int pinNumber, int ModuleId, String ButtonType, bool ActiveHigh, bool PullupActive, int DebounceDelay) {
+    ButtonEntity* buttonEntity = new ButtonEntity(id,  pinNumber, ModuleId, ButtonType, ActiveHigh, PullupActive, DebounceDelay);
     
     if (buttonController->Update(*buttonEntity))
     {
@@ -153,10 +155,10 @@ String ButtonApis::handleget(String query) {
 String ButtonApis::callFunction(String functionName, std::map<String, String> parameters) {
     
     if (functionName == "create") {
-        return handlecreate(parameters["ModuleId"].toInt(), parameters["ButtonType"], parameters["ActiveHigh"].toInt(), parameters["PullupActive"].toInt(), parameters["DebounceDelay"].toInt());
+        return handlecreate(parameters["ModuleId"].toInt(), parameters["PinNumber"].toInt(), parameters["ButtonType"], parameters["ActiveHigh"].toInt(), parameters["PullupActive"].toInt(), parameters["DebounceDelay"].toInt());
     }
     if (functionName == "update") {
-        return handleupdate(parameters["id"].toInt(), parameters["ModuleId"].toInt(), parameters["ButtonType"], parameters["ActiveHigh"].toInt(), parameters["PullupActive"].toInt(), parameters["DebounceDelay"].toInt());
+        return handleupdate(parameters["id"].toInt(), parameters["PinNumber"].toInt(), parameters["ModuleId"].toInt(), parameters["ButtonType"], parameters["ActiveHigh"].toInt(), parameters["PullupActive"].toInt(), parameters["DebounceDelay"].toInt());
     }
     if (functionName == "delete") {
         return handledelete(parameters["id"].toInt());

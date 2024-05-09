@@ -16,11 +16,11 @@ public:
     static const String COLUMN_LOG_TYPE;
     static const String COLUMN_LOG_TITLE;
     static const String COLUMN_MESSAGE;
-
+private:
     LogLevel logLevel;
     String logTitle;
     String message;
-
+public:
     LogEntity() : Entity() {}
 
     LogEntity(int id, LogLevel _logLevel, const String &_logTitle, const String &_message) : Entity() {
@@ -31,6 +31,10 @@ public:
         addColumn(COLUMN_LOG_TYPE, String(static_cast<int>(logLevel)), "int");
         addColumn(COLUMN_LOG_TITLE, logTitle, "string");
         addColumn(COLUMN_MESSAGE, message, "string");
+
+        SetValue(COLUMN_LOG_TYPE, String(static_cast<int>(logLevel)));
+        SetValue(COLUMN_LOG_TITLE, logTitle);
+        SetValue(COLUMN_MESSAGE, message);
     }
     LogEntity(int id, String _logLevel, const String &_logTitle, const String &_message) : LogEntity(id, getLogLevelFromString(_logLevel), _logTitle, _message)
     {

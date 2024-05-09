@@ -7,10 +7,10 @@ class WiFiEntity : public Entity {
 public:
     static const String COLUMN_SSID;
     static const String COLUMN_PASSWORD;
-
+private:
     String SSID;
     String Password;
-
+public:
     WiFiEntity() : Entity() {}
 
     WiFiEntity(int id, const String &_SSID, const String &_Password) : Entity() {
@@ -19,6 +19,9 @@ public:
         Password = _Password;
         addColumn(COLUMN_SSID, SSID, "string");
         addColumn(COLUMN_PASSWORD, Password, "string");
+
+        SetValue(COLUMN_SSID, SSID);
+        SetValue(COLUMN_PASSWORD, Password);
     }
 
     WiFiEntity(const String &_SSID, const String &_Password) : WiFiEntity(0, _SSID, _Password) {}

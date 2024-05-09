@@ -40,6 +40,12 @@ WiFiManager::WiFiManager(Context*cntxt)
 {
   context = cntxt;
   pinMode(BUILTIN_LED_PIN, OUTPUT);
+
+  context->getConfig()->getSystemConfig()->get(SystemConfigKey::DEFAULT_IP);
+  context->getConfig()->getSystemConfig()->get(SystemConfigKey::DEFAULT_GATEWAY);
+  context->getConfig()->getSystemConfig()->get(SystemConfigKey::DEFAULT_SUBNET);
+  context->getConfig()->getSystemConfig()->get(SystemConfigKey::DEFAULT_PRIMARYDNS);
+  context->getConfig()->getSystemConfig()->get(SystemConfigKey::DEFAULT_SECONDARYDNS);
 }
 
 void WiFiManager::loop()

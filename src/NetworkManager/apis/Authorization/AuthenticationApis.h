@@ -4,7 +4,7 @@
 
 #include "../../../Context.h"
 #include "../../../Database/Controllers/Security/LoginAttemptController.h"
-#include "../../../Security/AuthorizationPermissions.h"
+#include "AuthorizationPermissions.h"
 
 class AuthenticationApis : public ApiInterface
 {

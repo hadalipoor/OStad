@@ -18,8 +18,8 @@ public:
 
     String callFunction(String functionName, std::map<String, String> parameters) override;
     
-    String handlecreate(int ModuleId, bool NormallyOpen);
-    String handleupdate(int id, int ModuleId, bool NormallyOpen);
+    String handlecreate(int ModuleId, int PinNumber, bool NormallyOpen);
+    String handleupdate(int id, int ModuleId, int PinNumber, bool NormallyOpen);
     String handledelete(int id);
     String handlegetAll();
     String handlegetById(int id);
@@ -33,30 +33,32 @@ RelayApis::RelayApis(Context* cntxt, bool add_apis): context(cntxt) {
 
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/create"), LambdaResourceNode::REQUEST_METHOD_POST, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::RELAY_CREATE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("NormallyOpen"))
+        if (!req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("PinNumber") || !req->getParams()->isQueryParameterSet("NormallyOpen"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
         }
         
         int ModuleId = getQueryParameterint(req, "ModuleId");
+        int PinNumber = getQueryParameterint(req, "PinNumber");
     bool NormallyOpen = boolean(getQueryParameterString(req, "NormallyOpen"));
 
-        response(res, handlecreate(ModuleId, NormallyOpen));
+        response(res, handlecreate(ModuleId, PinNumber, NormallyOpen));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/update"), LambdaResourceNode::REQUEST_METHOD_PUT, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::RELAY_UPDATE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("id") || !req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("NormallyOpen"))
+        if (!req->getParams()->isQueryParameterSet("id") || !req->getParams()->isQueryParameterSet("PinNumber") || !req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("NormallyOpen"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
         }
-
+        
         int id = getQueryParameterint(req, "id");
         int ModuleId = getQueryParameterint(req, "ModuleId");
-    bool NormallyOpen = boolean(getQueryParameterString(req, "NormallyOpen"));
+        int PinNumber = getQueryParameterint(req, "PinNumber");
+        bool NormallyOpen = getQueryParameterString(req, "NormallyOpen") == "true"? true: false;
         
-        response(res, handleupdate(id, ModuleId, NormallyOpen));
+        response(res, handleupdate(id, PinNumber, ModuleId,  NormallyOpen));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/delete"), LambdaResourceNode::REQUEST_METHOD_DELETE, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::RELAY_DELETE) == AuthorizationResults::SUCCESFULL){return;}
@@ -105,8 +107,8 @@ String RelayApis::getClassPath()
     return String(class_path.c_str());
 }
 
-String RelayApis::handlecreate(int ModuleId, bool NormallyOpen) {
-    RelayEntity* relayEntity = new RelayEntity(ModuleId, NormallyOpen);
+String RelayApis::handlecreate(int ModuleId, int PinNumber, bool NormallyOpen) {
+    RelayEntity* relayEntity = new RelayEntity(ModuleId, PinNumber, NormallyOpen);
     int id = relayController->Add(*relayEntity);
     if (id != -1)
     {
@@ -115,8 +117,8 @@ String RelayApis::handlecreate(int ModuleId, bool NormallyOpen) {
     
     return CREATE_FAILED_MESSAGE;
 }
-String RelayApis::handleupdate(int id, int ModuleId, bool NormallyOpen) {
-    RelayEntity* relayEntity = new RelayEntity(id, ModuleId, NormallyOpen);
+String RelayApis::handleupdate(int id, int PinNumber, int ModuleId, bool NormallyOpen) {
+    RelayEntity* relayEntity = new RelayEntity(id, PinNumber, ModuleId, NormallyOpen);
     
     if (relayController->Update(*relayEntity))
     {
@@ -147,10 +149,10 @@ String RelayApis::handleget(String query) {
 String RelayApis::callFunction(String functionName, std::map<String, String> parameters) {
     
     if (functionName == "create") {
-        return handlecreate(parameters["ModuleId"].toInt(), parameters["NormallyOpen"].toInt());
+        return handlecreate(parameters["ModuleId"].toInt(), parameters["PinNumber"].toInt(), parameters["NormallyOpen"].toInt());
     }
     if (functionName == "update") {
-        return handleupdate(parameters["id"].toInt(), parameters["ModuleId"].toInt(), parameters["NormallyOpen"].toInt());
+        return handleupdate(parameters["id"].toInt(), parameters["ModuleId"].toInt(), parameters["PinNumber"].toInt(), parameters["NormallyOpen"].toInt());
     }
     if (functionName == "delete") {
         return handledelete(parameters["id"].toInt());

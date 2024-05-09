@@ -4,12 +4,11 @@
 
 class ButtonFullEntity {
 public:
-    int id;
+    int Id;
     int ModuleId;
     String Name;
     String ModuleType;
-    String ConnectionType;
-    int NodeId;
+    int DeviceId;
     int PinNumber;
     String ButtonType;
     bool ActiveHigh;
@@ -19,21 +18,18 @@ public:
 
     ButtonFullEntity() {}
 
-    ButtonFullEntity(int id, int moduleId, String _Name, String _ModuleType, String _ConnectionType, int nodeId,
-                     int pinNumber, String _ButtonType, bool activeHigh, bool pullupActive, int debounceDelay)  {
-        this->id = id;
-        ButtonType = _ButtonType;
+    ButtonFullEntity(int id, int moduleId, String name, String moduleType, int deviceId,
+                     int pinNumber, String buttonType, bool activeHigh, bool pullupActive, int debounceDelay)  {
+        Id = id;
+        ButtonType = buttonType;
         ActiveHigh = activeHigh;
         PullupActive = pullupActive;
         DebounceDelay = debounceDelay;
         ModuleId = moduleId;
-        Name = _Name;
-        ModuleType = _ModuleType;
-        ConnectionType = _ConnectionType;
-        NodeId = nodeId;
+        Name = name;
+        ModuleType = moduleType;
+        DeviceId = deviceId;
         PinNumber = pinNumber;
-
     }
-
 };
 #endif // BUTTONFULLENTITY_H

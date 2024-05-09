@@ -21,7 +21,10 @@ class Entity {
     {
       createDate = EBPDateTime(2000,1,1,0,0,0);
     }
-    
+    Entity(int _id): Entity()
+    {
+      id = _id;
+    }
     Entity(String &str) :Entity(){
       fromString(str);
     }

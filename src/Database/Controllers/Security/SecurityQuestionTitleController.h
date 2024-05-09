@@ -1,7 +1,6 @@
 #ifndef SECURITYQUESTIONTITLECONTROLLER_H
 #define SECURITYQUESTIONTITLECONTROLLER_H
 
-#include <OStad.h>
 #include "../../Entities/Security/SecurityQuestionTitleEntity.h"
 #include "../../../Context.h"
 

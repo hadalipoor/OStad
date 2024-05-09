@@ -2,7 +2,7 @@
 #define SYSTEMCONFIG_H
 
 #include <string>
-#include "../../Database/Controllers/SystemConfigController.h"
+#include "../../Database/Controllers/Configs/SystemConfigController.h"
 #include "../../Database/Entities/KeyValueEntity.h"
 #include "../IConfig.h"
 #include "DefaultSystemConfigs.h"

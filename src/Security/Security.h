@@ -162,7 +162,7 @@ LoginResult Security::logout(String username)
     if (users.size() > 0)
     {
         UserEntity user = users.at(0);
-        user.Token = "";
+        user.setToken("");
         if(userController->Update(user))
         {
             return LoginResult(true, LoginResults::LogoutSuccessfull);
@@ -216,7 +216,7 @@ bool Security::checkUserPermission(String username, String permission)
         return false;
     }
 
-    if (user.RoleId == 1)
+    if (user.getRoleId() == 1)
     {
         //this is sys admin
         return true;

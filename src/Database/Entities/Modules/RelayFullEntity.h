@@ -9,23 +9,37 @@ public:
     int ModuleId;
     String Name;
     String ModuleType;
-    String ConnectionType;
-    int NodeId;
+    int DeviceId;
     int PinNumber;
     bool NormallyOpen;
+    int ServerId;
 
     RelayFullEntity() {}
 
-    RelayFullEntity(int id, int moduleId, const String &_Name, const String &_ModuleType, const String &_ConnectionType, int nodeId,
-                    int pinNumber, bool normallyOpen) {
+    RelayFullEntity(int id, int moduleId, const String &_Name, const String &_ModuleType, int deviceId,
+                    int pinNumber, bool normallyOpen, int serverId) {
         this->id = id;
         NormallyOpen = normallyOpen;
         ModuleId = moduleId;
         Name = _Name;
         ModuleType = _ModuleType;
-        ConnectionType = _ConnectionType;
-        NodeId = nodeId;
+        DeviceId = deviceId;
         PinNumber = pinNumber;
+        ServerId = serverId;
+    }
+
+    String getJsonString() {
+        String json = "{";
+        json += "\"Id\": " + String(id) + ", ";
+        json += "\"ModuleId\": " + String(ModuleId) + ", ";
+        json += "\"Name\": \"" + Name + "\", ";
+        json += "\"ModuleType\": \"" + ModuleType + "\", ";
+        json += "\"DeviceId\": " + String(DeviceId) + ", ";
+        json += "\"PinNumber\": " + String(PinNumber) + ", ";
+        json += "\"NormallyOpen\": " + String(NormallyOpen ? "true" : "false") + ", ";
+        json += "\"ServerId\": " + String(ServerId);
+        json += "}";
+        return json;
     }
 };
 

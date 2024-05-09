@@ -2,6 +2,7 @@
 #define Network_H
 
 #define ASYNC_TCP_SSL_ENABLED 1
+#define HTTPS_REQUEST_MAX_REQUEST_LENGTH 1024
 
 #include "INetwork.h"
 #include "IPAddress.h"
@@ -16,7 +17,10 @@
 
 #include "apis/System/AddSystemApis.h"
 #include "apis/Modules/AddModulesApis.h"
-#include "apis/Authorization/AuthorizationApis.h"
+#include "apis/Authorization/AddAuthorizationApis.h"
+#include "apis/DeviceManager/AddDeviceApis.h"
+
+#include "ApiManager.h"
 
 // The HTTPS Server comes in a separate namespace. For easier use, include it here.
 using namespace httpsserver;
@@ -42,6 +46,7 @@ private:
     void rebootESP(String message);
     // MeshNetworkManager* meshManager;
     WiFiManager* wiFiManager;
+    ApiManager* _apiaManager;
     CertificateData _certificateData;
     static void serverTask(ServerTaskParams* params);
     static void serverTaskWrapper(void *params);
@@ -62,6 +67,7 @@ public:
     IWiFiManager* getWiFiManager() override;
     HTTPServer& getHTTPServer() override;
     HTTPSServer& getHTTPSServer() override;
+    ApiManager* getApiManager() override;
 
     Receive* getReceive() override;
     void begin();
@@ -120,6 +126,8 @@ void Network::configureWebServer() {
     context->getLogger()->log(LogLevel::DEBUG_LEVEL, LogTitles::SYSTEM_BOOT, "Authorization Apis Created.");
     createModulesApis(context);
     context->getLogger()->log(LogLevel::DEBUG_LEVEL, LogTitles::SYSTEM_BOOT, "Module Apis Created.");
+    createDeviceApis(context);
+    context->getLogger()->log(LogLevel::DEBUG_LEVEL, LogTitles::SYSTEM_BOOT, "Device Apis Created.");
     context->getLogger()->log(LogLevel::DEBUG_LEVEL, LogTitles::SYSTEM_BOOT, "Web Server Configured.");
 }
 
@@ -134,6 +142,7 @@ void Network::addUrlNotFound(ResourceNode* api)
 
 void Network::addApi(ResourceNode* api)
 {
+  
   httpServer->registerNode(api);
   if (_https_enabled)
   {
@@ -201,6 +210,7 @@ void Network::serverTask(ServerTaskParams* params) {
 }
 
 void Network::initialize() {
+  _apiaManager = new ApiManager();
   inputString.reserve(200); // reserve 200 bytes for the inputString:
 
   context->getLogger()->log(LogLevel::DEBUG_LEVEL, LogTitles::SYSTEM_BOOT, "Initializing Network ...");
@@ -288,6 +298,11 @@ void Network::update() {
 IWiFiManager* Network::getWiFiManager()
 {
   return wiFiManager;
+}
+
+ApiManager* Network::getApiManager()
+{
+  return _apiaManager;
 }
 
 bool Network::isFormatValid(String input) {

@@ -9,33 +9,65 @@ public:
     static const String COLUMN_WET_TRESHOLD;
     static const String COLUMN_TYPE;
 
-    int DryTreshold;
-    int WetTreshold;
-    String Type;
+private:
+    int dryTreshold;
+    int wetTreshold;
+    String type;
 
-    SoilMoistureEntity() : Entity() {}
+public:
+    SoilMoistureEntity() : Entity(), dryTreshold(0), wetTreshold(0), type("") {}
 
     SoilMoistureEntity(int id, int dryTreshold, int wetTreshold, const String &_Type) : Entity() {
         this->id = id;
-        DryTreshold = dryTreshold;
-        WetTreshold = wetTreshold;
-        Type = _Type;
-        addColumn(COLUMN_DRY_TRESHOLD, String(DryTreshold), "int");
-        addColumn(COLUMN_WET_TRESHOLD, String(WetTreshold), "int");
-        addColumn(COLUMN_TYPE, Type, "string");
+        this->dryTreshold = dryTreshold;
+        this->wetTreshold = wetTreshold;
+        this->type = _Type;
+        SetValue(COLUMN_DRY_TRESHOLD, String(this->dryTreshold));
+        SetValue(COLUMN_WET_TRESHOLD, String(this->wetTreshold));
+        SetValue(COLUMN_TYPE, this->type);
     }
 
     SoilMoistureEntity(int dryTreshold, int wetTreshold, const String &_Type) : 
         SoilMoistureEntity(0, dryTreshold, wetTreshold, _Type) {}
 
-    static SoilMoistureEntity fromEntity(Entity entity)
-    {
+    static SoilMoistureEntity fromEntity(Entity entity) {
         SoilMoistureEntity soilMoistureEntity = SoilMoistureEntity();
         soilMoistureEntity.fromString(entity.toString());
         return soilMoistureEntity;
     }
 
-    // Setters and Getters for each field
+    // Getters
+    int getDryTreshold() {
+        dryTreshold = GetValue(COLUMN_DRY_TRESHOLD).toInt();
+        return dryTreshold;
+    }
+
+    int getWetTreshold() {
+        wetTreshold = GetValue(COLUMN_WET_TRESHOLD).toInt();
+        return wetTreshold;
+    }
+
+    String getType() {
+        type = GetValue(COLUMN_TYPE);
+        return type;
+    }
+
+    // Setters
+    void setDryTreshold(int value) {
+        dryTreshold = value;
+        SetValue(COLUMN_DRY_TRESHOLD, String(dryTreshold));
+    }
+
+    void setWetTreshold(int value) {
+        wetTreshold = value;
+        SetValue(COLUMN_WET_TRESHOLD, String(wetTreshold));
+    }
+
+    void setType(const String &value) {
+        type = value;
+        SetValue(COLUMN_TYPE, type);
+    }
+
 };
 
 const String SoilMoistureEntity::COLUMN_DRY_TRESHOLD = "DryTreshold";

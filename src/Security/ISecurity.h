@@ -1,7 +1,6 @@
 #ifndef ISECURITY_H
 #define ISECURITY_H
 
-#include "AuthorizationPermissions.h"
 #include "LoginResult.h"
 #include <HTTPS_Server_Generic.h>
 #include <base64.h>

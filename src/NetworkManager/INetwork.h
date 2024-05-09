@@ -5,6 +5,7 @@
 #include "WiFi/IWiFiManager.h"
 #include "MeshNetwork/Receive.h"
 #include "LambdaResourceNode.h"
+#include "ApiManager.h"
 
 using namespace httpsserver;
 
@@ -27,6 +28,7 @@ public:
     virtual void addApi(ResourceNode* api) = 0;
     virtual void addUrlNotFound(ResourceNode* api) = 0;
     virtual Receive* getReceive() = 0;
+    virtual ApiManager* getApiManager() = 0;
 
 };
 

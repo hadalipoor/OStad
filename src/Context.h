@@ -22,6 +22,7 @@
 #include "NetworkManager/INetwork.h"
 #include "ModuleManager/IModules.h"
 #include "SystemMonitor/ISystemMonitor.h"
+#include "DeviceManager/IDeviceManager.h"
 
 /**
  * @brief Static variable to store storage type.
@@ -201,6 +202,20 @@ public:
      */
     void setSecurity(ISecurity* security) { _security = security; }
 
+    /**
+     * @brief Get the DeviceManager object.
+     * 
+     * @return IDeviceManager* Pointer to the security interface.
+     */
+    IDeviceManager* getDeviceManager(){ return _deviceManager; }
+
+    /**
+     * @brief Set the DeviceManager object.
+     * 
+     * @param security Pointer to the security interface.
+     */
+    void setDeviceManager(IDeviceManager* deviceManager) { _deviceManager = deviceManager; }
+
 private:
     IConfigs* _config;
     ILog* logger;
@@ -213,6 +228,7 @@ private:
     IModules* _modules;
     ISecurity* _security;
     ISystemMonitor* _systemMonitor;
+    IDeviceManager* _deviceManager;
 };
 
 #endif // CONTEXT_H

@@ -6,36 +6,41 @@
 class RoleEntity : public Entity {
 public:
     static const String COLUMN_ROLENAME;
-    
 
-    String RoleName;
-    
+private:
+    String roleName;
 
-    RoleEntity()  : Entity(){}
+public:
+    RoleEntity() : Entity(), roleName("") {}
 
     RoleEntity(int id, String _RoleName) : Entity() {
         this->id = id;
-        RoleName = _RoleName;
-        
-
-        addColumn(COLUMN_ROLENAME, String(RoleName), "String");
-        
+        this->roleName = _RoleName;
+        SetValue(COLUMN_ROLENAME, this->roleName);
     }
 
     RoleEntity(String _RoleName) : 
-        RoleEntity(0, _RoleName)  {}
+        RoleEntity(0, _RoleName) {}
 
-    static RoleEntity fromEntity(Entity entity)
-    {
+    static RoleEntity fromEntity(Entity entity) {
         RoleEntity roleentity = RoleEntity();
         roleentity.fromString(entity.toString());
         return roleentity;
     }
 
-    // Setters and Getters for each field
+    // Getters
+    String getRoleName() {
+        roleName = GetValue(COLUMN_ROLENAME);
+        return roleName;
+    }
+
+    // Setters
+    void setRoleName(String value) {
+        roleName = value;
+        SetValue(COLUMN_ROLENAME, roleName);
+    }
 };
 
 const String RoleEntity::COLUMN_ROLENAME = "RoleName";
-
 
 #endif // ROLEENTITY_H

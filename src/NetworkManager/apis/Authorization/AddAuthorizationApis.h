@@ -1,7 +1,7 @@
-#ifndef AUTHORIZATIONAPIS_H
-#define AUTHORIZATIONAPIS_H
+#ifndef ADDAUTHORIZATIONAPIS_H
+#define ADDAUTHORIZATIONAPIS_H
 
-#include "../../../Security/AuthorizationPermissions.h"
+#include "AuthorizationPermissions.h"
 #include "UserApis.h"
 #include "RoleApis.h"
 #include "PermissionApis.h"
@@ -65,5 +65,5 @@ void createAuthorizationApis(Context* context)
     context->getNetwork()->addApis(apis);
 }
 
-#endif //AUTHORIZATIONAPIS_H
+#endif //ADDAUTHORIZATIONAPIS_H
     

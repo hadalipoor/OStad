@@ -7,28 +7,24 @@
 #include <PCF8574.h>
 #include "../../Database/Entities/Modules/ButtonFullEntity.h"
 #include "ModuleTypes.h"
+#include "BaseModule.h"
+#include "../../Context.h"
+#include "IButton.h"
 
-enum class ButtonType { PIN, PCF8574 };
-enum class ClickType { None, Clicked, LongPressClicked };
-
-class Button
+class Button: public IButton
 {
-public:
-    using ButtonCallback = std::function<void(Button*)>;
 private:
-    String name;
-    uint8_t pin_number;
-    PCF8574* pcf8574;
-    ButtonType buttonType;
-    bool activeHigh;
-    bool pullUpActive;
+    Context* context;
+    uint8_t _pin_number;
+    PCF8574* _pcf8574;
+    ButtonType _buttonType;
+    bool _activeHigh;
+    bool _pullUpActive;
     bool pressed;
     bool lastState;
-    String connectionType;
-    int nodeId;
     bool waitingForRelease; // new member variable to track button release
     unsigned long lastDebounceTime;
-    unsigned long debounceDelay;
+    unsigned long _debounceDelay;
     unsigned long longPressTime;
     unsigned long buttonDownTime;
     bool reading;
@@ -42,35 +38,37 @@ private:
     ButtonCallback onClickFunction;
     ButtonCallback onLongPressFunction;
 public:
-    Button(uint8_t pin_number, String name, bool activeHigh, bool pullUpActive, ButtonType buttonType, PCF8574* pcf8574);
-    Button(uint8_t pin_number, String name, bool activeHigh, bool pullUpActive, ButtonType buttonType);
-    Button(uint8_t pin_number, String name, bool activeHigh, bool pullUpActive, String buttonTypeStr);
-    Button(uint8_t pin_number, String name, bool activeHigh, bool pullUpActive);
+    Button(Context* context, uint8_t pin_number, String name, bool activeHigh, bool pullUpActive, ButtonType buttonType, PCF8574* pcf8574,int deviceId, int id, int module_id);
+    Button(Context* context, uint8_t pin_number, String name, bool activeHigh, bool pullUpActive, ButtonType buttonType, PCF8574* pcf8574,int deviceId);
+    Button(Context* context, uint8_t pin_number, String name, bool activeHigh, bool pullUpActive, int deviceId, int id, int module_id);
+    Button(Context* context, uint8_t pin_number, String name, bool activeHigh, bool pullUpActive);
+    
     // Button();
     
-    void setOnClick(ButtonCallback function);
-    void setOnLongPress(ButtonCallback function);
-    void setDebounceDelay(unsigned long delay);
-    void setLongPressTime(unsigned long time);
-    bool getState();
-    String getName();
-    void update();
-    ButtonFullEntity* getEntity();
+    void setOnClick(ButtonCallback function) override;
+    void setOnLongPress(ButtonCallback function) override;
+    void setDebounceDelay(unsigned long delay) override;
+    void setLongPressTime(unsigned long time) override;
+    bool getState() override;
+    String getName() override;
+    void update() override;
+    ButtonFullEntity* getEntity() override;
     static String getButtonType(ButtonType buttonType);
     static ButtonType getButtonType(String buttonTypeStr);
-    int getPinNumber();
-    bool getActiveHigh();
-    bool getPullUpActive();
+    int getPinNumber() override;
+    bool getActiveHigh() override;
+    bool getPullUpActive() override;
 };
 
 // Button::Button()
 // {
     
 // }
-Button::Button(uint8_t _pin_number, String _name, bool _activeHigh, bool _pullUpActive, ButtonType _buttonType, PCF8574* _pcf8574)
-    : pin_number(_pin_number), activeHigh(_activeHigh), pullUpActive(_pullUpActive), name(_name), 
-      pressed(false), lastState(false), lastDebounceTime(0), debounceDelay(60), longPressTime(2000), buttonDownTime(0),
-      buttonType(_buttonType), onClickFunction(NULL), onLongPressFunction(nullptr), pcf8574(_pcf8574), onClickSeted(false), onLongPressSeted(false)
+
+Button::Button(Context* context, uint8_t pin_number, String name, bool activeHigh, bool pullUpActive, ButtonType buttonType, PCF8574* pcf8574,int deviceId, int id, int module_id):
+IButton(module_id, id, name, ModuleTypes::BUTTON, deviceId),_pin_number(pin_number), _activeHigh(activeHigh), _pullUpActive(pullUpActive),
+      pressed(false), lastState(false), lastDebounceTime(0), _debounceDelay(60), longPressTime(2000), buttonDownTime(0),
+      _buttonType(buttonType), onClickFunction(NULL), onLongPressFunction(nullptr), _pcf8574(pcf8574), onClickSeted(false), onLongPressSeted(false)
 {
     if (buttonType == ButtonType::PIN)
     {
@@ -86,46 +84,46 @@ Button::Button(uint8_t _pin_number, String _name, bool _activeHigh, bool _pullUp
     }
     lastState = false;
     pressed = false;
+}
+
+Button::Button(Context* context, uint8_t pin_number, String name, bool activeHigh, bool pullUpActive, ButtonType buttonType, PCF8574* pcf8574,int deviceId)
+    : Button(context, pin_number, name, activeHigh, pullUpActive, buttonType, pcf8574, deviceId, 0, 0)
+{
     
 }
-Button::Button(uint8_t _pin_number, String _name, bool _activeHigh, bool _pullUpActive, ButtonType _buttonType):
-    Button(_pin_number, _name, _activeHigh, _pullUpActive, _buttonType, 0)
+Button::Button(Context* context, uint8_t pin_number, String name, bool activeHigh, bool pullUpActive, int deviceId, int id, int module_id)
+    : Button(context, pin_number, name, activeHigh, pullUpActive, ButtonType::PIN, nullptr, deviceId, id, module_id)
 {
 
 }
-Button::Button(uint8_t _pin_number, String _name, bool _activeHigh = true, bool _pullUpActive = false):
-    Button(_pin_number, _name, _activeHigh, _pullUpActive, ButtonType::PIN)
+Button::Button(Context* context, uint8_t pin_number, String name, bool activeHigh, bool pullUpActive)
+    : Button(context, pin_number, name, activeHigh, pullUpActive, ButtonType::PIN, NULL, 0, 0, 0)
 {
 
 }
 
-Button::Button(uint8_t _pin_number, String _name, bool _activeHigh, bool _pullUpActive, String _buttonTypeStr):
-    Button(_pin_number, _name, _activeHigh, _pullUpActive, Button::getButtonType(_buttonTypeStr))
-{
-
-}
 
 ButtonFullEntity* Button::getEntity()
 {
-    String buttonTypeStr = Button::getButtonType(buttonType);
-    ButtonFullEntity *buttonEntity = new ButtonFullEntity(0, 0, name, ModuleTypes::BUTTON, connectionType, nodeId, pin_number,  buttonTypeStr, activeHigh, pullUpActive, debounceDelay);
+    String buttonTypeStr = Button::getButtonType(_buttonType);
+    ButtonFullEntity *buttonEntity = new ButtonFullEntity(this->getID(), _module_id, _name, ModuleTypes::BUTTON, _device_id, _pin_number,  buttonTypeStr, _activeHigh, _pullUpActive, _debounceDelay);
     return buttonEntity;
 }
 
 void Button::update() {
     uint8_t reading;
 
-    if (buttonType == ButtonType::PIN) {
-        reading = digitalRead(pin_number);
-    } else if (buttonType == ButtonType::PCF8574) {
-        reading = pcf8574->digitalRead(pin_number);
+    if (_buttonType == ButtonType::PIN) {
+        reading = digitalRead(_pin_number);
+    } else if (_buttonType == ButtonType::PCF8574) {
+        reading = _pcf8574->digitalRead(_pin_number);
     }
 
-    if (activeHigh) {
+    if (_activeHigh) {
         reading = !reading;
     }
 
-    if (debounceDelay == 0 && reading == true && onClickSeted)
+    if (_debounceDelay == 0 && reading == true && onClickSeted)
     {
         onClickFunction(this);
         return;
@@ -136,7 +134,7 @@ void Button::update() {
         lastDebounceTime = now;
     }
 
-    if ((now - lastDebounceTime) > debounceDelay) {
+    if ((now - lastDebounceTime) > _debounceDelay) {
         if (reading != pressed) {
             pressed = reading;
             if (pressed) {
@@ -146,7 +144,7 @@ void Button::update() {
             } else {
                 // Button released
                 unsigned long pressDuration = now - buttonDownTime;
-                if (!longPressTriggered && (pressDuration >= debounceDelay)) {
+                if (!longPressTriggered && (pressDuration >= _debounceDelay)) {
                     // onClickFunction(this);
                 }
                 longPressTriggered = false; // reset the longPressTriggered flag when the button is released
@@ -154,7 +152,7 @@ void Button::update() {
             }
         } else if (waitingForRelease && pressed) {
             // Button is still pressed and waiting for release
-            if (now - buttonDownTime > debounceDelay) {
+            if (now - buttonDownTime > _debounceDelay) {
                 // Button held down after debounce delay, trigger onClickFunction again
                 if (onClickSeted)
                 {
@@ -190,7 +188,7 @@ void Button::setOnLongPress(ButtonCallback function)
 
 void Button::setDebounceDelay(unsigned long delay)
 {
-    debounceDelay = delay;
+    _debounceDelay = delay;
 }
 
 void Button::setLongPressTime(unsigned long time)
@@ -205,7 +203,7 @@ bool Button::getState()
 
 String Button::getName()
 {
-    return name;
+    return _name;
 }
 
 String Button::getButtonType(ButtonType buttonType)
@@ -235,17 +233,17 @@ ButtonType Button::getButtonType(String buttonTypeStr)
 
 int Button::getPinNumber()
 {
-    return pin_number;
+    return _pin_number;
 }
 
 bool Button::getActiveHigh()
 {
-    return activeHigh;
+    return _activeHigh;
 }
 
 bool Button::getPullUpActive()
 {
-    return pullUpActive;
+    return _pullUpActive;
 }
 
 #endif

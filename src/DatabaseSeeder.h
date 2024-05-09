@@ -7,7 +7,7 @@
 #include "Database/Controllers/Security/RolePermissionController.h"
 #include "Database/Controllers/Security/UserController.h"
 
-#include "Security/AuthorizationPermissions.h"
+#include "NetworkManager/apis/Authorization/AuthorizationPermissions.h"
 
 class DatabaseSeeder
 {

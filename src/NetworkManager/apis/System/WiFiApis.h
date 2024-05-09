@@ -151,9 +151,9 @@ bool WiFiApis::connectWiFi(String ssid, String password)
     bool in_db = false;
     for (size_t i = 0; i < wifiEntities.size(); i++)
     {
-        if (wifiEntities.at(i).SSID == ssid)
+        if (wifiEntities.at(i).getSSID() == ssid)
         {
-            password = wifiEntities.at(i).Password;
+            password = wifiEntities.at(i).getPassword();
             in_db = true;
         }            
     }

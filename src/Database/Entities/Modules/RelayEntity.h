@@ -6,35 +6,72 @@
 class RelayEntity : public Entity {
 public:
     static const String COLUMN_NORMALLY_OPEN;
+    static const String COLUMN_PIN_NUMBER;
     static const String COLUMN_MODULE_ID;
 
-    int ModuleId;
-    bool NormallyOpen;
+private:
+    int moduleId;
+    int pinNumber;
+    bool normallyOpen;
 
-    RelayEntity() : Entity() {}
+public:
+    RelayEntity() : Entity(), moduleId(0), pinNumber(0), normallyOpen(false) {}
 
-    RelayEntity(int id, int moduleId, bool normallyOpen) : Entity() {
+    RelayEntity(int id, int pinNumber, int moduleId, bool normallyOpen) : Entity() {
         this->id = id;
-        ModuleId = moduleId;
-        NormallyOpen = normallyOpen;
-        addColumn(COLUMN_MODULE_ID, String(ModuleId), "int");
-        addColumn(COLUMN_NORMALLY_OPEN, String(NormallyOpen), "bool");
+        this->moduleId = moduleId;
+        this->pinNumber = pinNumber;
+        this->normallyOpen = normallyOpen;
+        SetValue(COLUMN_MODULE_ID, String(this->moduleId));
+        SetValue(COLUMN_PIN_NUMBER, String(this->pinNumber));
+        SetValue(COLUMN_NORMALLY_OPEN, String(this->normallyOpen));
     }
 
-    RelayEntity(int moduleId, bool normallyOpen) : 
-        RelayEntity(0, moduleId, normallyOpen) {}
+    RelayEntity(int moduleId, int pinNumber, bool normallyOpen) : 
+        RelayEntity(0, pinNumber, moduleId, normallyOpen) {}
 
-    static RelayEntity fromEntity(Entity entity)
-    {
+    static RelayEntity fromEntity(Entity entity) {
         RelayEntity relayEntity = RelayEntity();
         relayEntity.fromString(entity.toString());
         return relayEntity;
     }
 
-    // Setters and Getters for each field
+    // Getters
+    int getModuleId() {
+        moduleId = GetValue(COLUMN_MODULE_ID).toInt();
+        return moduleId;
+    }
+
+    int getPinNumber() {
+        pinNumber = GetValue(COLUMN_PIN_NUMBER).toInt();
+        return pinNumber;
+    }
+
+    bool getNormallyOpen() {
+        normallyOpen = GetValue(COLUMN_NORMALLY_OPEN) == "true";
+        return normallyOpen;
+    }
+
+    // Setters
+    void setModuleId(int value) {
+        moduleId = value;
+        SetValue(COLUMN_MODULE_ID, String(moduleId));
+    }
+
+    void setPinNumber(int value) {
+        pinNumber = value;
+        SetValue(COLUMN_PIN_NUMBER, String(pinNumber));
+    }
+
+    void setNormallyOpen(bool value) {
+        normallyOpen = value;
+        SetValue(COLUMN_NORMALLY_OPEN, String(normallyOpen));
+    }
+
 };
 
 const String RelayEntity::COLUMN_MODULE_ID = "ModuleId";
+const String RelayEntity::COLUMN_PIN_NUMBER = "PinNumber";
 const String RelayEntity::COLUMN_NORMALLY_OPEN = "NormallyOpen";
 
 #endif // RELAYENTITY_H
