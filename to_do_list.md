@@ -1,5 +1,6 @@
-- change Entity Style for get values - Done
+- change Entity Style for get values
 - calculate new ip
 - change device and modules tables for less join
 - finish module controller for all modules
 - fix ostadForge to get bool parameters and revis all api classes
+- name convention in project

@@ -53,6 +53,7 @@ class ModulesController : public MainController<ModuleEntity> {
         std::vector<LCDFullEntity> getAllLCDs();
         int AddLCD(LCDFullEntity lcd);
         std::vector<DHTFullEntity> getAllDHTs();
+        DHTFullEntity getDHTByServerId(int serverId);
         void AddDHT(DHTFullEntity dht);
         std::vector<RGBFullEntity> getAllRGBs();
         void AddRGB(RGBFullEntity rgb);
@@ -212,6 +213,23 @@ std::vector<LCDFullEntity> ModulesController::getAllLCDs()
     return lcds;
 }
 
+DHTFullEntity ModulesController::getDHTByServerId(int server_id)
+{
+    std::vector<DHTFullEntity> dhts = getAllDHTs();
+    for(auto& dhtSensor: dhts)
+    {
+        Serial.println(dhtSensor.ServerId);
+        Serial.println(server_id);
+
+        if (dhtSensor.ServerId == server_id)
+        {
+            return dhtSensor;
+        }
+    }
+
+    return DHTFullEntity(0, 0, "", "", 0, "", 0, 0, 0, 0, 0);
+}
+
 std::vector<DHTFullEntity> ModulesController::getAllDHTs()
 {
     DHTController dhtController = DHTController(context, _storageType);
@@ -219,14 +237,37 @@ std::vector<DHTFullEntity> ModulesController::getAllDHTs()
     std::vector<ModuleEntity> modules = GetAll();
     for (size_t i = 0; i < modules.size(); i++)
     {
-        // ModuleEntity _module = modules.at(i);
-        // if (_module.ModuleType == ModuleTypes::DHT)
-        // {
-        //     DHTEntity _dht = dhtController.GetById(_module.id);
-        //     DHTFullEntity fullDht = DHTFullEntity(_module.id, _dht.id, _module.Name, _module.ModuleType, _module.ConnectionType, _module.NodeId, 
-        //     _module.PinNumber, _dht.Type, _dht.DryTreshold, _dht.WetTreshold, _dht.CoolTreshold, _dht.HotTreshold);
-        //     dhts.push_back(fullDht);
-        // }        
+        ModuleEntity _module;
+        _module.fromString(modules.at(i).toString());
+        if (_module.getModuleType() == ModuleTypes::RELAY)
+        {
+            DHTEntity _dht;
+            std::vector<DHTEntity> _dhtEntities = dhtController.Get(String(DHTEntity::COLUMN_MODULE_ID + "=" + _module.id));
+            if(_dhtEntities.size() > 0)
+            {
+                _dht.fromString(_dhtEntities.at(0).toString());
+            }
+            else
+            {
+                return dhts;
+            }
+
+            DHTFullEntity fullDHT = DHTFullEntity(_dht.id, _module.id, _module.GetValue(ModuleEntity::COLUMN_NAME), 
+                _module.getModuleType(), _dht.getPinNumber(),
+                _module.getDeviceId(), 
+                _dht.getNormallyOpen(), _module.getServerId());
+            dhts.push_back(fullDHT);
+        }        
+
+
+        ModuleEntity _module = modules.at(i);
+        if (_module.getModuleType() == ModuleTypes::DHT)
+        {
+            DHTEntity _dht = dhtController.GetById(_module.id);
+            DHTFullEntity fullDht = DHTFullEntity(_module.id, _dht.id, _module.Name, _module.ModuleType, _module.ConnectionType, _module.NodeId, 
+            _module.PinNumber, _dht.Type, _dht.DryTreshold, _dht.WetTreshold, _dht.CoolTreshold, _dht.HotTreshold);
+            dhts.push_back(fullDht);
+        }        
     }
     return dhts;
 }

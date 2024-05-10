@@ -2,13 +2,19 @@
 #define DHTSENSOR_H
 
 #include <DHT.h>
+#include "../../Context.h"
 #include "../../Database/Entities/Modules/DHTFullEntity.h"
+#include "../../Config/Device/DeviceConfigKeys.h"
+#include "../../Database/Controllers/Modules/DevicesController.h"
+#include "../../Database/Controllers/Modules/ModulesController.h"
+#include "IDHTSensor.h"
 #include "ModuleTypes.h"
 
 enum class DHTType { DHT11, DHT22 };
 
-class DHTSensor {
+class DHTSensor: public IDHTSensor {
 private:
+    Context*  context;
     DHT* dht;
     String _name;
     int pin_number;
@@ -17,21 +23,41 @@ private:
     float temperatureC;
     float temperatureF;
     bool dataValid;
+    int serverId;
+    String ip;
+    String protocolType;
 
 public:
-    DHTSensor(String name, int pin_number, DHTType type);
-    void update();
-    String getName();
-    float getHumidity() const;
-    float getTemperatureC() const;
-    float getTemperatureF() const;
-    bool isDataValid() const;
-    DHTFullEntity* getEntity();
+    DHTSensor(Context* context, String name, int pin_number, DHTType type);
+    DHTSensor(Context* context, String name, int pin_number, DHTType type, int server_id);
+    void update() override;
+    String getName() override;
+    float getHumidity() override;
+    float getTemperatureC() override;
+    float getTemperatureF() override;
+    bool isDataValid() override;
+    DHTFullEntity* getEntity() override;
+    int getServerId() override;
+    void setServerId(int serverId) override;
 };
 
-DHTSensor::DHTSensor(String name, int pin_number, DHTType type) :  _name(name), pin_number(pin_number), sensorType(type), humidity(0.0), temperatureC(0.0), temperatureF(0.0), dataValid(false) {
+DHTSensor::DHTSensor(Context* context, String name, int pin_number, DHTType type, int server_id) : context(context), _name(name), pin_number(pin_number), sensorType(type), humidity(0.0), temperatureC(0.0), temperatureF(0.0), dataValid(false), serverId(server_id) {
     int dhtType = (sensorType == DHTType::DHT11) ? DHT11 : DHT22;
     dht = new DHT(pin_number, dhtType);
+    protocolType = context->getConfig()->getDeviceConfig()->get(DeviceConfigKeys::PROTOCOL_TYPE);
+    ModulesController* modulesController = new ModulesController(context, storageType);
+    DHTFullEntity dhtEntity = modulesController->getRelayByServerId(server_id);
+    int deviceId = dhtEntity.DeviceId;
+    DevicesController* devicesController = new DevicesController(context, storageType);
+    DevicesEntity device = devicesController->GetById(deviceId);
+    ip = device.getIP();
+
+}
+
+DHTSensor::DHTSensor(Context* context, String name, int pin_number, DHTType type)
+    : DHTSensor(context, name, pin_number, type, 0)
+{
+
 }
 
 void DHTSensor::update() {
@@ -45,19 +71,19 @@ String DHTSensor::getName(){
     return _name;
 }
 
-float DHTSensor::getHumidity() const {
+float DHTSensor::getHumidity() {
     return humidity;
 }
 
-float DHTSensor::getTemperatureC() const {
+float DHTSensor::getTemperatureC() {
     return temperatureC;
 }
 
-float DHTSensor::getTemperatureF() const {
+float DHTSensor::getTemperatureF() {
     return temperatureF;
 }
 
-bool DHTSensor::isDataValid() const {
+bool DHTSensor::isDataValid() {
     return dataValid;
 }
 

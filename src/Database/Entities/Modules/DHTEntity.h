@@ -10,6 +10,7 @@ public:
     static const String COLUMN_WET_TRESHOLD;
     static const String COLUMN_COOL_TRESHOLD;
     static const String COLUMN_HOT_TRESHOLD;
+    static const String COLUMN_MODULE_ID;
 
 private:
     String Type;
@@ -17,22 +18,30 @@ private:
     int WetTreshold;
     int CoolTreshold;
     int HotTreshold;
+    int ModuleId;
+    int PinNumber;
 
 public:
     DHTEntity() : Entity() {}
 
-    DHTEntity(int id, const String &_Type, int dryTreshold, int wetTreshold, int coolTreshold, int hotTreshold) : Entity() {
+    DHTEntity(int id, int moduleId, const String &_Type, int dryTreshold, int wetTreshold, int coolTreshold, int hotTreshold) : Entity() {
         this->id = id;
         Type = _Type;
+        ModuleId = moduleId;
         DryTreshold = dryTreshold;
         WetTreshold = wetTreshold;
         CoolTreshold = coolTreshold;
         HotTreshold = hotTreshold;
     }
 
-    DHTEntity(const String &_Type, int dryTreshold, int wetTreshold, int coolTreshold, int hotTreshold):
-        DHTEntity(0, _Type, dryTreshold, wetTreshold, coolTreshold, hotTreshold){}
+    DHTEntity(int moduleId, const String &_Type, int dryTreshold, int wetTreshold, int coolTreshold, int hotTreshold):
+        DHTEntity(0, moduleId, _Type, dryTreshold, wetTreshold, coolTreshold, hotTreshold){}
     // Getters
+    int getModuleId() {
+        ModuleId = GetValue(COLUMN_MODULE_ID).toInt();
+        return ModuleId;
+    }
+
     String getType() {
         Type = GetValue(COLUMN_TYPE);
         return Type;
@@ -55,6 +64,10 @@ public:
     }
 
     // Setters
+    void setModuleId(int value) {
+        ModuleId = value;
+        SetValue(COLUMN_MODULE_ID, String(ModuleId));
+    }
     void setType(const String& _Type) {
         Type = _Type;
         SetValue(COLUMN_TYPE, Type);
@@ -84,6 +97,7 @@ public:
     }
 };
 
+const String DHTEntity::COLUMN_MODULE_ID = "ModuleId";
 const String DHTEntity::COLUMN_TYPE = "Type";
 const String DHTEntity::COLUMN_DRY_TRESHOLD = "DryTreshold";
 const String DHTEntity::COLUMN_WET_TRESHOLD = "WetTreshold";

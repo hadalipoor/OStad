@@ -58,7 +58,7 @@ void MainController<T>::removeColumn(const String column_name) {
     //     context->getErrorHandler()->handleError(ErrorType::InvalidColumnName);
     //     return;
     // }
-    //TODO::
+    //0:
 
     std::vector<T> entities = GetAll();
     for (size_t i = 0; i < entities.size(); i++) {
