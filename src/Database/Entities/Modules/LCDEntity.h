@@ -1,108 +1,101 @@
 #ifndef LCDENTITY_H
 #define LCDENTITY_H
 
-#include "..\Entity.h"
+#include "../Entity.h"
 
 class LCDEntity : public Entity {
 public:
-    static const String COLUMN_MODULE_ID;
+    static const String COLUMN_MODULEID;
     static const String COLUMN_ADDRESS;
-    static const String COLUMN_ROW;
-    static const String COLUMN_COL;
+    static const String COLUMN_ROWS;
+    static const String COLUMN_COLS;
     static const String COLUMN_TYPE;
-
+    
 private:
-    int moduleId;
-    int address;
-    int rows;
-    int cols;
-    String type;
+    int _ModuleId;
+    int _Address;
+    int _Rows;
+    int _Cols;
+    String _Type;
+    
 
 public:
-    LCDEntity() : Entity() {}
+    LCDEntity()  : Entity(){}
 
-    LCDEntity(int id, int moduleId, int address, int row, int col, const String &_Type) : Entity() {
+    LCDEntity(int id, int ModuleId, int Address, int Rows, int Cols, String Type) : Entity() {
         this->id = id;
-        this->moduleId = moduleId;
-        this->address = address;
-        this->rows = row;
-        this->cols = col;
-        this->type = _Type;
-        SetValue(COLUMN_MODULE_ID, String(this->moduleId));
-        SetValue(COLUMN_ADDRESS, String(this->address));
-        SetValue(COLUMN_ROW, String(this->rows));
-        SetValue(COLUMN_COL, String(this->cols));
-        SetValue(COLUMN_TYPE, this->type);
+        _ModuleId = ModuleId;
+        _Address = Address;
+        _Rows = Rows;
+        _Cols = Cols;
+        _Type = Type;
+        
+
+        addColumn(COLUMN_MODULEID, String(ModuleId), "int");
+        addColumn(COLUMN_ADDRESS, String(Address), "int");
+        addColumn(COLUMN_ROWS, String(Rows), "int");
+        addColumn(COLUMN_COLS, String(Cols), "int");
+        addColumn(COLUMN_TYPE, String(Type), "String");
+        
     }
 
-    LCDEntity(int moduleId, int address, int row, int col, const String &_Type) : 
-        LCDEntity(0, moduleId, address, row, col, _Type) {}
+    LCDEntity(int ModuleId, int Address, int Rows, int Cols, String Type) : 
+        LCDEntity(0, _ModuleId, _Address, _Rows, _Cols, _Type)  {}
 
     static LCDEntity fromEntity(Entity entity)
     {
-        LCDEntity lcdEntity = LCDEntity();
-        lcdEntity.fromString(entity.toString());
-        return lcdEntity;
+        LCDEntity lcdentity = LCDEntity();
+        lcdentity.fromString(entity.toString());
+        return lcdentity;
     }
 
-    // Getters
+    // Getters for each field
     int getModuleId() {
-        moduleId = GetValue(COLUMN_MODULE_ID).toInt();
-        return moduleId;
+        return _ModuleId;
     }
-
     int getAddress() {
-        address = GetValue(COLUMN_ADDRESS).toInt();
-        return address;
+        return _Address;
     }
-
     int getRows() {
-        rows = GetValue(COLUMN_ROW).toInt();
-        return rows;
+        return _Rows;
     }
-
     int getCols() {
-        cols = GetValue(COLUMN_COL).toInt();
-        return cols;
+        return _Cols;
     }
-
     String getType() {
-        type = GetValue(COLUMN_TYPE);
-        return type;
+        return _Type;
     }
-
-    // Setters
-    void setModuleId(int value) {
-        moduleId = value;
-        SetValue(COLUMN_MODULE_ID, String(moduleId));
+    
+    
+    // Setters for each field
+    void setModuleId(int ModuleId) {
+        SetValue(COLUMN_MODULEID, String(ModuleId));
+        _ModuleId = ModuleId;
     }
-
-    void setAddress(int value) {
-        address = value;
-        SetValue(COLUMN_ADDRESS, String(address));
+    void setAddress(int Address) {
+        SetValue(COLUMN_ADDRESS, String(Address));
+        _Address = Address;
     }
-
-    void setRows(int value) {
-        rows = value;
-        SetValue(COLUMN_ROW, String(rows));
+    void setRows(int Rows) {
+        SetValue(COLUMN_ROWS, String(Rows));
+        _Rows = Rows;
     }
-
-    void setCols(int value) {
-        cols = value;
-        SetValue(COLUMN_COL, String(cols));
+    void setCols(int Cols) {
+        SetValue(COLUMN_COLS, String(Cols));
+        _Cols = Cols;
     }
-
-    void setType(const String &value) {
-        type = value;
-        SetValue(COLUMN_TYPE, type);
+    void setType(String Type) {
+        SetValue(COLUMN_TYPE, String(Type));
+        _Type = Type;
     }
-
+    
 };
 
-const String LCDEntity::COLUMN_MODULE_ID = "ModuleId";
+const String LCDEntity::COLUMN_MODULEID = "ModuleId";
 const String LCDEntity::COLUMN_ADDRESS = "Address";
-const String LCDEntity::COLUMN_ROW = "Rows";
-const String LCDEntity::COLUMN_COL = "Cols";
+const String LCDEntity::COLUMN_ROWS = "Rows";
+const String LCDEntity::COLUMN_COLS = "Cols";
 const String LCDEntity::COLUMN_TYPE = "Type";
+
 
 #endif // LCDENTITY_H

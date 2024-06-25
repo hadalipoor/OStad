@@ -16,18 +16,19 @@ private:
     int pin_number;
     unsigned long start_time;
     bool normallyOpen;
-    int serverId;
     String ip;
     String protocolType;
     enum RelayFunctions{TURN_ON, TURN_OFF, TURN_ON_AFTER_DELAY, TURN_OFF_AFTER_DELAY, TURN_ON_FOR_DELAY, TURN_OFF_FOR_DELAY,
                         GET_STATE, GET_NORMALLY_OPEN, SET_NORMALLY_OPEN, SET_PIN_NUMBER, GET_PIN_NUMBER, GET_ENTITY, GET_SERVER_ID, SET_SERVER_ID};
+    
     String callRelayApi(RelayFunctions function, String data);
     
     enum RelayMood { IDLE, TURNING_ON_AFTER_DELAY, TURNING_OFF_AFTER_DELAY, TURNING_ON_FOR_DELAY, TURNING_OFF_FOR_DELAY } relay_mood;
 
 public:
-    Relay(Context* context, int module_id, int id, String name, int device_id, int pin_number, String ip, bool normallyOpen = true);
-    Relay(Context* context, int module_id, int id, String name, int device_id, int pin_number, String ip, bool normallyOpen, int serverId);
+    Relay(Context* context);
+    Relay(Context* context, String name, int pin_number, bool normallyOpen = true);
+    Relay(Context* context, int module_id, int server_id, String name, int device_id, int pin_number, bool normallyOpen);
 
     void turnOn() override;
     void turnOff() override;
@@ -42,28 +43,34 @@ public:
     int getPinNumber() override;
     void setPinNumber(int pinNumber) override;
     RelayFullEntity* getEntity() override;
-    int getServerId() override;
-    void setServerId(int serverId) override;
 };
 
-Relay::Relay(Context* context, int module_id, int id, String name, int device_id, int pin_number, String ip, bool normallyOpen, int server_id)
-    : IRelay(module_id, id, name, ModuleTypes::RELAY, device_id) ,pin_number(pin_number), state(false), normallyOpen(normallyOpen), relay_mood(IDLE), context(context), serverId(server_id), ip(ip)
+Relay::Relay(Context* context, int module_id, int server_id, String name, int device_id, int pin_number, bool normallyOpen)
+    : IRelay(module_id, server_id, name, ModuleTypes::RELAY, device_id) ,pin_number(pin_number), state(false), normallyOpen(normallyOpen), relay_mood(IDLE), context(context), ip(ip)
 {
-    pinMode(pin_number, OUTPUT);
-    digitalWrite(pin_number, normallyOpen ? LOW : HIGH);
-    protocolType = context->getConfig()->getDeviceConfig()->get(DeviceConfigKeys::PROTOCOL_TYPE);
-    ModulesController* modulesController = new ModulesController(context, storageType);
-    RelayFullEntity relayEntity = modulesController->getRelayByServerId(server_id);
-    int deviceId = relayEntity.DeviceId;
-    DevicesController* devicesController = new DevicesController(context, storageType);
-    DevicesEntity device = devicesController->GetById(deviceId);
-    ip = device.getIP();
+    if(device_id == context->getDeviceManager()->deviceId)
+    {
+        pinMode(pin_number, OUTPUT);
+        digitalWrite(pin_number, normallyOpen ? LOW : HIGH);
+    }
+    else
+    {
+      protocolType = context->getConfig()->getDeviceConfig()->get(DeviceConfigKeys::PROTOCOL_TYPE);
+      ModulesController* modulesController = new ModulesController(context, storageType);
+      RelayFullEntity relayFullEntity = modulesController->getRelayByServerId(getServerId());
+      int deviceId = relayFullEntity.DeviceId;
+      DevicesController* devicesController = new DevicesController(context, storageType);
+      DevicesEntity device = devicesController->GetById(deviceId);
+      ip = device.getIP();
+    }
 }
-Relay::Relay(Context* context, int module_id, int id, String name, int device_id, int pin_number, String ip, bool normallyOpen)
-    : Relay(context, module_id, id, name, device_id, pin_number, ip, normallyOpen, 0)
+Relay::Relay(Context* context, String name, int pin_number, bool normallyOpen)
+    : Relay(context, -1, -1, name, context->getDeviceManager()->deviceId, pin_number, normallyOpen)
 {
 
 }
+
+Relay::Relay(Context* context): Relay(context, -1, -1, "", -1, -1, 0){}
 
 String Relay::callRelayApi(RelayFunctions function, String data)
 {
@@ -109,13 +116,13 @@ String Relay::callRelayApi(RelayFunctions function, String data)
             functionStr = "get_state";
     }
 
-    String endpoint = protocolType + "://" + ip + "/relaycontroller/"+ functionStr +"?" + data;
-    return context->getNetwork()->getApiManager()->makePostRequest(endpoint, "");
+    String endpoint = protocolType + "://" + ip + "/relaycontroller/"+ functionStr;
+    return context->getNetwork()->getApiManager()->makePostRequest(endpoint, data);
 }
 
 RelayFullEntity* Relay::getEntity()
 {
-    return new RelayFullEntity(getID(), getModuleID(), getName(), ModuleTypes::RELAY, pin_number, normallyOpen, serverId, getDeviceID());
+    return new RelayFullEntity(getServerId(), getModuleID(), getName(), ModuleTypes::RELAY, pin_number, normallyOpen, getServerId(), getDeviceID());
 }
 
 void Relay::turnOn()
@@ -130,7 +137,7 @@ void Relay::turnOn()
     }
     else
     {
-        callRelayApi(RelayFunctions::TURN_ON, "server_id="+String(serverId));
+        callRelayApi(RelayFunctions::TURN_ON, "{\"server_id\":"+String(getServerId()) + "}");
     }
     
 }
@@ -147,7 +154,7 @@ void Relay::turnOff()
     }
     else
     {
-        callRelayApi(RelayFunctions::TURN_OFF, "server_id="+String(serverId));
+        callRelayApi(RelayFunctions::TURN_OFF, "{\"server_id\":"+String(getServerId()) + "}");
     }
 }
 
@@ -159,42 +166,45 @@ bool Relay::getState()
     }
     else
     {
-        callRelayApi(RelayFunctions::GET_STATE, "server_id="+String(serverId));
+        callRelayApi(RelayFunctions::GET_STATE, "{\"server_id\":"+String(getServerId()) + "}");
     }
 }
 
 void Relay::update()
 {
-    switch(relay_mood)
+    if(getDeviceID() == context->getDeviceManager()->deviceId)
     {
-        case TURNING_ON_AFTER_DELAY:
-            if (millis() - start_time >= delay_millis)
-            {
-                turnOn();
-                relay_mood = IDLE;
-            }
-            break;
-        case TURNING_OFF_AFTER_DELAY:
-            if (millis() - start_time >= delay_millis)
-            {
-                turnOff();
-                relay_mood = IDLE;
-            }
-            break;
-        case TURNING_ON_FOR_DELAY:
-            if (millis() - start_time >= delay_millis)
-            {
-                turnOff();
-                relay_mood = IDLE;
-            }
-            break;
-        case TURNING_OFF_FOR_DELAY:
-            if (millis() - start_time >= delay_millis)
-            {
-                turnOn();
-                relay_mood = IDLE;
-            }
-            break;
+        switch(relay_mood)
+        {
+            case TURNING_ON_AFTER_DELAY:
+                if (millis() - start_time >= delay_millis)
+                {
+                    turnOn();
+                    relay_mood = IDLE;
+                }
+                break;
+            case TURNING_OFF_AFTER_DELAY:
+                if (millis() - start_time >= delay_millis)
+                {
+                    turnOff();
+                    relay_mood = IDLE;
+                }
+                break;
+            case TURNING_ON_FOR_DELAY:
+                if (millis() - start_time >= delay_millis)
+                {
+                    turnOff();
+                    relay_mood = IDLE;
+                }
+                break;
+            case TURNING_OFF_FOR_DELAY:
+                if (millis() - start_time >= delay_millis)
+                {
+                    turnOn();
+                    relay_mood = IDLE;
+                }
+                break;
+        }
     }
 }
 
@@ -208,7 +218,7 @@ void Relay::turnOnAfterDelay(unsigned long delay_millis)
     }
     else
     {
-        callRelayApi(RelayFunctions::TURN_ON_AFTER_DELAY, "server_id="+String(serverId) + "&delay_millis=" + String(delay_millis));
+        callRelayApi(RelayFunctions::TURN_ON_AFTER_DELAY, "{\"server_id\":"+String(getServerId()) + ",\"delay_millis\":" + String(delay_millis) + "}");
     }
 }
 
@@ -222,7 +232,7 @@ void Relay::turnOffAfterDelay(unsigned long delay_millis)
     }
     else
     {
-        callRelayApi(RelayFunctions::TURN_OFF_AFTER_DELAY, "server_id="+String(serverId) + "&delay_millis=" + String(delay_millis));
+        callRelayApi(RelayFunctions::TURN_OFF_AFTER_DELAY, "{\"server_id\":"+String(getServerId()) + ",\"delay_millis\":" + String(delay_millis) + "}");
     }
 }
 
@@ -237,7 +247,7 @@ void Relay::turnOnForDelay(unsigned long delay_millis)
     }
     else
     {
-        callRelayApi(RelayFunctions::TURN_ON_FOR_DELAY, "server_id="+String(serverId) + "&delay_millis=" + String(delay_millis));
+        callRelayApi(RelayFunctions::TURN_ON_FOR_DELAY, "{\"server_id\":"+String(getServerId()) + ",\"delay_millis\":" + String(delay_millis) + "}");
     }
 }
 
@@ -252,7 +262,7 @@ void Relay::turnOffForDelay(unsigned long delay_millis)
     }
     else
     {
-        callRelayApi(RelayFunctions::TURN_OFF_FOR_DELAY, "server_id="+String(serverId) + "&delay_millis=" + String(delay_millis));
+        callRelayApi(RelayFunctions::TURN_OFF_FOR_DELAY, "{\"server_id\":"+String(getServerId()) + ",\"delay_millis\":" + String(delay_millis) + "}");
     }
 }
 
@@ -266,11 +276,11 @@ void Relay::setPinNumber(int pinNumber)
     pin_number = pinNumber;
     if (getDeviceID() != context->getDeviceManager()->deviceId)
     {
-        context->getModules()->getRelay(serverId)->setPinNumber(pinNumber);
+        context->getModules()->getRelay(getServerId())->setPinNumber(pinNumber);
     }
     else
     {
-        callRelayApi(RelayFunctions::SET_PIN_NUMBER, "server_id="+String(serverId) + "&pin_number=" + String(pinNumber));
+        callRelayApi(RelayFunctions::SET_PIN_NUMBER, "{\"server_id\":"+String(getServerId()) + ",\"pin_number\":" + String(pinNumber) + "}");
     }
 }
 
@@ -284,22 +294,12 @@ void Relay::setNormallyOpen(bool _normallyOpen)
     normallyOpen = _normallyOpen;
     if (getDeviceID() != context->getDeviceManager()->deviceId)
     {
-        context->getModules()->getRelay(serverId)->setNormallyOpen(normallyOpen);
+        context->getModules()->getRelay(getServerId())->setNormallyOpen(normallyOpen);
     }
     else
     {
-        callRelayApi(RelayFunctions::SET_NORMALLY_OPEN, "server_id="+String(serverId) + "&normally_open=" + _normallyOpen? "true" : "false");
+        callRelayApi(RelayFunctions::SET_NORMALLY_OPEN, "{\"server_id\":"+String(getServerId()) + ",\"normally_open\":" + (_normallyOpen? "true" : "false") + "}");
     }
-}
-
-int Relay::getServerId()
-{
-    return serverId;
-}
-
-void Relay::setServerId(int serverId)
-{
-    serverId = serverId;
 }
 
 #endif

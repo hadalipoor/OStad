@@ -8,12 +8,31 @@
 #include "../Config/System/SystemConfigKeys.h"
 #include "../Database/Controllers/Modules/DevicesController.h"
 #include "RelayManager.h"
+#include "ButtonManager.h"
+#include "DHTSensorManager.h"
+#include "LCDManager.h"
+#include "RFIDManager.h"
+#include "SoilMoistureSensorManager.h"
+
+class DevicesType{
+public:
+    static const String Server;
+    static const String Client;
+};
+const String DevicesType::Server  = "Server";
+const String DevicesType::Client  = "Client";
+
 
 class DeviceManager : public IDeviceManager
 {
 private:
     Context* context;
     RelayManager* _relayManager;
+    ButtonManager* _buttonManager;
+    DHTSensorManager* _dhtSensorManager;
+    LCDManager* _lcdManager;
+    RFIDManager* _rfidManager;
+    SoilMoistureSensorManager* _soileMoistureSensorManager;
 
     String getNewIP();
     
@@ -26,6 +45,11 @@ public:
     bool sendAddDeviceRequest(String ap_ssid, String ap_password, String device_name) override;
     bool resetDevice() override;
     RelayManager* getRelayManager() override;
+    ButtonManager* getButtonManager() override;
+    DHTSensorManager* getDHTSensorManager() override;
+    LCDManager* getLCDManager() override;
+    RFIDManager* getRFIDManager() override;
+    SoilMoistureSensorManager* getSoilMoistureSensorManager() override;
 };
 
 DeviceManager::DeviceManager(Context* context) : context(context) {
@@ -162,6 +186,31 @@ bool DeviceManager::resetDevice()
 RelayManager* DeviceManager::getRelayManager()
 {
     return _relayManager;
+}
+
+ButtonManager* DeviceManager::getButtonManager()
+{
+    return _buttonManager;
+}
+
+DHTSensorManager* DeviceManager::getDHTSensorManager()
+{
+    return _dhtSensorManager;
+}
+
+LCDManager* DeviceManager::getLCDManager()
+{
+    return _lcdManager;
+}
+
+RFIDManager* DeviceManager::getRFIDManager()
+{
+    return _rfidManager;
+}
+
+SoilMoistureSensorManager* DeviceManager::getSoilMoistureSensorManager()
+{
+    return _soileMoistureSensorManager;
 }
 
 #endif

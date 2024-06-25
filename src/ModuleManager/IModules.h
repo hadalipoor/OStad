@@ -4,13 +4,13 @@
 #include <string>
 #include <PCF8574.h>
 #include "Modules/IButton.h"
-#include "Modules/DHTSensor.h"
+#include "Modules/IDHTSensor.h"
 #include "Modules/IRelay.h"
-#include "Modules/RFIDPN.h"
-#include "Modules/RFID125Kh.h"
-#include "Modules/OLEDLCD.h"
-#include "Modules/LCD16X2.h"
-#include "Modules/SoilMoistureSensor.h"
+#include "Modules/IRFIDPN.h"
+#include "Modules/IRFID125Kh.h"
+#include "Modules/IOLEDLCD.h"
+#include "Modules/ILCD16X2.h"
+#include "Modules/ISoilMoistureSensor.h"
 #include "Modules/ModuleTypes.h"
 #include "Modules/SimCardManager.h"
 
@@ -19,30 +19,30 @@ class IModules
 public:
     virtual ~IModules() = default;
 
-    virtual IButton* getButton(String name) = 0;
-    virtual IButton* getButton(String name, PCF8574* pcf8574) = 0;
+    virtual IButton* getButton(int server_id) = 0;
+    // virtual IButton* getButton(int server_id, PCF8574* pcf8574) = 0;
     virtual int addButton(IButton* button) = 0;
     
-    virtual int addDHTSensor(DHTSensor* dhtSensor) = 0;
-    virtual DHTSensor* getDHTSensor(String name) = 0;
+    virtual int addDHTSensor(IDHTSensor* dhtSensor) = 0;
+    virtual IDHTSensor* getDHTSensor(int server_id) = 0;
 
     virtual IRelay* getRelay(int server_id) = 0;
     virtual int addRelay(IRelay* relay) = 0;
 
-    virtual RFIDPN532* getRFIDPN532(String name) = 0;
-    virtual int addRFIDPN532(RFIDPN532* rfid) = 0;
+    virtual IRFIDPN532* getRFIDPN532(int server_id) = 0;
+    virtual int addRFIDPN532(IRFIDPN532* rfid) = 0;
 
-    virtual RFID125Kh* getRFID125Kh(String name) = 0;
-    virtual int addRFID125Kh(RFID125Kh* rfid) = 0;
+    virtual IRFID125Kh* getRFID125Kh(int server_id) = 0;
+    virtual int addRFID125Kh(IRFID125Kh* rfid) = 0;
 
-    virtual LCD16X2* getLCD16X2(String name) = 0;
-    virtual int addLCD16X2(LCD16X2* lcd16x2) = 0;
+    virtual ILCD16X2* getLCD16X2(int server_id) = 0;
+    virtual int addLCD16X2(ILCD16X2* lcd16x2) = 0;
     
-    virtual OLEDLCD* getOLEDLCD(String name) = 0;
-    virtual void addOLEDLCD(OLEDLCD* oledlcd) = 0;
+    virtual IOLEDLCD* getOLEDLCD(int server_id) = 0;
+    virtual int addOLEDLCD(IOLEDLCD* oledlcd) = 0;
         
-    virtual SoilMoistureSensor* getSoilMoistureSensor(String name) = 0;
-    virtual void addSoilMoistureSensor(SoilMoistureSensor* soilMoistureSensor) = 0;
+    virtual ISoilMoistureSensor* getSoilMoistureSensor(int server_id) = 0;
+    virtual int addSoilMoistureSensor(ISoilMoistureSensor* soilMoistureSensor) = 0;
     
     virtual SimCardManager* getSimCardManager(int tx_pin, int rx_pin) = 0;
 

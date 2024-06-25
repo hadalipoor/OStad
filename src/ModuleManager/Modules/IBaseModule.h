@@ -9,8 +9,8 @@ public:
     // Constructor
     virtual int getModuleID() = 0;
     virtual void setModuleID(int module_id) = 0;
-    virtual int getID() = 0;
-    virtual void setID(int id) = 0;
+    virtual int getServerId() = 0;
+    virtual void setServerId(int id) = 0;
     virtual String getName() = 0;
     virtual void setName(String name) = 0;
     virtual String getModuleType() = 0;

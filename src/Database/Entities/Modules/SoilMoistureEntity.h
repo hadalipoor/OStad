@@ -1,77 +1,101 @@
 #ifndef SOILMOISTUREENTITY_H
 #define SOILMOISTUREENTITY_H
 
-#include "..\Entity.h"
+#include "../Entity.h"
 
 class SoilMoistureEntity : public Entity {
 public:
-    static const String COLUMN_DRY_TRESHOLD;
-    static const String COLUMN_WET_TRESHOLD;
+    static const String COLUMN_MODULEID;
+    static const String COLUMN_PINNUMBER;
+    static const String COLUMN_DRYTRESHOLD;
+    static const String COLUMN_WETTRESHOLD;
     static const String COLUMN_TYPE;
-
+    
 private:
-    int dryTreshold;
-    int wetTreshold;
-    String type;
+    int _ModuleId;
+    int _PinNumber;
+    int _DryTreshold;
+    int _WetTreshold;
+    String _Type;
+    
 
 public:
-    SoilMoistureEntity() : Entity(), dryTreshold(0), wetTreshold(0), type("") {}
+    SoilMoistureEntity()  : Entity(){}
 
-    SoilMoistureEntity(int id, int dryTreshold, int wetTreshold, const String &_Type) : Entity() {
+    SoilMoistureEntity(int id, int ModuleId, int PinNumber, int DryTreshold, int WetTreshold, String Type) : Entity() {
         this->id = id;
-        this->dryTreshold = dryTreshold;
-        this->wetTreshold = wetTreshold;
-        this->type = _Type;
-        SetValue(COLUMN_DRY_TRESHOLD, String(this->dryTreshold));
-        SetValue(COLUMN_WET_TRESHOLD, String(this->wetTreshold));
-        SetValue(COLUMN_TYPE, this->type);
+        _ModuleId = ModuleId;
+        _PinNumber = PinNumber;
+        _DryTreshold = DryTreshold;
+        _WetTreshold = WetTreshold;
+        _Type = Type;
+        
+
+        addColumn(COLUMN_MODULEID, String(ModuleId), "int");
+        addColumn(COLUMN_PINNUMBER, String(PinNumber), "int");
+        addColumn(COLUMN_DRYTRESHOLD, String(DryTreshold), "int");
+        addColumn(COLUMN_WETTRESHOLD, String(WetTreshold), "int");
+        addColumn(COLUMN_TYPE, String(Type), "String");
+        
     }
 
-    SoilMoistureEntity(int dryTreshold, int wetTreshold, const String &_Type) : 
-        SoilMoistureEntity(0, dryTreshold, wetTreshold, _Type) {}
+    SoilMoistureEntity(int ModuleId, int PinNumber, int DryTreshold, int WetTreshold, String Type) : 
+        SoilMoistureEntity(0, _ModuleId, _PinNumber, _DryTreshold, _WetTreshold, _Type)  {}
 
-    static SoilMoistureEntity fromEntity(Entity entity) {
-        SoilMoistureEntity soilMoistureEntity = SoilMoistureEntity();
-        soilMoistureEntity.fromString(entity.toString());
-        return soilMoistureEntity;
+    static SoilMoistureEntity fromEntity(Entity entity)
+    {
+        SoilMoistureEntity soilmoistureentity = SoilMoistureEntity();
+        soilmoistureentity.fromString(entity.toString());
+        return soilmoistureentity;
     }
 
-    // Getters
+    // Getters for each field
+    int getModuleId() {
+        return _ModuleId;
+    }
+    int getPinNumber() {
+        return _PinNumber;
+    }
     int getDryTreshold() {
-        dryTreshold = GetValue(COLUMN_DRY_TRESHOLD).toInt();
-        return dryTreshold;
+        return _DryTreshold;
     }
-
     int getWetTreshold() {
-        wetTreshold = GetValue(COLUMN_WET_TRESHOLD).toInt();
-        return wetTreshold;
+        return _WetTreshold;
     }
-
     String getType() {
-        type = GetValue(COLUMN_TYPE);
-        return type;
+        return _Type;
     }
-
-    // Setters
-    void setDryTreshold(int value) {
-        dryTreshold = value;
-        SetValue(COLUMN_DRY_TRESHOLD, String(dryTreshold));
+    
+    
+    // Setters for each field
+    void setModuleId(int ModuleId) {
+        SetValue(COLUMN_MODULEID, String(ModuleId));
+        _ModuleId = ModuleId;
     }
-
-    void setWetTreshold(int value) {
-        wetTreshold = value;
-        SetValue(COLUMN_WET_TRESHOLD, String(wetTreshold));
+    void setPinNumber(int PinNumber) {
+        SetValue(COLUMN_PINNUMBER, String(PinNumber));
+        _PinNumber = PinNumber;
     }
-
-    void setType(const String &value) {
-        type = value;
-        SetValue(COLUMN_TYPE, type);
+    void setDryTreshold(int DryTreshold) {
+        SetValue(COLUMN_DRYTRESHOLD, String(DryTreshold));
+        _DryTreshold = DryTreshold;
     }
-
+    void setWetTreshold(int WetTreshold) {
+        SetValue(COLUMN_WETTRESHOLD, String(WetTreshold));
+        _WetTreshold = WetTreshold;
+    }
+    void setType(String Type) {
+        SetValue(COLUMN_TYPE, String(Type));
+        _Type = Type;
+    }
+    
 };
 
-const String SoilMoistureEntity::COLUMN_DRY_TRESHOLD = "DryTreshold";
-const String SoilMoistureEntity::COLUMN_WET_TRESHOLD = "WetTreshold";
+const String SoilMoistureEntity::COLUMN_MODULEID = "ModuleId";
+const String SoilMoistureEntity::COLUMN_PINNUMBER = "PinNumber";
+const String SoilMoistureEntity::COLUMN_DRYTRESHOLD = "DryTreshold";
+const String SoilMoistureEntity::COLUMN_WETTRESHOLD = "WetTreshold";
 const String SoilMoistureEntity::COLUMN_TYPE = "Type";
+
 
 #endif // SOILMOISTUREENTITY_H

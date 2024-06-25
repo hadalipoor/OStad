@@ -18,8 +18,8 @@ public:
 
     String callFunction(String functionName, std::map<String, String> parameters) override;
     
-    String handlecreate(String Type, int DryTreshold, int WetTreshold, int CoolTreshold, int HotTreshold);
-    String handleupdate(int id, String Type, int DryTreshold, int WetTreshold, int CoolTreshold, int HotTreshold);
+    String handlecreate(int ModuleId, int pinNumber, String Type, int DryTreshold, int WetTreshold, int CoolTreshold, int HotTreshold);
+    String handleupdate(int id, int ModuleId, int pinNumber, String Type, int DryTreshold, int WetTreshold, int CoolTreshold, int HotTreshold);
     String handledelete(int id);
     String handlegetAll();
     String handlegetById(int id);
@@ -33,36 +33,40 @@ DHTApis::DHTApis(Context* cntxt, bool add_apis): context(cntxt) {
 
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/create"), LambdaResourceNode::REQUEST_METHOD_POST, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::DHT_CREATE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("Type") || !req->getParams()->isQueryParameterSet("DryTreshold") || !req->getParams()->isQueryParameterSet("WetTreshold") || !req->getParams()->isQueryParameterSet("CoolTreshold") || !req->getParams()->isQueryParameterSet("HotTreshold"))
+        if (!req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("PinNumber") || !req->getParams()->isQueryParameterSet("Type") || !req->getParams()->isQueryParameterSet("DryTreshold") || !req->getParams()->isQueryParameterSet("WetTreshold") || !req->getParams()->isQueryParameterSet("CoolTreshold") || !req->getParams()->isQueryParameterSet("HotTreshold"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
         }
-        
-        String Type = getQueryParameterString(req, "Type");
+    int ModuleId = getQueryParameterint(req, "ModuleId");
+    int pinNumber = getQueryParameterint(req, "PinNumber");        
+    String Type = getQueryParameterString(req, "Type");
     int DryTreshold = getQueryParameterint(req, "DryTreshold");
     int WetTreshold = getQueryParameterint(req, "WetTreshold");
     int CoolTreshold = getQueryParameterint(req, "CoolTreshold");
     int HotTreshold = getQueryParameterint(req, "HotTreshold");
 
-        response(res, handlecreate(Type, DryTreshold, WetTreshold, CoolTreshold, HotTreshold));
+        response(res, handlecreate(ModuleId, pinNumber, Type, DryTreshold, WetTreshold, CoolTreshold, HotTreshold));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/update"), LambdaResourceNode::REQUEST_METHOD_PUT, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::DHT_UPDATE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("id") || !req->getParams()->isQueryParameterSet("Type") || !req->getParams()->isQueryParameterSet("DryTreshold") || !req->getParams()->isQueryParameterSet("WetTreshold") || !req->getParams()->isQueryParameterSet("CoolTreshold") || !req->getParams()->isQueryParameterSet("HotTreshold"))
+        if (!req->getParams()->isQueryParameterSet("id") ||!req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("PinNumber") || !req->getParams()->isQueryParameterSet("Type") || !req->getParams()->isQueryParameterSet("DryTreshold") || !req->getParams()->isQueryParameterSet("WetTreshold") || !req->getParams()->isQueryParameterSet("CoolTreshold") || !req->getParams()->isQueryParameterSet("HotTreshold"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
         }
 
         int id = getQueryParameterint(req, "id");
+        int ModuleId = getQueryParameterint(req, "ModuleId");
+        int pinNumber = getQueryParameterint(req, "PinNumber");        
+
         String Type = getQueryParameterString(req, "Type");
     int DryTreshold = getQueryParameterint(req, "DryTreshold");
     int WetTreshold = getQueryParameterint(req, "WetTreshold");
     int CoolTreshold = getQueryParameterint(req, "CoolTreshold");
     int HotTreshold = getQueryParameterint(req, "HotTreshold");
         
-        response(res, handleupdate(id, Type, DryTreshold, WetTreshold, CoolTreshold, HotTreshold));
+        response(res, handleupdate(id,ModuleId, pinNumber, Type, DryTreshold, WetTreshold, CoolTreshold, HotTreshold));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/delete"), LambdaResourceNode::REQUEST_METHOD_DELETE, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::DHT_DELETE) == AuthorizationResults::SUCCESFULL){return;}
@@ -111,8 +115,8 @@ String DHTApis::getClassPath()
     return String(class_path.c_str());
 }
 
-String DHTApis::handlecreate(String Type, int DryTreshold, int WetTreshold, int CoolTreshold, int HotTreshold) {
-    DHTEntity* dhtEntity = new DHTEntity(Type, DryTreshold, WetTreshold, CoolTreshold, HotTreshold);
+String DHTApis::handlecreate(int ModuleId, int pinNumber, String Type, int DryTreshold, int WetTreshold, int CoolTreshold, int HotTreshold) {
+    DHTEntity* dhtEntity = new DHTEntity(ModuleId, Type, pinNumber, DryTreshold, WetTreshold, CoolTreshold, HotTreshold);
     int id = dhtController->Add(*dhtEntity);
     if (id != -1)
     {
@@ -121,8 +125,8 @@ String DHTApis::handlecreate(String Type, int DryTreshold, int WetTreshold, int 
     
     return CREATE_FAILED_MESSAGE;
 }
-String DHTApis::handleupdate(int id, String Type, int DryTreshold, int WetTreshold, int CoolTreshold, int HotTreshold) {
-    DHTEntity* dhtEntity = new DHTEntity(id, Type, DryTreshold, WetTreshold, CoolTreshold, HotTreshold);
+String DHTApis::handleupdate(int id, int ModuleId, int pinNumber, String Type, int DryTreshold, int WetTreshold, int CoolTreshold, int HotTreshold) {
+    DHTEntity* dhtEntity = new DHTEntity(id, ModuleId, Type, pinNumber, DryTreshold, WetTreshold, CoolTreshold, HotTreshold);
     
     if (dhtController->Update(*dhtEntity))
     {
@@ -153,10 +157,10 @@ String DHTApis::handleget(String query) {
 String DHTApis::callFunction(String functionName, std::map<String, String> parameters) {
     
     if (functionName == "create") {
-        return handlecreate(parameters["Type"], parameters["DryTreshold"].toInt(), parameters["WetTreshold"].toInt(), parameters["CoolTreshold"].toInt(), parameters["HotTreshold"].toInt());
+        return handlecreate(parameters["ModuleId"].toInt(), parameters["PinNumber"].toInt() ,parameters["Type"], parameters["DryTreshold"].toInt(), parameters["WetTreshold"].toInt(), parameters["CoolTreshold"].toInt(), parameters["HotTreshold"].toInt());
     }
     if (functionName == "update") {
-        return handleupdate(parameters["id"].toInt(), parameters["Type"], parameters["DryTreshold"].toInt(), parameters["WetTreshold"].toInt(), parameters["CoolTreshold"].toInt(), parameters["HotTreshold"].toInt());
+        return handleupdate(parameters["id"].toInt(), parameters["ModuleId"].toInt(), parameters["PinNumber"].toInt(), parameters["Type"], parameters["DryTreshold"].toInt(), parameters["WetTreshold"].toInt(), parameters["CoolTreshold"].toInt(), parameters["HotTreshold"].toInt());
     }
     if (functionName == "delete") {
         return handledelete(parameters["id"].toInt());

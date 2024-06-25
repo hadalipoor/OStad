@@ -18,8 +18,8 @@ public:
 
     String callFunction(String functionName, std::map<String, String> parameters) override;
     
-    String handlecreate(int LowTreshold, int HighTreshold);
-    String handleupdate(int id, int LowTreshold, int HighTreshold);
+    String handlecreate(int ModuleId, int pinNumber, int LowTreshold, int HighTreshold);
+    String handleupdate(int id, int ModuleId, int pinNumber, int LowTreshold, int HighTreshold);
     String handledelete(int id);
     String handlegetAll();
     String handlegetById(int id);
@@ -33,30 +33,34 @@ PhotoresistorApis::PhotoresistorApis(Context* cntxt, bool add_apis): context(cnt
 
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/create"), LambdaResourceNode::REQUEST_METHOD_POST, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::PHOTORESISTOR_CREATE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("LowTreshold") || !req->getParams()->isQueryParameterSet("HighTreshold"))
+        if (!req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("PinNumber") || !req->getParams()->isQueryParameterSet("LowTreshold") || !req->getParams()->isQueryParameterSet("HighTreshold"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
         }
-        
-        int LowTreshold = getQueryParameterint(req, "LowTreshold");
-    int HighTreshold = getQueryParameterint(req, "HighTreshold");
 
-        response(res, handlecreate(LowTreshold, HighTreshold));
+        int ModuleId = getQueryParameterint(req, "ModuleId");
+        int pinNumber = getQueryParameterint(req, "PinNumber");
+        int LowTreshold = getQueryParameterint(req, "LowTreshold");
+        int HighTreshold = getQueryParameterint(req, "HighTreshold");
+
+        response(res, handlecreate(ModuleId, pinNumber, LowTreshold, HighTreshold));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/update"), LambdaResourceNode::REQUEST_METHOD_PUT, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::PHOTORESISTOR_UPDATE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("id") || !req->getParams()->isQueryParameterSet("LowTreshold") || !req->getParams()->isQueryParameterSet("HighTreshold"))
+        if (!req->getParams()->isQueryParameterSet("id") || !req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("PinNumber") || !req->getParams()->isQueryParameterSet("LowTreshold") || !req->getParams()->isQueryParameterSet("HighTreshold"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
         }
 
         int id = getQueryParameterint(req, "id");
+        int ModuleId = getQueryParameterint(req, "ModuleId");
+        int pinNumber = getQueryParameterint(req, "PinNumber");
         int LowTreshold = getQueryParameterint(req, "LowTreshold");
-    int HighTreshold = getQueryParameterint(req, "HighTreshold");
+        int HighTreshold = getQueryParameterint(req, "HighTreshold");
         
-        response(res, handleupdate(id, LowTreshold, HighTreshold));
+        response(res, handleupdate(id, ModuleId, pinNumber, LowTreshold, HighTreshold));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/delete"), LambdaResourceNode::REQUEST_METHOD_DELETE, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::PHOTORESISTOR_DELETE) == AuthorizationResults::SUCCESFULL){return;}
@@ -65,7 +69,7 @@ PhotoresistorApis::PhotoresistorApis(Context* cntxt, bool add_apis): context(cnt
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
         }
-        
+
         int id = getQueryParameterint(req, "id");
         
         response(res, handledelete(id));
@@ -105,8 +109,8 @@ String PhotoresistorApis::getClassPath()
     return String(class_path.c_str());
 }
 
-String PhotoresistorApis::handlecreate(int LowTreshold, int HighTreshold) {
-    PhotoresistorEntity* photoresistorEntity = new PhotoresistorEntity(LowTreshold, HighTreshold);
+String PhotoresistorApis::handlecreate(int ModuleId, int pinNumber, int LowTreshold, int HighTreshold) {
+    PhotoresistorEntity* photoresistorEntity = new PhotoresistorEntity(ModuleId, pinNumber, LowTreshold, HighTreshold);
     int id = photoresistorController->Add(*photoresistorEntity);
     if (id != -1)
     {
@@ -115,8 +119,9 @@ String PhotoresistorApis::handlecreate(int LowTreshold, int HighTreshold) {
     
     return CREATE_FAILED_MESSAGE;
 }
-String PhotoresistorApis::handleupdate(int id, int LowTreshold, int HighTreshold) {
-    PhotoresistorEntity* photoresistorEntity = new PhotoresistorEntity(id, LowTreshold, HighTreshold);
+
+String PhotoresistorApis::handleupdate(int id, int ModuleId, int pinNumber, int LowTreshold, int HighTreshold) {
+    PhotoresistorEntity* photoresistorEntity = new PhotoresistorEntity(id, ModuleId, pinNumber, LowTreshold, HighTreshold);
     
     if (photoresistorController->Update(*photoresistorEntity))
     {
@@ -125,8 +130,8 @@ String PhotoresistorApis::handleupdate(int id, int LowTreshold, int HighTreshold
     
     return UPDATE_FAILED_MESSAGE;
 }
+
 String PhotoresistorApis::handledelete(int id) {
-    
     if (photoresistorController->Delete(id))
     {
         return DELETE_SUCCESFULL_MESSAGE;
@@ -134,23 +139,25 @@ String PhotoresistorApis::handledelete(int id) {
     
     return DELETE_FAILED_MESSAGE;
 }
+
 String PhotoresistorApis::handlegetAll() {
     return photoresistorController->GetAllJson();
 }
+
 String PhotoresistorApis::handlegetById(int id) {
     return photoresistorController->GetById(id).toJson();
 }
+
 String PhotoresistorApis::handleget(String query) {
     return photoresistorController->GetJson(query);
 }
 
 String PhotoresistorApis::callFunction(String functionName, std::map<String, String> parameters) {
-    
     if (functionName == "create") {
-        return handlecreate(parameters["LowTreshold"].toInt(), parameters["HighTreshold"].toInt());
+        return handlecreate(parameters["ModuleId"].toInt(), parameters["PinNumber"].toInt(), parameters["LowTreshold"].toInt(), parameters["HighTreshold"].toInt());
     }
     if (functionName == "update") {
-        return handleupdate(parameters["id"].toInt(), parameters["LowTreshold"].toInt(), parameters["HighTreshold"].toInt());
+        return handleupdate(parameters["id"].toInt(), parameters["ModuleId"].toInt(), parameters["PinNumber"].toInt(), parameters["LowTreshold"].toInt(), parameters["HighTreshold"].toInt());
     }
     if (functionName == "delete") {
         return handledelete(parameters["id"].toInt());
@@ -167,6 +174,4 @@ String PhotoresistorApis::callFunction(String functionName, std::map<String, Str
     return String(NO_FUNCTION_MESSAGE + functionName);
 }
 
-#endif //PHOTORESISTORApis_h
-
-    
+#endif // PHOTORESISTORAPIS_h

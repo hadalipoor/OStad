@@ -8,19 +8,19 @@ public:
     int id;
     int ModuleId;
     String Name;
-    String ModuleType;
     int PinNumber;
     String Type;
     int DryTreshold;
     int WetTreshold;
     int CoolTreshold;
     int HotTreshold;
+    int DeviceId;
     int ServerId;
 
-    DHTFullEntity() {}
 
-    DHTFullEntity(int id, int moduleId, const String &_Name, const String &_ModuleType,
-                  int pinNumber, const String &type, int dryTreshold, int wetTreshold, int coolTreshold, int hotTreshold, int serverId) {
+
+    DHTFullEntity(int id, int moduleId, const String &_Name, 
+                  int pinNumber, const String &type, int dryTreshold, int wetTreshold, int coolTreshold, int hotTreshold, int deviceId, int serverId) {
         this->id = id;
         Type = type;
         DryTreshold = dryTreshold;
@@ -29,10 +29,12 @@ public:
         HotTreshold = hotTreshold;
         ModuleId = moduleId;
         Name = _Name;
-        ModuleType = _ModuleType;
         PinNumber = pinNumber;
+        DeviceId = deviceId;
         ServerId = serverId;
     }
+    
+    DHTFullEntity(): DHTFullEntity(0, 0, "", 0, "", 0, 0, 0, 0, 0, 0) {}
 };
 
 #endif // DHTFULLENTITY_H

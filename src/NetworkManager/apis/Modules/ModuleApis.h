@@ -34,21 +34,26 @@ ModuleApis::ModuleApis(Context* cntxt, bool add_apis): context(cntxt) {
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/create"), LambdaResourceNode::REQUEST_METHOD_POST, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::MODULE_CREATE) == AuthorizationResults::SUCCESFULL){return;}
         String body = getBodyString(req);
+        
         if (!isItemInBody(body,"Name") || !isItemInBody(body,"ModuleType") || !isItemInBody(body,"DeviceId") || !isItemInBody(body,"ServerId"))
         {
-            response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
+            response(res, 400, jsonResponse(false, MISSING_INPUT_PARAMS_MESSAGE));
             return;
         }
         
         
-        String Name = getQueryParameterString(req, "Name");
-        String ModuleType = getQueryParameterString(req, "ModuleType");
+        
+        String Name = getItemInBody(body, "Name");
+        
+        String ModuleType = getItemInBody(body, "ModuleType");
+        
         if (!context->getValidation()->variableValidator()->isNumber(getItemInBody(body, "DeviceId")))
         {
             response(res, jsonResponse(false, WRONG_INPUT_PARAMS_FORMAT_MESSAGE));
             return;
         }
         int DeviceId = getItemInBody(body, "DeviceId").toInt();
+        
         if (!context->getValidation()->variableValidator()->isNumber(getItemInBody(body, "ServerId")))
         {
             response(res, jsonResponse(false, WRONG_INPUT_PARAMS_FORMAT_MESSAGE));
@@ -61,30 +66,57 @@ ModuleApis::ModuleApis(Context* cntxt, bool add_apis): context(cntxt) {
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/update"), LambdaResourceNode::REQUEST_METHOD_PUT, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::MODULE_UPDATE) == AuthorizationResults::SUCCESFULL){return;}
         String body = getBodyString(req);
-        if (!isItemInBody(body,"id") || !isItemInBody(body,"Name") || !isItemInBody(body,"ModuleType") || !isItemInBody(body,"DeviceId") || !isItemInBody(body,"ServerId"))
+        
+        if (!isItemInBody(body, "id") || !isItemInBody(body,"Name") || !isItemInBody(body,"ModuleType") || !isItemInBody(body,"DeviceId") || !isItemInBody(body,"ServerId"))
         {
-            response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
+            response(res, 400, jsonResponse(false, MISSING_INPUT_PARAMS_MESSAGE));
             return;
         }
 
-        int id = getQueryParameterint(req, "id");
-        String Name = getQueryParameterString(req, "Name");
-        String ModuleType = getQueryParameterString(req, "ModuleType");
-        int DeviceId = getQueryParameterint(req, "DeviceId");
-        int ServerId = getQueryParameterint(req, "ServerId");
+        if (!context->getValidation()->variableValidator()->isNumber(getItemInBody(body, "id")))
+        {
+            response(res, jsonResponse(false, WRONG_INPUT_PARAMS_FORMAT_MESSAGE));
+            return;
+        }       
+        int id = getItemInBody(body, "id").toInt();
+        
+        
+        String Name = getItemInBody(body, "Name");
+        
+        String ModuleType = getItemInBody(body, "ModuleType");
+        
+        if (!context->getValidation()->variableValidator()->isNumber(getItemInBody(body, "DeviceId")))
+        {
+            response(res, jsonResponse(false, WRONG_INPUT_PARAMS_FORMAT_MESSAGE));
+            return;
+        }
+        int DeviceId = getItemInBody(body, "DeviceId").toInt();
+        
+        if (!context->getValidation()->variableValidator()->isNumber(getItemInBody(body, "ServerId")))
+        {
+            response(res, jsonResponse(false, WRONG_INPUT_PARAMS_FORMAT_MESSAGE));
+            return;
+        }
+        int ServerId = getItemInBody(body, "ServerId").toInt();
         
         response(res, handleupdate(id, Name, ModuleType, DeviceId, ServerId));
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/delete"), LambdaResourceNode::REQUEST_METHOD_DELETE, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::MODULE_DELETE) == AuthorizationResults::SUCCESFULL){return;}
         String body = getBodyString(req);
-        if (!isItemInBody(body,"id"))
+        
+        if (!isItemInBody(body, "id"))
         {
-            response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
+            response(res, 400, jsonResponse(false, MISSING_INPUT_PARAMS_MESSAGE));
             return;
         }
         
-        int id = getQueryParameterint(req, "id");
+        if (!context->getValidation()->variableValidator()->isNumber(getItemInBody(body, "id")))
+        {
+            response(res, jsonResponse(false, WRONG_INPUT_PARAMS_FORMAT_MESSAGE));
+            return;
+        }       
+        int id = getItemInBody(body, "id").toInt();
         
         response(res, handledelete(id));
     }));
@@ -94,12 +126,17 @@ ModuleApis::ModuleApis(Context* cntxt, bool add_apis): context(cntxt) {
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/getById"), LambdaResourceNode::REQUEST_METHOD_GET, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::MODULE_GET) == AuthorizationResults::SUCCESFULL){return;}
-        String body = getBodyString(req);
-        if (!isItemInBody(body,"id"))
+        if (!req->getParams()->isQueryParameterSet("id"))
         {
-            response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
+            response(res, 400, jsonResponse(false, MISSING_INPUT_PARAMS_MESSAGE));
             return;
         }
+
+        if (!context->getValidation()->variableValidator()->isNumber(getQueryParameterString(req, "id")))
+        {
+            response(res, jsonResponse(false, WRONG_INPUT_PARAMS_FORMAT_MESSAGE));
+            return;
+        }       
 
         int id = getQueryParameterint(req, "id");
         
@@ -107,10 +144,9 @@ ModuleApis::ModuleApis(Context* cntxt, bool add_apis): context(cntxt) {
     }));
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/get"), LambdaResourceNode::REQUEST_METHOD_GET, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::MODULE_GET) == AuthorizationResults::SUCCESFULL){return;}
-        String body = getBodyString(req);
-        if (!isItemInBody(body,"query"))
+        if (!req->getParams()->isQueryParameterSet("query"))
         {
-            response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
+            response(res, 400, jsonResponse(false, MISSING_INPUT_PARAMS_MESSAGE));
             return;
         }
 
@@ -130,29 +166,29 @@ String ModuleApis::handlecreate(String Name, String ModuleType, int DeviceId, in
     int id = moduleController->Add(*moduleEntity);
     if (id != -1)
     {
-        return CREATE_SUCCESFULL_MESSAGE;
+        return jsonResponse(true, CREATE_SUCCESFULL_MESSAGE);
     }
     
-    return CREATE_FAILED_MESSAGE;
+    return jsonResponse(false, CREATE_FAILED_MESSAGE);
 }
 String ModuleApis::handleupdate(int id, String Name, String ModuleType, int DeviceId, int ServerId) {
     ModuleEntity* moduleEntity = new ModuleEntity(id, Name, ModuleType, DeviceId, ServerId);
     
     if (moduleController->Update(*moduleEntity))
     {
-        return UPDATE_SUCCESFULL_MESSAGE;
+        return jsonResponse(true, UPDATE_SUCCESFULL_MESSAGE);
     }
     
-    return UPDATE_FAILED_MESSAGE;
+    return jsonResponse(false, UPDATE_FAILED_MESSAGE);
 }
 String ModuleApis::handledelete(int id) {
     
     if (moduleController->Delete(id))
     {
-        return DELETE_SUCCESFULL_MESSAGE;
+        return jsonResponse(true, DELETE_SUCCESFULL_MESSAGE);
     }
     
-    return DELETE_FAILED_MESSAGE;
+    return jsonResponse(false, DELETE_FAILED_MESSAGE);
 }
 String ModuleApis::handlegetAll() {
     return moduleController->GetAllJson();

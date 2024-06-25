@@ -1,5 +1,3 @@
-// Modules.h
-
 #ifndef MODULESS_H
 #define MODULESS_H
 
@@ -17,6 +15,13 @@
 
 #include "Modules/Button.h"
 #include "Modules/Relay.h"
+#include "Modules/RFIDPN.h"
+#include "Modules/DHTSensor.h"
+#include "Modules/LCD16X2.h"
+#include "Modules/OLEDLCD.h"
+#include "Modules/RFID125Kh.h"
+#include "Modules/SoilMoistureSensor.h"
+// #include "Modules/"
 
 #include "../Database/Controllers/Modules/ModulesController.h"
 
@@ -30,12 +35,14 @@ private:
     Context* context;
     ModulesController *modulesController;
 
+    std::vector<Button*> buttons;
     std::vector<Relay*> relays;
-    std::vector<RFID125Kh*> rfids;
+    std::vector<RFID125Kh*> rfid125khs;
+    std::vector<RFIDPN532*> rfidnpn532s;
     std::vector<LCD16X2*> lcd16x2s;
     std::vector<OLEDLCD*> oledlcds;
-    std::vector<SoilMoistureSensor*> sensors;
-    std::vector<DHT*> dhtSensors;
+    std::vector<SoilMoistureSensor*> soilMoistureSensors;
+    std::vector<DHTSensor*> dhtSensors;
 
     ButtonFullEntity buttonFull;
     Button* _button;
@@ -47,23 +54,22 @@ public:
     bool isNameUnique(String name);
     Modules(Context* context);
 
-    IButton* getButton(String name) override;
-    IButton* getButton(String name, PCF8574* pcf8574) override;
+    IButton* getButton(int server_id) override;
     int addButton(IButton* button) override;
-    int addDHTSensor(DHTSensor* dhtSensor) override;
-    DHTSensor* getDHTSensor(String name) override;
+    IDHTSensor* getDHTSensor(int server_id) override;
+    int addDHTSensor(IDHTSensor* dhtSensor) override;
     IRelay* getRelay(int server_id) override;
     int addRelay(IRelay* relay) override;
-    RFIDPN532* getRFIDPN532(String name) override;
-    int addRFIDPN532(RFIDPN532* rfid) override;
-    RFID125Kh* getRFID125Kh(String name) override;
-    int addRFID125Kh(RFID125Kh* rfid) override;
-    LCD16X2* getLCD16X2(String name) override;
-    int addLCD16X2(LCD16X2* lcd16x2) override;
-    OLEDLCD* getOLEDLCD(String name) override;
-    void addOLEDLCD(OLEDLCD* oledlcd) override;
-    SoilMoistureSensor* getSoilMoistureSensor(String name) override;
-    void addSoilMoistureSensor(SoilMoistureSensor* soilMoistureSensor) override;
+    IRFIDPN532* getRFIDPN532(int server_id) override;
+    int addRFIDPN532(IRFIDPN532* rfid) override;
+    IRFID125Kh* getRFID125Kh(int server_id) override;
+    int addRFID125Kh(IRFID125Kh* rfid) override;
+    ILCD16X2* getLCD16X2(int server_id) override;
+    int addLCD16X2(ILCD16X2* lcd16x2) override;
+    IOLEDLCD* getOLEDLCD(int server_id) override;
+    int addOLEDLCD(IOLEDLCD* oledlcd) override;
+    ISoilMoistureSensor* getSoilMoistureSensor(int server_id) override;
+    int addSoilMoistureSensor(ISoilMoistureSensor* soilMoistureSensor) override;
     SimCardManager* getSimCardManager(int tx_pin, int rx_pin) override;
     void initialize() override;
     void update() override;
@@ -77,24 +83,63 @@ Modules::Modules(Context* cntx): context(cntx)
 void Modules::initialize()
 {
     modulesController = new ModulesController(context, storageType);
+    
+    // Load all relays from database to relays list
     std::vector<RelayFullEntity> relaysEntities = modulesController->getAllRelays();
     for(auto& relayEntity: relaysEntities)
     {
-        String ip = "";
-        if(relayEntity.DeviceId != context->getDeviceManager()->deviceId)
-        {
-            DevicesController* devicesController = new DevicesController(context, storageType);
-            std::vector<DevicesEntity> devices = devicesController->GetAll();
-            for(auto& device: devices)
-            {
-                if (device.id == relayEntity.DeviceId)
-                {
-                    ip = device.getIP();
-                }            
-            }
-        }
-        relays.push_back(new Relay(context, relayEntity.ModuleId, relayEntity.id, relayEntity.Name, relayEntity.DeviceId, relayEntity.PinNumber, ip, relayEntity.NormallyOpen, relayEntity.ServerId));
+        relays.push_back(new Relay(context, relayEntity.ModuleId, relayEntity.ServerId, relayEntity.Name, relayEntity.DeviceId, relayEntity.PinNumber, relayEntity.NormallyOpen));
     }
+
+    // Load all buttons from database to buttons list
+    std::vector<ButtonFullEntity*> buttonEntities = modulesController->getAllButtons();
+    for(auto& buttonEntity: buttonEntities)
+    {
+        buttons.push_back(new Button(context, buttonEntity->PinNumber, buttonEntity->Name, buttonEntity->ActiveHigh, buttonEntity->PullupActive));
+    }
+
+    // Load all RFID 125Khz and NPN532 modules from database to rfids list
+    std::vector<RFIDFullEntity*> rfid125KhEntities = modulesController->getAllRFIDs();
+    for(auto& rfidEntity: rfid125KhEntities)
+    {
+        if(rfidEntity->RFIDType == ModuleTypes::RFID125KH)
+        {
+            rfid125khs.push_back(new RFID125Kh(context, rfidEntity->PinNumber0, rfidEntity->PinNumber1, rfidEntity->ModuleId, rfidEntity->ServerId, rfidEntity->Name, ModuleTypes::RFID125KH, rfidEntity->DeviceId));
+        }
+        else
+        {
+            rfidnpn532s.push_back(new RFIDPN532(context, rfidEntity->PinNumber0, rfidEntity->ModuleId, rfidEntity->ServerId, rfidEntity->Name, ModuleTypes::RFIDPN532, rfidEntity->DeviceId));
+        }
+    }
+
+    // Load all LCD16X2 from database to lcd16x2s list
+    std::vector<LCDFullEntity*> lcd16x2Entities = modulesController->getAllLCDs();
+    for(auto& lcdEntity: lcd16x2Entities)
+    {
+        if(lcdEntity->Type == "LCD16X2")
+        {
+            lcd16x2s.push_back(new LCD16X2(context, lcdEntity->ModuleId, lcdEntity->ServerId, lcdEntity->Name, lcdEntity->DeviceId, lcdEntity->Address, lcdEntity->Cols, lcdEntity->Rows));
+        }
+        else //lcdEntity->Type == "OLEDLCD"
+        {
+            oledlcds.push_back(new OLEDLCD(lcdEntity->ModuleId, lcdEntity->id, lcdEntity->Name, lcdEntity->Address, lcdEntity->Cols, lcdEntity->Rows, lcdEntity->DeviceId, lcdEntity->ServerId));
+        }
+    }
+
+    // Load all soil moisture sensors from database to soilMoistureSensors list
+    std::vector<SoilMoistureFullEntity*> soilMoistureEntities = modulesController->getAllSoilMoistures();
+    for(auto& sensorEntity: soilMoistureEntities)
+    {
+        soilMoistureSensors.push_back(new SoilMoistureSensor(context, sensorEntity->PinNumber, sensorEntity->DryTreshold, sensorEntity->WetTreshold, sensorEntity->ModuleId, sensorEntity->ServerId, sensorEntity->Name, sensorEntity->ServerId));
+    }
+
+    // Load all DHT sensors from database to dhtSensors list
+    std::vector<DHTFullEntity*> dhtEntities = modulesController->getAllDHTs();
+    for(auto& dhtEntity: dhtEntities)
+    {
+        dhtSensors.push_back(new DHTSensor(context, dhtEntity->Name, dhtEntity->PinNumber, dhtEntity->Type, dhtEntity->ModuleId, dhtEntity->DeviceId, dhtEntity->ServerId));
+    }
+
     context->getLogger()->log(LogLevel::DEBUG_LEVEL, LogTitles::SYSTEM_BOOT, "Modules Initialized.");
 }
 
@@ -106,54 +151,129 @@ void Modules::update()
     }
 }
 
-IButton* Modules::getButton(String name)
+IButton* Modules::getButton(int server_id)
 {
-    Button* button;
-    buttonFull = modulesController->getButtonByName(name);
-    button = new Button(context, buttonFull.PinNumber, name, buttonFull.ActiveHigh, buttonFull.PullupActive, buttonFull.DeviceId, buttonFull.Id, buttonFull.ModuleId);
-    button->setDebounceDelay(buttonFull.DebounceDelay);
-    // button->setLongPressTime(buttonFull.)
-    return  button;
-}
-
-IButton* Modules::getButton(String name, PCF8574* pcf8574)
-{
-    Button* button;
-    buttonFull = modulesController->getButtonByName(name);
-    if (buttonFull.ButtonType == "PCF8574")
+    for(auto& button: buttons)
     {
-        button = new Button(context, buttonFull.PinNumber, name, buttonFull.ActiveHigh, buttonFull.PullupActive, Button::getButtonType(buttonFull.ButtonType), pcf8574, buttonFull.DeviceId, buttonFull.Id, buttonFull.ModuleId);        
+        if (button->getServerId() == server_id)
+        {
+            return button;
+        }
     }
-    else if(buttonFull.ButtonType == "PIN")
-    {
-        button = new Button(context, buttonFull.PinNumber, name, buttonFull.ActiveHigh, buttonFull.PullupActive, buttonFull.DeviceId, buttonFull.Id, buttonFull.ModuleId);
-    }
-    button->setDebounceDelay(buttonFull.DebounceDelay);
-    // button->setLongPressTime(buttonFull.)
-    return button;
+    return nullptr;
 }
 
 int Modules::addButton(IButton* button)
 {
-    ButtonFullEntity *buttonEntity = button->getEntity();
-    if (!isNameUnique(buttonEntity->Name))
+    if (!isNameUnique(button->getName()))
     {
         return -1;
     }
     modulesController = new ModulesController(context, storageType);
-    int button_id = modulesController->AddButton(*buttonEntity);
-    context->getLogger()->log(LogLevel::INFO_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "Button name : " + buttonEntity->Name);
+    ModuleEntity module_entity;
+    if (button->getDeviceID() == -1)
+    {
+        module_entity = ModuleEntity(button->getName(), ModuleTypes::BUTTON, context->getDeviceManager()->deviceId, 0);
+    }
+    else
+    {
+        if(button->getServerId() == -1)
+        {
+            module_entity = ModuleEntity(button->getName(), ModuleTypes::BUTTON, button->getDeviceID(), 0);
+        }
+        else
+        {
+            module_entity = ModuleEntity(button->getName(), ModuleTypes::BUTTON, button->getDeviceID(), button->getServerId());
+        }
+    }
+    
+    int module_id = modulesController->Add(module_entity);
+    if(button->getServerId() == -1)
+    {
+        module_entity.setServerId(module_id);
+        modulesController->Update(module_entity);
+    }
+    ButtonController* buttonController = new ButtonController(context, storageType);
+    ButtonEntity buttonEntity = ButtonEntity(module_id, "PIN", button->getPinNumber(), button->getActiveHigh(), button->getPullUpActive(), button->getDebounceDelay()); 
+    int button_id = buttonController->Add(buttonEntity);
+
+    // Cast IButton* to Button* and add to the buttons vector
+    Button* btn = static_cast<Button*>(button);
+    if (btn)
+    {
+        buttons.push_back(btn);
+    }
+    else
+    {
+        // Handle the error if the cast fails
+        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_ADDED_TO_DB, "Button cast failed: " + button->getName());
+        return -1;
+    }
+
+    context->getLogger()->log(LogLevel::INFO_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "Button name : " + button->getName());
     return button_id;
 }
 
-int Modules::addDHTSensor(DHTSensor* dhtSensor)
+IDHTSensor* Modules::getDHTSensor(int server_id)
 {
-    return 0;
+    for(auto& sensor: dhtSensors)
+    {
+        if (sensor->getServerId() == server_id)
+        {
+            return sensor;
+        }
+    }
+    return nullptr;
 }
 
-DHTSensor* Modules::getDHTSensor(String name)
+int Modules::addDHTSensor(IDHTSensor* dhtSensor)
 {
-    return new DHTSensor("",0,DHTType::DHT11);
+    if (!isNameUnique(dhtSensor->getName()))
+    {
+        return -1;
+    }
+    modulesController = new ModulesController(context, storageType);
+    ModuleEntity module_entity;
+    if (dhtSensor->getDeviceID() == -1)
+    {
+        module_entity = ModuleEntity(dhtSensor->getName(), ModuleTypes::DHT, context->getDeviceManager()->deviceId, 0);
+    }
+    else
+    {
+        if(dhtSensor->getServerId() == -1)
+        {
+            module_entity = ModuleEntity(dhtSensor->getName(), ModuleTypes::DHT, dhtSensor->getDeviceID(), 0);
+        }
+        else
+        {
+            module_entity = ModuleEntity(dhtSensor->getName(), ModuleTypes::DHT, dhtSensor->getDeviceID(), dhtSensor->getServerId());
+        }
+    }
+    
+    int module_id = modulesController->Add(module_entity);
+    if(dhtSensor->getServerId() == -1)
+    {
+        module_entity.setServerId(module_id);
+        modulesController->Update(module_entity);
+    }
+    DHTController* dhtController = new DHTController(context, storageType);
+    DHTEntity dhtEntity = DHTEntity(module_id, dhtSensor->getType(), dhtSensor->getPinNumber(), -1,-1,-1,-1); 
+    int dht_id = dhtController->Add(dhtEntity);
+
+    DHTSensor* dht = static_cast<DHTSensor*>(dhtSensor);
+    if(dht)
+    {
+        dhtSensors.push_back(dht);
+    }
+    else
+    {
+        // Handle the error if the cast fails
+        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_ADDED_TO_DB, "DHT cast failed: " + dhtSensor->getName());
+        return -1;
+    }
+
+    context->getLogger()->log(LogLevel::INFO_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "DHTSensor name : " + dhtSensor->getName());
+    return dht_id;
 }
 
 IRelay* Modules::getRelay(int server_id)
@@ -163,180 +283,361 @@ IRelay* Modules::getRelay(int server_id)
         if (relay->getServerId() == server_id)
         {
             return relay;
-        }        
+        }
     }
-    context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_FOUND_IN_DB, "Relay server_id : " + String(server_id));
-    return new Relay(context, 0, 0, NOT_FOUNDED, 0, 0, "", 0, 0); // Empty Relay// Empty Relay
+    return nullptr;
 }
 
-int32_t Modules::addRelay(IRelay* relay)
+int Modules::addRelay(IRelay* relay)
 {
-    RelayFullEntity *relayEntity = relay->getEntity();
-    if (!isNameUnique(relayEntity->Name))
+    if (!isNameUnique(relay->getName()))
     {
         return -1;
     }
-
-    int _id = modulesController->AddRelay(*relayEntity);
-    if(_id == -1)
+    modulesController = new ModulesController(context, storageType);
+    ModuleEntity module_entity;
+    if (relay->getDeviceID() == -1)
     {
-        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "Relay name : " + relayEntity->Name);
+        module_entity = ModuleEntity(relay->getName(), ModuleTypes::RELAY, context->getDeviceManager()->deviceId, 0);
     }
-    else{
-        context->getLogger()->log(LogLevel::INFO_LEVEL,LogTitles::MODULE_NOT_ADDED_TO_DB, "Relay name : " + relayEntity->Name);
-    }
-    return _id;
-}
-RFIDPN532* Modules::getRFIDPN532(String name)
-{
-    // rfids = modulesController->getAllRFIDs();
-    // for (size_t i = 0; i < rfids.size(); i++)
-    // {
-    //     RFIDFullEntity rfid = rfids.at(i);
-    //     if (rfid.Name == name&& rfid.ModuleType == ModuleTypes::RFIDPN532)
-    //     {
-    //         return new RFIDPN532(rfid.PinNumber0, name); 
-    //     }        
-    // }
-    // context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_FOUND_IN_DB, "RFID name : " + name);
-    return new RFIDPN532(-1, NOT_FOUNDED); // Empty RFID
-}
-
-int32_t Modules::addRFIDPN532(RFIDPN532* rfid)
-{
-    RFIDFullEntity *rfidEntity = rfid->getEntity();
-    if (!isNameUnique(rfidEntity->Name))
+    else
     {
-        return -1;
+        if(relay->getServerId() == -1)
+        {
+            module_entity = ModuleEntity(relay->getName(), ModuleTypes::RELAY, relay->getDeviceID(), 0);
+        }
+        else
+        {
+            module_entity = ModuleEntity(relay->getName(), ModuleTypes::RELAY, relay->getDeviceID(), relay->getServerId());
+        }
     }
-
-    int _id = modulesController->AddRFID(*rfidEntity);
-    if(_id == -1)
+    
+    int module_id = modulesController->Add(module_entity);
+    if(relay->getServerId() == -1)
     {
-        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "RFID name : " + rfidEntity->Name);
+        module_entity.setServerId(module_id);
+        modulesController->Update(module_entity);
     }
-    else{
-        context->getLogger()->log(LogLevel::INFO_LEVEL,LogTitles::MODULE_NOT_ADDED_TO_DB, "RFID name : " + rfidEntity->Name);
-    }
-    return _id;
-}
-RFID125Kh* Modules::getRFID125Kh(String name)
-{
-    // rfids = modulesController->getAllRFIDs();
-    // for (size_t i = 0; i < rfids.size(); i++)
-    // {
-    //     RFIDFullEntity rfid = rfids.at(i);
-    //     if (rfid.Name == name && rfid.ModuleType == ModuleTypes::RFID125KH)
-    //     {
-    //         return new RFID125Kh(name, rfid.PinNumber0, rfid.PinNumber1); 
-    //     }        
-    // }
-    // context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_FOUND_IN_DB, "RFID name : " + name);
-    return new RFID125Kh(NOT_FOUNDED, -1, 0); // Empty RFID
+    RelayController* relayController = new RelayController(context, storageType);
+    RelayEntity relayEntity = RelayEntity(module_id, relay->getPinNumber(), relay->getNormallyOpen()); 
+    int relay_id = relayController->Add(relayEntity);
+
+    relays.push_back(static_cast<Relay*>(relay));
+
+    context->getLogger()->log(LogLevel::INFO_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "Relay name : " + relay->getName());
+    return relay_id;
 }
 
-int32_t Modules::addRFID125Kh(RFID125Kh* rfid)
+IRFIDPN532* Modules::getRFIDPN532(int server_id)
 {
-    RFIDFullEntity *rfidEntity = rfid->getEntity();
-    if (!isNameUnique(rfidEntity->Name))
+    for(auto& rfid: rfidnpn532s)
+    {
+        if (rfid->getServerId() == server_id)
+        {
+            return rfid;
+        }
+    }
+    return nullptr;
+}
+
+int Modules::addRFIDPN532(IRFIDPN532* rfid)
+{
+    if (!isNameUnique(rfid->getName()))
     {
         return -1;
     }
-
-    int _id = modulesController->AddRFID(*rfidEntity);
-    if(_id == -1)
+    modulesController = new ModulesController(context, storageType);
+    ModuleEntity module_entity;
+    if (rfid->getDeviceID() == -1)
     {
-        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "RFID name : " + rfidEntity->Name);
+        module_entity = ModuleEntity(rfid->getName(), ModuleTypes::RFIDPN532, context->getDeviceManager()->deviceId, 0);
     }
-    else{
-        context->getLogger()->log(LogLevel::INFO_LEVEL,LogTitles::MODULE_NOT_ADDED_TO_DB, "RFID name : " + rfidEntity->Name);
+    else
+    {
+        if(rfid->getServerId() == -1)
+        {
+            module_entity = ModuleEntity(rfid->getName(), ModuleTypes::RFIDPN532, rfid->getDeviceID(), 0);
+        }
+        else
+        {
+            module_entity = ModuleEntity(rfid->getName(), ModuleTypes::RFIDPN532, rfid->getDeviceID(), rfid->getServerId());
+        }
     }
-    return _id;
+    
+    int module_id = modulesController->Add(module_entity);
+    if(rfid->getServerId() == -1)
+    {
+        module_entity.setServerId(module_id);
+        modulesController->Update(module_entity);
+    }
+    RFIDPN532* rfidpn = static_cast<RFIDPN532*>(rfid);
+    RFIDController* rfidController = new RFIDController(context, storageType);
+    RFIDEntity rfidEntity = RFIDEntity(module_id, rfidpn->getSSPin(), -1); 
+    int rfid_id = rfidController->Add(rfidEntity);
+
+    if(rfidpn)
+    {
+        rfidnpn532s.push_back(rfidpn);
+    }
+    else
+    {
+        // Handle the error if the cast fails
+        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_ADDED_TO_DB, "RFID PN532 cast failed: " + rfidpn->getName());
+        return -1;
+    }
+
+
+    context->getLogger()->log(LogLevel::INFO_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "RFIDPN532 name : " + rfid->getName());
+    return rfid_id;
 }
 
-LCD16X2* Modules::getLCD16X2(String name)
+IRFID125Kh* Modules::getRFID125Kh(int server_id)
 {
-    // lcd16x2s = modulesController->getAllLCDs();
-    // for (size_t i = 0; i < lcd16x2s.size(); i++)
-    // {
-    //     LCDFullEntity oled = lcd16x2s.at(i);
-    //     if (oled.Name == name)
-    //     {
-    //         return new LCD16X2(name, oled.Address, oled.Cols, oled.Rows); 
-    //     }        
-    // }
-    // context->getLogger()->log(LogLevel::ERROR_LEVEL,LogTitles::MODULE_NOT_FOUND_IN_DB, "LCD16X2 name : " + name);
-    return new LCD16X2(NOT_FOUNDED, -1, 0, 0); // Empty LCD16X2
+    for(auto& rfid: rfid125khs)
+    {
+        if (rfid->getServerId() == server_id)
+        {
+            return rfid;
+        }
+    }
+    return nullptr;
 }
 
-int Modules::addLCD16X2(LCD16X2* oledlcd)
+int Modules::addRFID125Kh(IRFID125Kh* rfid)
 {
-    LCDFullEntity *oledEntity = oledlcd->getEntity();
-    if (!isNameUnique(oledEntity->Name))
+    if (!isNameUnique(rfid->getName()))
     {
         return -1;
     }
-    int _id = modulesController->AddLCD(*oledEntity);
-    if(_id == -1)
+    modulesController = new ModulesController(context, storageType);
+    ModuleEntity module_entity;
+    if (rfid->getDeviceID() == -1)
     {
-        context->getLogger()->log(LogLevel::ERROR_LEVEL,LogTitles::MODULE_NOT_ADDED_TO_DB, "LCD16X2 name : " + oledEntity->Name);
+        module_entity = ModuleEntity(rfid->getName(), ModuleTypes::RFID125KH, context->getDeviceManager()->deviceId, 0);
     }
-    else{
-        context->getLogger()->log(LogLevel::INFO_LEVEL,LogTitles::MODULE_ADDED_TO_DB, "LCD16X2 name : " + oledEntity->Name);
-    }
-    return _id;
-}
-
-OLEDLCD* Modules::getOLEDLCD(String name)
-{
-    // oledlcds = modulesController->getAllLCDs();
-    // for (size_t i = 0; i < oledlcds.size(); i++)
-    // {
-    //     LCDFullEntity lcd = oledlcds.at(i);
-    //     if (lcd.Name == name)
-    //     {
-    //         return new OLEDLCD(name, lcd.Address, lcd.Cols, lcd.Rows); 
-    //     }        
-    // }
-    // context->getLogger()->log(LogLevel::ERROR_LEVEL,LogTitles::MODULE_NOT_FOUND_IN_DB, "LCDHandler name : " + name);
-    return new OLEDLCD(NOT_FOUNDED, -1, 0, 0); // Empty LCDHandler
-}
-
-void Modules::addOLEDLCD(OLEDLCD* lcdHandler)
-{
-    LCDFullEntity *lcdEntity = lcdHandler->getEntity();
-    if (!isNameUnique(lcdEntity->Name))
+    else
     {
-        return;
+        if(rfid->getServerId() == -1)
+        {
+            module_entity = ModuleEntity(rfid->getName(), ModuleTypes::RFID125KH, rfid->getDeviceID(), 0);
+        }
+        else
+        {
+            module_entity = ModuleEntity(rfid->getName(), ModuleTypes::RFID125KH, rfid->getDeviceID(), rfid->getServerId());
+        }
     }
-    modulesController->AddLCD(*lcdEntity);
-    context->getLogger()->log(LogLevel::INFO_LEVEL,LogTitles::MODULE_ADDED_TO_DB, "LCDHandler name : " + lcdEntity->Name);
-}
-
-SoilMoistureSensor* Modules::getSoilMoistureSensor(String name)
-{
-    // sensors = modulesController->getAllSoilMoistures();
-    // for (size_t i = 0; i < sensors.size(); i++)
-    // {
-    //     SoilMoistureFullEntity sensor = sensors.at(i);
-    //     if (sensor.Name == name)
-    //     {
-    //         return new SoilMoistureSensor(name, sensor.ConnectionType, sensor.NodeId, sensor.PinNumber, sensor.DryTreshold, sensor.WetTreshold); 
-    //     }        
-    // }
-    // context->getLogger()->log(LogLevel::ERROR_LEVEL,LogTitles::MODULE_NOT_FOUND_IN_DB, "SoilMoistureSensor name : " + name);
-    return new SoilMoistureSensor( NOT_FOUNDED,"" , -1, -1, 0, 0); // Empty SoilMoistureSensor
-}
-
-void Modules::addSoilMoistureSensor(SoilMoistureSensor* soilMoistureSensor)
-{
-    SoilMoistureFullEntity *sensorEntity = soilMoistureSensor->getEntity();
-    if (!isNameUnique(sensorEntity->Name))
+    
+    int module_id = modulesController->Add(module_entity);
+    if(rfid->getServerId() == -1)
     {
-        return;
+        module_entity.setServerId(module_id);
+        modulesController->Update(module_entity);
     }
-    modulesController->AddSoilMoisture(*sensorEntity);
-    context->getLogger()->log(LogLevel::INFO_LEVEL,LogTitles::MODULE_ADDED_TO_DB, "SoilMoistureSensor name : " + sensorEntity->Name);
+    RFIDController* rfidController = new RFIDController(context, storageType);
+    RFID125Kh* rfid125 = static_cast<RFID125Kh*>(rfid);
+    if(!rfid125)
+    {
+        // Handle the error if the cast fails
+        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_ADDED_TO_DB, "Button cast failed: " + rfid->getName());
+        return -1;
+    }
+
+    RFIDEntity rfidEntity = RFIDEntity(module_id, rfid125->getPin0(), rfid125->getPin1()); 
+    int rfid_id = rfidController->Add(rfidEntity);
+
+    rfid125khs.push_back(rfid125);
+
+    context->getLogger()->log(LogLevel::INFO_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "RFID125Kh name : " + rfid->getName());
+    return rfid_id;
+}
+
+ILCD16X2* Modules::getLCD16X2(int server_id)
+{
+    for(auto& lcd: lcd16x2s)
+    {
+        if (lcd->getServerId() == server_id)
+        {
+            return lcd;
+        }
+    }
+    return nullptr;
+}
+
+int Modules::addLCD16X2(ILCD16X2* lcd16x2)
+{
+    if (!isNameUnique(lcd16x2->getName()))
+    {
+        return -1;
+    }
+    modulesController = new ModulesController(context, storageType);
+    ModuleEntity module_entity;
+    if (lcd16x2->getDeviceID() == -1)
+    {
+        module_entity = ModuleEntity(lcd16x2->getName(), ModuleTypes::LCD, context->getDeviceManager()->deviceId, 0);
+    }
+    else
+    {
+        if(lcd16x2->getServerId() == -1)
+        {
+            module_entity = ModuleEntity(lcd16x2->getName(), ModuleTypes::LCD, lcd16x2->getDeviceID(), 0);
+        }
+        else
+        {
+            module_entity = ModuleEntity(lcd16x2->getName(), ModuleTypes::LCD, lcd16x2->getDeviceID(), lcd16x2->getServerId());
+        }
+    }
+    
+    int module_id = modulesController->Add(module_entity);
+    if(lcd16x2->getServerId() == -1)
+    {
+        module_entity.setServerId(module_id);
+        modulesController->Update(module_entity);
+    }
+    LCDController* lcdController = new LCDController(context, storageType);
+    LCDEntity lcdEntity = LCDEntity(module_id, -1, lcd16x2->getWidth(), lcd16x2->getHeight(), "LCD16X2"); 
+    int lcd_id = lcdController->Add(lcdEntity);
+
+    LCD16X2* lcd = static_cast<LCD16X2*>(lcd16x2);
+    if(lcd)
+    {
+        lcd16x2s.push_back(lcd);
+    }
+    else
+    {
+        // Handle the error if the cast fails
+        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_ADDED_TO_DB, "LCD 16X2 cast failed: " + lcd16x2->getName());
+        return -1;
+    }
+
+
+    context->getLogger()->log(LogLevel::INFO_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "LCD16X2 name : " + lcd16x2->getName());
+    return lcd_id;
+}
+
+IOLEDLCD* Modules::getOLEDLCD(int server_id)
+{
+    for(auto& oled: oledlcds)
+    {
+        if (oled->getServerId() == server_id)
+        {
+            return oled;
+        }
+    }
+    return nullptr;
+}
+
+int Modules::addOLEDLCD(IOLEDLCD* oledlcd)
+{
+    if (!isNameUnique(oledlcd->getName()))
+    {
+        return -1;
+    }
+    modulesController = new ModulesController(context, storageType);
+    ModuleEntity module_entity;
+    if (oledlcd->getDeviceID() == -1)
+    {
+        module_entity = ModuleEntity(oledlcd->getName(), ModuleTypes::LCD, context->getDeviceManager()->deviceId, 0);
+    }
+    else
+    {
+        if(oledlcd->getServerId() == -1)
+        {
+            module_entity = ModuleEntity(oledlcd->getName(), ModuleTypes::LCD, oledlcd->getDeviceID(), 0);
+        }
+        else
+        {
+            module_entity = ModuleEntity(oledlcd->getName(), ModuleTypes::LCD, oledlcd->getDeviceID(), oledlcd->getServerId());
+        }
+    }
+    
+    int module_id = modulesController->Add(module_entity);
+    if(oledlcd->getServerId() == -1)
+    {
+        module_entity.setServerId(module_id);
+        modulesController->Update(module_entity);
+    }
+    LCDController* lcdController = new LCDController(context, storageType);
+    LCDEntity lcdEntity = LCDEntity(module_id, oledlcd->getAddress(), oledlcd->getCol(), oledlcd->getRows(), "OLED"); 
+    int lcd_id = lcdController->Add(lcdEntity);
+
+    OLEDLCD* oled = static_cast<OLEDLCD*>(oledlcd);
+    if(oled)
+    {
+        oledlcds.push_back(oled);
+    }
+    else
+    {
+        // Handle the error if the cast fails
+        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_ADDED_TO_DB, "OLED LCD cast failed: " + oledlcd->getName());
+        return -1;
+    }
+
+
+    context->getLogger()->log(LogLevel::INFO_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "OLEDLCD name : " + oledlcd->getName());
+    return lcd_id;
+}
+
+ISoilMoistureSensor* Modules::getSoilMoistureSensor(int server_id)
+{
+    for(auto& sensor: soilMoistureSensors)
+    {
+        if (sensor->getServerId() == server_id)
+        {
+            return sensor;
+        }
+    }
+    return nullptr;
+}
+
+int Modules::addSoilMoistureSensor(ISoilMoistureSensor* soilMoistureSensor)
+{
+    if (!isNameUnique(soilMoistureSensor->getName()))
+    {
+        return -1;
+    }
+    modulesController = new ModulesController(context, storageType);
+    ModuleEntity module_entity;
+    if (soilMoistureSensor->getDeviceID() == -1)
+    {
+        module_entity = ModuleEntity(soilMoistureSensor->getName(), ModuleTypes::SOILMOISTURE, context->getDeviceManager()->deviceId, 0);
+    }
+    else
+    {
+        if(soilMoistureSensor->getServerId() == -1)
+        {
+            module_entity = ModuleEntity(soilMoistureSensor->getName(), ModuleTypes::SOILMOISTURE, soilMoistureSensor->getDeviceID(), 0);
+        }
+        else
+        {
+            module_entity = ModuleEntity(soilMoistureSensor->getName(), ModuleTypes::SOILMOISTURE, soilMoistureSensor->getDeviceID(), soilMoistureSensor->getServerId());
+        }
+    }
+    
+    int module_id = modulesController->Add(module_entity);
+    if(soilMoistureSensor->getServerId() == -1)
+    {
+        module_entity.setServerId(module_id);
+        modulesController->Update(module_entity);
+    }
+    SoilMoistureController* soilMoistureController = new SoilMoistureController(context, storageType);
+    SoilMoistureEntity soilMoistureEntity = SoilMoistureEntity(module_id, soilMoistureSensor->getSensorPin(), soilMoistureSensor->getDryThreshold(), soilMoistureSensor->getWetThreshold(), ""); 
+    int soilMoisture_id = soilMoistureController->Add(soilMoistureEntity);
+
+    SoilMoistureSensor* soilMoisture = static_cast<SoilMoistureSensor*>(soilMoistureSensor);
+    if(soilMoisture)
+    {
+        soilMoistureSensors.push_back(soilMoisture);
+    }
+    else
+    {
+        // Handle the error if the cast fails
+        context->getLogger()->log(LogLevel::ERROR_LEVEL, LogTitles::MODULE_NOT_ADDED_TO_DB, "SoilMoisture Sensor cast failed: " + soilMoistureSensor->getName());
+        return -1;
+    }
+
+
+    context->getLogger()->log(LogLevel::INFO_LEVEL, LogTitles::MODULE_ADDED_TO_DB, "SoilMoistureSensor name : " + soilMoistureSensor->getName());
+    return soilMoisture_id;
 }
 
 SimCardManager* Modules::getSimCardManager(int tx_pin, int rx_pin)
@@ -354,7 +655,7 @@ bool Modules::isNameUnique(String name)
     else
     {
         return false;
-    }    
+    }
 }
 
 #endif

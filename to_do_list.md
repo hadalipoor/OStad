@@ -4,3 +4,4 @@
 - finish module controller for all modules
 - fix ostadForge to get bool parameters and revis all api classes
 - name convention in project
+-add setOnClickApi to Button modules

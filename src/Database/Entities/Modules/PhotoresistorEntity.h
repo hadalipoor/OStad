@@ -1,62 +1,89 @@
 #ifndef PHOTORESISTORENTITY_H
 #define PHOTORESISTORENTITY_H
 
-#include "..\Entity.h"
+#include "../Entity.h"
 
 class PhotoresistorEntity : public Entity {
 public:
-    static const String COLUMN_LOW_TRESHOLD;
-    static const String COLUMN_HIGH_TRESHOLD;
-
+    static const String COLUMN_MODULEID;
+    static const String COLUMN_PINNUMBER;
+    static const String COLUMN_LOWTRESHOLD;
+    static const String COLUMN_HIGHTRESHOLD;
+    
 private:
-    int lowTreshold;
-    int highTreshold;
+    int _ModuleId;
+    int _PinNumber;
+    int _LowTreshold;
+    int _HighTreshold;
+    
 
 public:
-    PhotoresistorEntity() : Entity(), lowTreshold(0), highTreshold(0) {}
+    PhotoresistorEntity()  : Entity(){}
 
-    PhotoresistorEntity(int id, int lowTreshold, int highTreshold) : Entity() {
+    PhotoresistorEntity(int id, int ModuleId, int PinNumber, int LowTreshold, int HighTreshold) : Entity() {
         this->id = id;
-        this->lowTreshold = lowTreshold;
-        this->highTreshold = highTreshold;
-        SetValue(COLUMN_LOW_TRESHOLD, String(this->lowTreshold));
-        SetValue(COLUMN_HIGH_TRESHOLD, String(this->highTreshold));
+        _ModuleId = ModuleId;
+        _PinNumber = PinNumber;
+        _LowTreshold = LowTreshold;
+        _HighTreshold = HighTreshold;
+        
+
+        addColumn(COLUMN_MODULEID, String(ModuleId), "int");
+        addColumn(COLUMN_PINNUMBER, String(PinNumber), "int");
+        addColumn(COLUMN_LOWTRESHOLD, String(LowTreshold), "int");
+        addColumn(COLUMN_HIGHTRESHOLD, String(HighTreshold), "int");
+        
     }
 
-    PhotoresistorEntity(int lowTreshold, int highTreshold) : 
-        PhotoresistorEntity(0, lowTreshold, highTreshold) {}
+    PhotoresistorEntity(int ModuleId, int PinNumber, int LowTreshold, int HighTreshold) : 
+        PhotoresistorEntity(0, _ModuleId, _PinNumber, _LowTreshold, _HighTreshold)  {}
 
-    static PhotoresistorEntity fromEntity(Entity entity) {
-        PhotoresistorEntity photoresistorEntity = PhotoresistorEntity();
-        photoresistorEntity.fromString(entity.toString());
-        return photoresistorEntity;
+    static PhotoresistorEntity fromEntity(Entity entity)
+    {
+        PhotoresistorEntity photoresistorentity = PhotoresistorEntity();
+        photoresistorentity.fromString(entity.toString());
+        return photoresistorentity;
     }
 
-    // Getters
+    // Getters for each field
+    int getModuleId() {
+        return _ModuleId;
+    }
+    int getPinNumber() {
+        return _PinNumber;
+    }
     int getLowTreshold() {
-        lowTreshold = GetValue(COLUMN_LOW_TRESHOLD).toInt();
-        return lowTreshold;
+        return _LowTreshold;
     }
-
     int getHighTreshold() {
-        highTreshold = GetValue(COLUMN_HIGH_TRESHOLD).toInt();
-        return highTreshold;
+        return _HighTreshold;
     }
-
-    // Setters
-    void setLowTreshold(int value) {
-        lowTreshold = value;
-        SetValue(COLUMN_LOW_TRESHOLD, String(lowTreshold));
+    
+    
+    // Setters for each field
+    void setModuleId(int ModuleId) {
+        SetValue(COLUMN_MODULEID, String(ModuleId));
+        _ModuleId = ModuleId;
     }
-
-    void setHighTreshold(int value) {
-        highTreshold = value;
-        SetValue(COLUMN_HIGH_TRESHOLD, String(highTreshold));
+    void setPinNumber(int PinNumber) {
+        SetValue(COLUMN_PINNUMBER, String(PinNumber));
+        _PinNumber = PinNumber;
     }
-
+    void setLowTreshold(int LowTreshold) {
+        SetValue(COLUMN_LOWTRESHOLD, String(LowTreshold));
+        _LowTreshold = LowTreshold;
+    }
+    void setHighTreshold(int HighTreshold) {
+        SetValue(COLUMN_HIGHTRESHOLD, String(HighTreshold));
+        _HighTreshold = HighTreshold;
+    }
+    
 };
 
-const String PhotoresistorEntity::COLUMN_LOW_TRESHOLD = "LowTreshold";
-const String PhotoresistorEntity::COLUMN_HIGH_TRESHOLD = "HighTreshold";
+const String PhotoresistorEntity::COLUMN_MODULEID = "ModuleId";
+const String PhotoresistorEntity::COLUMN_PINNUMBER = "PinNumber";
+const String PhotoresistorEntity::COLUMN_LOWTRESHOLD = "LowTreshold";
+const String PhotoresistorEntity::COLUMN_HIGHTRESHOLD = "HighTreshold";
+
 
 #endif // PHOTORESISTORENTITY_H

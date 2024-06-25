@@ -1,62 +1,77 @@
 #ifndef RFIDENTITY_H
 #define RFIDENTITY_H
 
-#include "..\Entity.h"
+#include "../Entity.h"
 
 class RFIDEntity : public Entity {
 public:
-    static const String COLUMN_MODULE_ID;
-    static const String COLUMN_MODULE_PIN2;
-
+    static const String COLUMN_MODULEID;
+    static const String COLUMN_PINNUMBER1;
+    static const String COLUMN_PINNUMBER2;
+    
 private:
-    int moduleId;
-    int pin2;
+    int _ModuleId;
+    int _PinNumber1;
+    int _PinNumber2;
+    
 
 public:
-    RFIDEntity() : Entity(), moduleId(0), pin2(0) {}
+    RFIDEntity()  : Entity(){}
 
-    RFIDEntity(int id, int moduleId, int pin2) : Entity() {
+    RFIDEntity(int id, int ModuleId, int PinNumber1, int PinNumber2) : Entity() {
         this->id = id;
-        this->moduleId = moduleId;
-        this->pin2 = pin2;
-        SetValue(COLUMN_MODULE_ID, String(this->moduleId));
-        SetValue(COLUMN_MODULE_PIN2, String(this->pin2));
+        _ModuleId = ModuleId;
+        _PinNumber1 = PinNumber1;
+        _PinNumber2 = PinNumber2;
+        
+
+        addColumn(COLUMN_MODULEID, String(ModuleId), "int");
+        addColumn(COLUMN_PINNUMBER1, String(PinNumber1), "int");
+        addColumn(COLUMN_PINNUMBER2, String(PinNumber2), "int");
+        
     }
 
-    RFIDEntity(int moduleId, int pin2) : 
-        RFIDEntity(0, moduleId, pin2) {}
+    RFIDEntity(int ModuleId, int PinNumber1, int PinNumber2) : 
+        RFIDEntity(0, _ModuleId, _PinNumber1, _PinNumber2)  {}
 
-    static RFIDEntity fromEntity(Entity entity) {
-        RFIDEntity rfidEntity = RFIDEntity();
-        rfidEntity.fromString(entity.toString());
-        return rfidEntity;
+    static RFIDEntity fromEntity(Entity entity)
+    {
+        RFIDEntity rfidentity = RFIDEntity();
+        rfidentity.fromString(entity.toString());
+        return rfidentity;
     }
 
-    // Getters
+    // Getters for each field
     int getModuleId() {
-        moduleId = GetValue(COLUMN_MODULE_ID).toInt();
-        return moduleId;
+        return _ModuleId;
     }
-
-    int getPin2() {
-        pin2 = GetValue(COLUMN_MODULE_PIN2).toInt();
-        return pin2;
+    int getPinNumber1() {
+        return _PinNumber1;
     }
-
-    // Setters
-    void setModuleId(int value) {
-        moduleId = value;
-        SetValue(COLUMN_MODULE_ID, String(moduleId));
+    int getPinNumber2() {
+        return _PinNumber2;
     }
-
-    void setPin2(int value) {
-        pin2 = value;
-        SetValue(COLUMN_MODULE_PIN2, String(pin2));
+    
+    
+    // Setters for each field
+    void setModuleId(int ModuleId) {
+        SetValue(COLUMN_MODULEID, String(ModuleId));
+        _ModuleId = ModuleId;
     }
-
+    void setPinNumber1(int PinNumber1) {
+        SetValue(COLUMN_PINNUMBER1, String(PinNumber1));
+        _PinNumber1 = PinNumber1;
+    }
+    void setPinNumber2(int PinNumber2) {
+        SetValue(COLUMN_PINNUMBER2, String(PinNumber2));
+        _PinNumber2 = PinNumber2;
+    }
+    
 };
 
-const String RFIDEntity::COLUMN_MODULE_ID = "ModuleId";
-const String RFIDEntity::COLUMN_MODULE_PIN2 = "Pin2";
+const String RFIDEntity::COLUMN_MODULEID = "ModuleId";
+const String RFIDEntity::COLUMN_PINNUMBER1 = "PinNumber1";
+const String RFIDEntity::COLUMN_PINNUMBER2 = "PinNumber2";
+
 
 #endif // RFIDENTITY_H

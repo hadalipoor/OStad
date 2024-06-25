@@ -1,92 +1,113 @@
 #ifndef RGBENTITY_H
 #define RGBENTITY_H
 
-#include "..\Entity.h"
+#include "../Entity.h"
 
 class RGBEntity : public Entity {
 public:
+    static const String COLUMN_MODULEID;
+    static const String COLUMN_PINNUMBER;
     static const String COLUMN_TYPE;
     static const String COLUMN_RPIN;
     static const String COLUMN_GPIN;
     static const String COLUMN_BPIN;
-
+    
 private:
-    String type;
-    int rPin;
-    int gPin;
-    int bPin;
+    int _ModuleId;
+    int _PinNumber;
+    String _Type;
+    int _Rpin;
+    int _Gpin;
+    int _Bpin;
+    
 
 public:
-    RGBEntity() : Entity(), type(""), rPin(0), gPin(0), bPin(0) {}
+    RGBEntity()  : Entity(){}
 
-    RGBEntity(int id, const String &_Type, int rPin, int gPin, int bPin) : Entity() {
+    RGBEntity(int id, int ModuleId, int PinNumber, String Type, int Rpin, int Gpin, int Bpin) : Entity() {
         this->id = id;
-        this->type = _Type;
-        this->rPin = rPin;
-        this->gPin = gPin;
-        this->bPin = bPin;
-        SetValue(COLUMN_TYPE, this->type);
-        SetValue(COLUMN_RPIN, String(this->rPin));
-        SetValue(COLUMN_GPIN, String(this->gPin));
-        SetValue(COLUMN_BPIN, String(this->bPin));
+        _ModuleId = ModuleId;
+        _PinNumber = PinNumber;
+        _Type = Type;
+        _Rpin = Rpin;
+        _Gpin = Gpin;
+        _Bpin = Bpin;
+        
+
+        addColumn(COLUMN_MODULEID, String(ModuleId), "int");
+        addColumn(COLUMN_PINNUMBER, String(PinNumber), "int");
+        addColumn(COLUMN_TYPE, String(Type), "String");
+        addColumn(COLUMN_RPIN, String(Rpin), "int");
+        addColumn(COLUMN_GPIN, String(Gpin), "int");
+        addColumn(COLUMN_BPIN, String(Bpin), "int");
+        
     }
 
-    RGBEntity(const String &_Type, int rPin, int gPin, int bPin) : 
-        RGBEntity(0, _Type, rPin, gPin, bPin) {}
+    RGBEntity(int ModuleId, int PinNumber, String Type, int Rpin, int Gpin, int Bpin) : 
+        RGBEntity(0, _ModuleId, _PinNumber, _Type, _Rpin, _Gpin, _Bpin)  {}
 
-    static RGBEntity fromEntity(Entity entity) {
-        RGBEntity rgbEntity = RGBEntity();
-        rgbEntity.fromString(entity.toString());
-        return rgbEntity;
+    static RGBEntity fromEntity(Entity entity)
+    {
+        RGBEntity rgbentity = RGBEntity();
+        rgbentity.fromString(entity.toString());
+        return rgbentity;
     }
 
-    // Getters
+    // Getters for each field
+    int getModuleId() {
+        return _ModuleId;
+    }
+    int getPinNumber() {
+        return _PinNumber;
+    }
     String getType() {
-        type = GetValue(COLUMN_TYPE);
-        return type;
+        return _Type;
     }
-
-    int getRPin() {
-        rPin = GetValue(COLUMN_RPIN).toInt();
-        return rPin;
+    int getRpin() {
+        return _Rpin;
     }
-
-    int getGPin() {
-        gPin = GetValue(COLUMN_GPIN).toInt();
-        return gPin;
+    int getGpin() {
+        return _Gpin;
     }
-
-    int getBPin() {
-        bPin = GetValue(COLUMN_BPIN).toInt();
-        return bPin;
+    int getBpin() {
+        return _Bpin;
     }
-
-    // Setters
-    void setType(const String &value) {
-        type = value;
-        SetValue(COLUMN_TYPE, type);
+    
+    
+    // Setters for each field
+    void setModuleId(int ModuleId) {
+        SetValue(COLUMN_MODULEID, String(ModuleId));
+        _ModuleId = ModuleId;
     }
-
-    void setRPin(int value) {
-        rPin = value;
-        SetValue(COLUMN_RPIN, String(rPin));
+    void setPinNumber(int PinNumber) {
+        SetValue(COLUMN_PINNUMBER, String(PinNumber));
+        _PinNumber = PinNumber;
     }
-
-    void setGPin(int value) {
-        gPin = value;
-        SetValue(COLUMN_GPIN, String(gPin));
+    void setType(String Type) {
+        SetValue(COLUMN_TYPE, String(Type));
+        _Type = Type;
     }
-
-    void setBPin(int value) {
-        bPin = value;
-        SetValue(COLUMN_BPIN, String(bPin));
+    void setRpin(int Rpin) {
+        SetValue(COLUMN_RPIN, String(Rpin));
+        _Rpin = Rpin;
     }
-
+    void setGpin(int Gpin) {
+        SetValue(COLUMN_GPIN, String(Gpin));
+        _Gpin = Gpin;
+    }
+    void setBpin(int Bpin) {
+        SetValue(COLUMN_BPIN, String(Bpin));
+        _Bpin = Bpin;
+    }
+    
 };
 
+const String RGBEntity::COLUMN_MODULEID = "ModuleId";
+const String RGBEntity::COLUMN_PINNUMBER = "PinNumber";
 const String RGBEntity::COLUMN_TYPE = "Type";
 const String RGBEntity::COLUMN_RPIN = "Rpin";
 const String RGBEntity::COLUMN_GPIN = "Gpin";
 const String RGBEntity::COLUMN_BPIN = "Bpin";
+
 
 #endif // RGBENTITY_H

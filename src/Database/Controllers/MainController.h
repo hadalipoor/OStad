@@ -10,7 +10,7 @@
 #include "../../Logging/LogTitles.h"
 
 template<typename T>
-class MainController : public IController<T> {
+class MainController{
 private:
     Context* context;
 public:

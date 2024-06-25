@@ -1,4 +1,3 @@
-
 #ifndef RelayManagerApis_h
 #define RelayManagerApis_h
 

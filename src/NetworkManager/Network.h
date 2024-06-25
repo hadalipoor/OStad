@@ -16,7 +16,7 @@
 #include "WiFi/WiFiManager.h"
 
 #include "apis/System/AddSystemApis.h"
-#include "apis/Modules/AddModulesApis.h"
+#include "apis/Modules/AddModuleApis.h"
 #include "apis/Authorization/AddAuthorizationApis.h"
 #include "apis/DeviceManager/AddDeviceApis.h"
 

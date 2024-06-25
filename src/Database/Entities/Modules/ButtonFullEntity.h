@@ -7,8 +7,8 @@ public:
     int Id;
     int ModuleId;
     String Name;
-    String ModuleType;
     int DeviceId;
+    int ServerId;
     int PinNumber;
     String ButtonType;
     bool ActiveHigh;
@@ -16,10 +16,9 @@ public:
     int DebounceDelay;
     int longPressTime;
 
-    ButtonFullEntity() {}
 
-    ButtonFullEntity(int id, int moduleId, String name, String moduleType, int deviceId,
-                     int pinNumber, String buttonType, bool activeHigh, bool pullupActive, int debounceDelay)  {
+    ButtonFullEntity(int id, int moduleId, String name, int pinNumber, String buttonType,
+                     bool activeHigh, bool pullupActive, int debounceDelay, int deviceId, int serverId)  {
         Id = id;
         ButtonType = buttonType;
         ActiveHigh = activeHigh;
@@ -27,9 +26,11 @@ public:
         DebounceDelay = debounceDelay;
         ModuleId = moduleId;
         Name = name;
-        ModuleType = moduleType;
         DeviceId = deviceId;
+        ServerId = serverId;
         PinNumber = pinNumber;
     }
+    
+    ButtonFullEntity(): ButtonFullEntity(0, 0, "", 0, "", false, false, 0, 0, 0) {}
 };
 #endif // BUTTONFULLENTITY_H

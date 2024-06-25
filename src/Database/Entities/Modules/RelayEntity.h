@@ -1,77 +1,77 @@
 #ifndef RELAYENTITY_H
 #define RELAYENTITY_H
 
-#include "..\Entity.h"
+#include "../Entity.h"
 
 class RelayEntity : public Entity {
 public:
-    static const String COLUMN_NORMALLY_OPEN;
-    static const String COLUMN_PIN_NUMBER;
-    static const String COLUMN_MODULE_ID;
-
+    static const String COLUMN_MODULEID;
+    static const String COLUMN_PINNUMBER;
+    static const String COLUMN_NORMALLYOPEN;
+    
 private:
-    int moduleId;
-    int pinNumber;
-    bool normallyOpen;
+    int _ModuleId;
+    int _PinNumber;
+    bool _NormallyOpen;
+    
 
 public:
-    RelayEntity() : Entity(), moduleId(0), pinNumber(0), normallyOpen(false) {}
+    RelayEntity()  : Entity(){}
 
-    RelayEntity(int id, int pinNumber, int moduleId, bool normallyOpen) : Entity() {
+    RelayEntity(int id, int ModuleId, int PinNumber, bool NormallyOpen) : Entity() {
         this->id = id;
-        this->moduleId = moduleId;
-        this->pinNumber = pinNumber;
-        this->normallyOpen = normallyOpen;
-        SetValue(COLUMN_MODULE_ID, String(this->moduleId));
-        SetValue(COLUMN_PIN_NUMBER, String(this->pinNumber));
-        SetValue(COLUMN_NORMALLY_OPEN, String(this->normallyOpen));
+        _ModuleId = ModuleId;
+        _PinNumber = PinNumber;
+        _NormallyOpen = NormallyOpen;
+        
+
+        addColumn(COLUMN_MODULEID, String(ModuleId), "int");
+        addColumn(COLUMN_PINNUMBER, String(PinNumber), "int");
+        addColumn(COLUMN_NORMALLYOPEN, String(NormallyOpen), "bool");
+        
     }
 
-    RelayEntity(int moduleId, int pinNumber, bool normallyOpen) : 
-        RelayEntity(0, pinNumber, moduleId, normallyOpen) {}
+    RelayEntity(int ModuleId, int PinNumber, bool NormallyOpen) : 
+        RelayEntity(0, _ModuleId, _PinNumber, _NormallyOpen)  {}
 
-    static RelayEntity fromEntity(Entity entity) {
-        RelayEntity relayEntity = RelayEntity();
-        relayEntity.fromString(entity.toString());
-        return relayEntity;
+    static RelayEntity fromEntity(Entity entity)
+    {
+        RelayEntity relayentity = RelayEntity();
+        relayentity.fromString(entity.toString());
+        return relayentity;
     }
 
-    // Getters
+    // Getters for each field
     int getModuleId() {
-        moduleId = GetValue(COLUMN_MODULE_ID).toInt();
-        return moduleId;
+        return _ModuleId;
     }
-
     int getPinNumber() {
-        pinNumber = GetValue(COLUMN_PIN_NUMBER).toInt();
-        return pinNumber;
+        return _PinNumber;
     }
-
     bool getNormallyOpen() {
-        normallyOpen = GetValue(COLUMN_NORMALLY_OPEN) == "true";
-        return normallyOpen;
+        return _NormallyOpen;
     }
-
-    // Setters
-    void setModuleId(int value) {
-        moduleId = value;
-        SetValue(COLUMN_MODULE_ID, String(moduleId));
+    
+    
+    // Setters for each field
+    void setModuleId(int ModuleId) {
+        SetValue(COLUMN_MODULEID, String(ModuleId));
+        _ModuleId = ModuleId;
     }
-
-    void setPinNumber(int value) {
-        pinNumber = value;
-        SetValue(COLUMN_PIN_NUMBER, String(pinNumber));
+    void setPinNumber(int PinNumber) {
+        SetValue(COLUMN_PINNUMBER, String(PinNumber));
+        _PinNumber = PinNumber;
     }
-
-    void setNormallyOpen(bool value) {
-        normallyOpen = value;
-        SetValue(COLUMN_NORMALLY_OPEN, String(normallyOpen));
+    void setNormallyOpen(bool NormallyOpen) {
+        SetValue(COLUMN_NORMALLYOPEN, String(NormallyOpen));
+        _NormallyOpen = NormallyOpen;
     }
-
+    
 };
 
-const String RelayEntity::COLUMN_MODULE_ID = "ModuleId";
-const String RelayEntity::COLUMN_PIN_NUMBER = "PinNumber";
-const String RelayEntity::COLUMN_NORMALLY_OPEN = "NormallyOpen";
+const String RelayEntity::COLUMN_MODULEID = "ModuleId";
+const String RelayEntity::COLUMN_PINNUMBER = "PinNumber";
+const String RelayEntity::COLUMN_NORMALLYOPEN = "NormallyOpen";
+
 
 #endif // RELAYENTITY_H

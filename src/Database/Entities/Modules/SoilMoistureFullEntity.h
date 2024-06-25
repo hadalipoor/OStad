@@ -8,29 +8,28 @@ public:
     int id;
     int ModuleId;
     String Name;
-    String ModuleType;
-    String ConnectionType;
-    int NodeId;
     int PinNumber;
     int DryTreshold;
     int WetTreshold;
     String Type;
+    int DeviceId;
+    int ServerId;
 
-    SoilMoistureFullEntity() {}
 
-    SoilMoistureFullEntity(int id, int moduleId, const String &_Name, const String &_ModuleType, const String &_ConnectionType, int nodeId,
-                           int pinNumber, int dryTreshold, int wetTreshold, const String &type) {
+    SoilMoistureFullEntity(int id, int moduleId, const String &_Name, int pinNumber, int dryTreshold, int wetTreshold,
+                           const String &type, int deviceId, int serverId) {
         this->id = id;
         DryTreshold = dryTreshold;
         WetTreshold = wetTreshold;
         Type = type;
         ModuleId = moduleId;
         Name = _Name;
-        ModuleType = _ModuleType;
-        ConnectionType = _ConnectionType;
-        NodeId = nodeId;
         PinNumber = pinNumber;
+        DeviceId = deviceId;
+        ServerId = serverId;    
     }
+
+    SoilMoistureFullEntity(): SoilMoistureFullEntity(0, 0, "", 0, 0, 0, "", 0, 0) {}
 };
 
 #endif // SOILMOISTUREFULLENTITY_H

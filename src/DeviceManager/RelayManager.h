@@ -28,8 +28,8 @@ RelayManager::RelayManager(Context* context): context(context)
 
 bool RelayManager::addRelay(String name, String chip_id, int pinNumber, bool normallyOpen, int serverId)
 {
-    ModulesController* moduleController = new ModulesController(context, storageType);
     DevicesController* devicesController = new DevicesController(context, storageType);
+    ModulesController* moduleController = new ModulesController(context, storageType);
     if (moduleController->Get(ModuleEntity::COLUMN_NAME+String("="+name)).size() == 0)
     {
         std::vector<DevicesEntity> deviceEntities = devicesController->Get(DevicesEntity::COLUMN_CHIPID + "=" + chip_id);

@@ -33,14 +33,14 @@ ButtonApis::ButtonApis(Context* cntxt, bool add_apis): context(cntxt) {
 
     context->getNetwork()->addApi(new ResourceNode(std::string(class_path + "/create"), LambdaResourceNode::REQUEST_METHOD_POST, [&](HTTPRequest * req, HTTPResponse * res) {
         if (!context->getSecurity()->checkAuthentication(req, res, ModulePermissions::BUTTON_CREATE) == AuthorizationResults::SUCCESFULL){return;}
-        if (!req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("ButtonType") || !req->getParams()->isQueryParameterSet("ActiveHigh") || !req->getParams()->isQueryParameterSet("PullupActive") || !req->getParams()->isQueryParameterSet("DebounceDelay"))
+        if (!req->getParams()->isQueryParameterSet("ModuleId") || !req->getParams()->isQueryParameterSet("PinNumber") || !req->getParams()->isQueryParameterSet("ButtonType") || !req->getParams()->isQueryParameterSet("ActiveHigh") || !req->getParams()->isQueryParameterSet("PullupActive") || !req->getParams()->isQueryParameterSet("DebounceDelay"))
         {
             response(res, 400, MISSING_INPUT_PARAMS_MESSAGE);
             return;
         }
         
-        int ModuleId = getQueryParameterint(req, "ModuleId");
-         int pinNumber = getQueryParameterint(req, "PinNumber");
+    int ModuleId = getQueryParameterint(req, "ModuleId");
+    int pinNumber = getQueryParameterint(req, "PinNumber");
     String ButtonType = getQueryParameterString(req, "ButtonType");
     bool ActiveHigh = boolean(getQueryParameterString(req, "ActiveHigh"));
     bool PullupActive = boolean(getQueryParameterString(req, "PullupActive"));
@@ -114,7 +114,7 @@ String ButtonApis::getClassPath()
 }
 
 String ButtonApis::handlecreate(int ModuleId, int pinNumber, String ButtonType, bool ActiveHigh, bool PullupActive, int DebounceDelay) {
-    ButtonEntity* buttonEntity = new ButtonEntity(ModuleId, pinNumber, ButtonType, ActiveHigh, PullupActive, DebounceDelay);
+    ButtonEntity* buttonEntity = new ButtonEntity(ModuleId, ButtonType, pinNumber,  ActiveHigh, PullupActive, DebounceDelay);
     int id = buttonController->Add(*buttonEntity);
     if (id != -1)
     {
@@ -124,7 +124,7 @@ String ButtonApis::handlecreate(int ModuleId, int pinNumber, String ButtonType, 
     return CREATE_FAILED_MESSAGE;
 }
 String ButtonApis::handleupdate(int id, int pinNumber, int ModuleId, String ButtonType, bool ActiveHigh, bool PullupActive, int DebounceDelay) {
-    ButtonEntity* buttonEntity = new ButtonEntity(id,  pinNumber, ModuleId, ButtonType, ActiveHigh, PullupActive, DebounceDelay);
+    ButtonEntity* buttonEntity = new ButtonEntity(id, ModuleId, ButtonType, pinNumber, ActiveHigh, PullupActive, DebounceDelay);
     
     if (buttonController->Update(*buttonEntity))
     {

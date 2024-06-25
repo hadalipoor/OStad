@@ -13,11 +13,13 @@ class IButton: public BaseModule
 public:
     using ButtonCallback = std::function<void(IButton*)>;
 
-    IButton(int module_id, int id, String name, String moduleType, int device_id): BaseModule(module_id, id, name, moduleType,device_id){}
+    IButton(int module_id, int serverId, String name, String moduleType, int device_id): BaseModule(module_id, serverId, name, moduleType,device_id){}
     
     virtual void setOnClick(ButtonCallback function) = 0;
     virtual void setOnLongPress(ButtonCallback function) = 0;
     virtual void setDebounceDelay(unsigned long delay) = 0;
+    virtual long getLongPressTime() = 0;
+    virtual long getDebounceDelay() = 0;
     virtual void setLongPressTime(unsigned long time) = 0;
     virtual bool getState() = 0;
     virtual String getName() = 0;

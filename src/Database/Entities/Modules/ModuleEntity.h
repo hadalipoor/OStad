@@ -1,100 +1,89 @@
 #ifndef MODULEENTITY_H
 #define MODULEENTITY_H
 
-#include "../Entity.h"  // Adjust the include path as necessary
-#include <Arduino.h>  // For String type
+#include "../Entity.h"
 
 class ModuleEntity : public Entity {
 public:
     static const String COLUMN_NAME;
-    static const String COLUMN_MODULE_TYPE;
-    static const String COLUMN_DEVICE_ID;
-    static const String COLUMN_SERVER_ID;
-
+    static const String COLUMN_MODULETYPE;
+    static const String COLUMN_DEVICEID;
+    static const String COLUMN_SERVERID;
+    
 private:
-    String name;
-    String moduleType;
-    int deviceId;
-    int serverId;
+    String _Name;
+    String _ModuleType;
+    int _DeviceId;
+    int _ServerId;
+    
 
 public:
-    // Default constructor
-    ModuleEntity() : Entity(), name(""), moduleType(""), deviceId(0), serverId(0) {}
+    ModuleEntity()  : Entity(){}
 
-    // Parameterized constructor
-    ModuleEntity(int id, String name, String moduleType, int deviceId, int serverId) : Entity() {
+    ModuleEntity(int id, String Name, String ModuleType, int DeviceId, int ServerId) : Entity() {
         this->id = id;
-        this->name = name;
-        this->moduleType = moduleType;
-        this->deviceId = deviceId;
-        this->serverId = serverId;
-        SetValue(COLUMN_NAME, this->name);
-        SetValue(COLUMN_MODULE_TYPE, this->moduleType);
-        SetValue(COLUMN_DEVICE_ID, String(this->deviceId));
-        SetValue(COLUMN_SERVER_ID, String(this->serverId));
+        _Name = Name;
+        _ModuleType = ModuleType;
+        _DeviceId = DeviceId;
+        _ServerId = ServerId;
+        
+
+        addColumn(COLUMN_NAME, String(Name), "String");
+        addColumn(COLUMN_MODULETYPE, String(ModuleType), "String");
+        addColumn(COLUMN_DEVICEID, String(DeviceId), "int");
+        addColumn(COLUMN_SERVERID, String(ServerId), "int");
+        
     }
 
-    ModuleEntity(int id, String name, String moduleType, int deviceId) : ModuleEntity(id, name, moduleType, deviceId, 0) {}
-    ModuleEntity(String name, String moduleType, int deviceId, int serverId) : ModuleEntity(0, name, moduleType, deviceId, serverId) {}
-    ModuleEntity(String name, String moduleType, int deviceId) : ModuleEntity(0, name, moduleType, deviceId, 0) {}
-
-    // Destructor
-    ~ModuleEntity() {}
-
-    // Getters
-    String getName() {
-        name = GetValue(COLUMN_NAME);
-        return name;
-    }
-
-    String getModuleType() {
-        moduleType = GetValue(COLUMN_MODULE_TYPE);
-        return moduleType;
-    }
-
-    int getDeviceId() {
-        deviceId = GetValue(COLUMN_DEVICE_ID).toInt();
-        return deviceId;
-    }
-
-    int getServerId() {
-        serverId = GetValue(COLUMN_SERVER_ID).toInt();
-        return serverId;
-    }
-
-    // Setters
-    void setName(String name) {
-        SetValue(COLUMN_NAME, name);
-        this->name = name;
-    }
-
-    void setModuleType(String moduleType) {
-        SetValue(COLUMN_MODULE_TYPE, moduleType);
-        this->moduleType = moduleType;
-    }
-
-    void setDeviceId(int deviceId) {
-        SetValue(COLUMN_DEVICE_ID, String(deviceId));
-        this->deviceId = deviceId;
-    }
-
-    void setServerId(int serverId) {
-        SetValue(COLUMN_SERVER_ID, String(serverId));
-        this->serverId = serverId;
-    }
+    ModuleEntity(String Name, String ModuleType, int DeviceId, int ServerId) : 
+        ModuleEntity(0, _Name, _ModuleType, _DeviceId, _ServerId)  {}
 
     static ModuleEntity fromEntity(Entity entity)
     {
-        ModuleEntity moduleEntity = ModuleEntity();
-        moduleEntity.fromString(entity.toString());
-        return moduleEntity;
+        ModuleEntity moduleentity = ModuleEntity();
+        moduleentity.fromString(entity.toString());
+        return moduleentity;
     }
+
+    // Getters for each field
+    String getName() {
+        return _Name;
+    }
+    String getModuleType() {
+        return _ModuleType;
+    }
+    int getDeviceId() {
+        return _DeviceId;
+    }
+    int getServerId() {
+        return _ServerId;
+    }
+    
+    
+    // Setters for each field
+    void setName(String Name) {
+        SetValue(COLUMN_NAME, String(Name));
+        _Name = Name;
+    }
+    void setModuleType(String ModuleType) {
+        SetValue(COLUMN_MODULETYPE, String(ModuleType));
+        _ModuleType = ModuleType;
+    }
+    void setDeviceId(int DeviceId) {
+        SetValue(COLUMN_DEVICEID, String(DeviceId));
+        _DeviceId = DeviceId;
+    }
+    void setServerId(int ServerId) {
+        SetValue(COLUMN_SERVERID, String(ServerId));
+        _ServerId = ServerId;
+    }
+    
 };
 
-// Static members initialization
 const String ModuleEntity::COLUMN_NAME = "Name";
-const String ModuleEntity::COLUMN_MODULE_TYPE = "ModuleType";
-const String ModuleEntity::COLUMN_DEVICE_ID = "DeviceId";
-const String ModuleEntity::COLUMN_SERVER_ID = "ServerId";
+const String ModuleEntity::COLUMN_MODULETYPE = "ModuleType";
+const String ModuleEntity::COLUMN_DEVICEID = "DeviceId";
+const String ModuleEntity::COLUMN_SERVERID = "ServerId";
+
 
 #endif // MODULEENTITY_H

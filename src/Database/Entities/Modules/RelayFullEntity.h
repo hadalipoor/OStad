@@ -9,12 +9,11 @@ public:
     int ModuleId;
     String Name;
     String ModuleType;
-    int DeviceId;
     int PinNumber;
     bool NormallyOpen;
+    int DeviceId;
     int ServerId;
 
-    RelayFullEntity() {}
 
     RelayFullEntity(int id, int moduleId, const String &_Name, const String &_ModuleType, int deviceId,
                     int pinNumber, bool normallyOpen, int serverId) {
@@ -23,10 +22,12 @@ public:
         ModuleId = moduleId;
         Name = _Name;
         ModuleType = _ModuleType;
-        DeviceId = deviceId;
         PinNumber = pinNumber;
+        DeviceId = deviceId;
         ServerId = serverId;
     }
+
+    RelayFullEntity(): RelayFullEntity(0, 0, "", "", 0, 0, false, 0) {}
 
     String getJsonString() {
         String json = "{";
