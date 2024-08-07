@@ -52,7 +52,6 @@ SoilMoistureSensor::SoilMoistureSensor(Context* context, int sensorPin, int dryT
         DevicesEntity device = devicesController->GetById(deviceId);
         ip = device.getIP();
     }
-
 }
 
 String SoilMoistureSensor::callSoilMoistureSensorApi(SoilMoistureFunctions function, String data)
